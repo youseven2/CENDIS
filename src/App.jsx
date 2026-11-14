@@ -572,55 +572,13 @@ function CendisGlyphLogo({ className = "w-32", showTopAcronym = false }) {
 // ============================================================================
 // COMPONENTES GRÁFICOS DEL CARNET OFICIAL CENDIS (ESCUDO, GLIFO DORADO Y CÓDIGO DE BARRAS ESCANEABLE)
 // ============================================================================
-function GoldenCoatOfArmsSVG({ className = "w-14 h-14" }) {
+function GoldenCoatOfArmsSVG({ className = "w-16 h-16" }) {
   return (
-    <svg viewBox="0 0 120 120" className={className} fill="none">
-      {/* Ramas de olivo y palma doradas */}
-      <path
-        d="M32,90 C16,74 16,44 28,24 C22,46 24,70 38,86 Z"
-        fill="#d4b26f"
-      />
-      <path
-        d="M88,90 C104,74 104,44 92,24 C98,46 96,70 82,86 Z"
-        fill="#d4b26f"
-      />
-      {/* Cornucopias superiores */}
-      <path
-        d="M42,20 C48,10 72,10 78,20 C70,24 50,24 42,20 Z"
-        fill="#dfc082"
-        stroke="#8d6e32"
-        strokeWidth="1.2"
-      />
-      {/* Escudo central dividido en 3 cuarteles */}
-      <path
-        d="M35,26 L85,26 L85,62 C85,80 60,92 60,92 C60,92 35,80 35,62 Z"
-        fill="#0d254c"
-        stroke="#dfc082"
-        strokeWidth="3"
-      />
-      <line x1="60" y1="26" x2="60" y2="56" stroke="#dfc082" strokeWidth="2" />
-      <line x1="35" y1="56" x2="85" y2="56" stroke="#dfc082" strokeWidth="2" />
-      {/* Cuartel izquierdo: gavilla de trigo */}
-      <path d="M44,34 L51,49 M51,34 L44,49 M47.5,32 L47.5,50" stroke="#dfc082" strokeWidth="2.2" strokeLinecap="round" />
-      {/* Cuartel derecho: armas y pabellones */}
-      <path d="M68,34 L77,49 M77,34 L68,49" stroke="#dfc082" strokeWidth="2.2" strokeLinecap="round" />
-      {/* Cuartel inferior: caballo indómito blanco/dorado galopando hacia la izquierda */}
-      <path
-        d="M72,76 C68,69 62,67 55,68 L48,62 L44,65 L48,71 L43,78 L47,80 L53,74 L63,75 L67,82 L71,80 Z"
-        fill="#f5e1b5"
-      />
-      {/* Cinta tricolor/dorada inferior */}
-      <path
-        d="M24,96 Q60,86 96,96 L92,104 Q60,94 28,104 Z"
-        fill="#c9a55c"
-        stroke="#8d6e32"
-        strokeWidth="1"
-      />
-      <path
-        d="M36,105 Q60,99 84,105 L81,111 Q60,105 39,111 Z"
-        fill="#dfc082"
-      />
-    </svg>
+    <img
+      src="/escudo-venezuela-dorado.png"
+      alt="Escudo Nacional de la República Bolivariana de Venezuela en Dorado"
+      className={`${className} object-contain block select-none`}
+    />
   );
 }
 
@@ -8060,7 +8018,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 {/* CONTENEDOR DE FRENTE Y REVERSO DEL CARNET (IDÉNTICO A LAS 2 FOTOS ADJUNTAS) */}
                 <div className="flex flex-wrap justify-center items-start gap-8 py-4">
                   {/* ==========================================================
-                      FRENTE DEL CARNET (IDÉNTICO A LA IMAGEN 2 ADJUNTA)
+                      FRENTE DEL CARNET (CON ESCUDO DE VENEZUELA DORADO Y CÓDIGO DE BARRA EN LA PARTE FRONTAL)
                      ========================================================== */}
                   <div
                     style={{
@@ -8069,68 +8027,68 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     }}
                     className="w-[325px] h-[515px] bg-[#fbfbfa] rounded-[18px] border-[4.5px] border-[#c5a059] flex flex-col justify-between overflow-hidden relative select-none"
                   >
-                    {/* Cabecera Azul Marino con Escudo Dorado y Ministerio del Poder Popular para la Cultura */}
-                    <div className="bg-[#0b2545] pt-3.5 pb-2.5 px-4 flex flex-col items-center text-center border-b-[3px] border-[#c5a059]">
-                      <GoldenCoatOfArmsSVG className="w-16 h-16 mb-1" />
-                      <div className="text-[12.5px] font-black uppercase tracking-[0.04em] text-[#d8b875] leading-tight">
+                    {/* Cabecera Azul Marino con Escudo Nacional de Venezuela en Dorado y Ministerio del Poder Popular para la Cultura */}
+                    <div className="bg-[#0b294d] pt-2.5 pb-2 px-4 flex flex-col items-center text-center border-b-[3px] border-[#c5a059]">
+                      <GoldenCoatOfArmsSVG className="w-[62px] h-[62px] mb-1" />
+                      <div className="text-[12px] font-black uppercase tracking-[0.04em] text-[#d8b875] leading-tight">
                         MINISTERIO DEL PODER POPULAR
                       </div>
-                      <div className="text-[12.5px] font-black uppercase tracking-[0.04em] text-[#d8b875] leading-tight">
+                      <div className="text-[12px] font-black uppercase tracking-[0.04em] text-[#d8b875] leading-tight">
                         PARA LA CULTURA
                       </div>
                     </div>
 
                     {/* Cuerpo Blanco del Frente */}
-                    <div className="flex-1 px-4 pt-3 pb-2 flex flex-col justify-between bg-[#fbfbfa]">
+                    <div className="flex-1 px-4 pt-2 pb-1.5 flex flex-col justify-between bg-[#fbfbfa]">
                       {/* Logo Dorado Centro Nacional del Disco */}
                       <div className="w-full flex justify-center">
-                        <GoldenCendisGlyphSVG showTopTitle={true} compact={false} />
+                        <GoldenCendisGlyphSVG showTopTitle={true} compact={true} />
                       </div>
 
-                      {/* Mitad inferior dividida en 2 columnas: Datos a la izquierda, Foto Carnet con marco dorado a la derecha */}
-                      <div className="grid grid-cols-12 gap-2.5 items-end my-auto pt-2">
-                        <div className="col-span-7 text-left space-y-1.5 leading-tight">
+                      {/* Sección central dividida en 2 columnas: Datos a la izquierda, Foto Carnet con marco dorado a la derecha */}
+                      <div className="grid grid-cols-12 gap-2 items-center pt-1">
+                        <div className="col-span-7 text-left space-y-1 leading-tight">
                           <div>
-                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                            <span className="text-[10px] font-bold uppercase text-[#9e7f3f] block">
                               NOMBRE:
                             </span>
-                            <span className="text-[13.5px] font-black uppercase text-[#0b2545] block break-words">
+                            <span className="text-[12.5px] font-black uppercase text-[#0b2545] block break-words">
                               {selectedEmpForCard.nombres}
                             </span>
                           </div>
 
                           <div>
-                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                            <span className="text-[10px] font-bold uppercase text-[#9e7f3f] block">
                               APELLIDO:
                             </span>
-                            <span className="text-[13.5px] font-black uppercase text-[#0b2545] block break-words">
+                            <span className="text-[12.5px] font-black uppercase text-[#0b2545] block break-words">
                               {selectedEmpForCard.apellidos}
                             </span>
                           </div>
 
                           <div>
-                            <span className="text-[10.5px] font-bold uppercase text-[#9e7f3f] block">
+                            <span className="text-[9.5px] font-bold uppercase text-[#9e7f3f] block">
                               NÚMERO DE CÉDULA:
                             </span>
-                            <span className="text-[13.5px] font-black uppercase text-[#0b2545] block">
+                            <span className="text-[12.5px] font-black uppercase text-[#0b2545] block">
                               {selectedEmpForCard.cedula}
                             </span>
                           </div>
 
                           <div>
-                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                            <span className="text-[10px] font-bold uppercase text-[#9e7f3f] block">
                               CARGO:
                             </span>
-                            <span className="text-[12.5px] font-black uppercase text-[#0b2545] block leading-tight">
+                            <span className="text-[11.5px] font-black uppercase text-[#0b2545] block leading-tight">
                               {selectedEmpForCard.cargo}
                             </span>
                           </div>
 
                           <div>
-                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                            <span className="text-[10px] font-bold uppercase text-[#9e7f3f] block">
                               COORDINACIÓN:
                             </span>
-                            <span className="text-[12.5px] font-black uppercase text-[#0b2545] block leading-tight">
+                            <span className="text-[11.5px] font-black uppercase text-[#0b2545] block leading-tight">
                               {selectedEmpForCard.coordinacion}
                             </span>
                           </div>
@@ -8138,7 +8096,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                         {/* Recuadro de Fotografía Tipo Carnet con Borde Dorado */}
                         <div className="col-span-5 flex justify-end">
-                          <div className="w-[116px] h-[148px] border-[3px] border-[#b6924c] bg-[#e2e4e7] overflow-hidden flex items-end justify-center shadow-inner">
+                          <div className="w-[112px] h-[142px] border-[3px] border-[#b6924c] bg-[#e2e4e7] overflow-hidden flex items-end justify-center shadow-inner">
                             {selectedEmpForCard.fotoCarnet ? (
                               <img
                                 src={selectedEmpForCard.fotoCarnet}
@@ -8158,14 +8116,19 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           </div>
                         </div>
                       </div>
+
+                      {/* CÓDIGO DE BARRA ESCANEABLE EN LA PARTE FRONTAL DEL CARNET */}
+                      <div className="pt-1 border-t border-[#c5a059]/40 flex justify-center">
+                        <ScannableCarnetBarcode value={selectedEmpForCard.codigoBarra} />
+                      </div>
                     </div>
 
                     {/* Franja Inferior Azul Marino con Borde Superior Dorado */}
-                    <div className="h-4 bg-[#0b2545] border-t-[2.5px] border-[#c5a059]" />
+                    <div className="h-3.5 bg-[#0b294d] border-t-[2.5px] border-[#c5a059]" />
                   </div>
 
                   {/* ==========================================================
-                      REVERSO DEL CARNET (IDÉNTICO A LA IMAGEN 1 ADJUNTA)
+                      REVERSO DEL CARNET (FIRMAS AUTORIZADAS, POLÍTICA Y EMERGENCIA)
                      ========================================================== */}
                   <div
                     style={{
@@ -8175,20 +8138,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     className="w-[325px] h-[515px] bg-[#fbfbfa] rounded-[18px] border-[4.5px] border-[#c5a059] flex flex-col justify-between overflow-hidden relative select-none"
                   >
                     {/* Franja Superior Azul Marino con Borde Inferior Dorado */}
-                    <div className="h-7 bg-[#0b2545] border-b-[2.5px] border-[#c5a059]" />
+                    <div className="h-7 bg-[#0b294d] border-b-[2.5px] border-[#c5a059]" />
 
                     {/* Contenido Central del Reverso */}
-                    <div className="flex-1 px-4 py-2 flex flex-col justify-between bg-[#fbfbfa] text-slate-950">
+                    <div className="flex-1 px-4 py-3 flex flex-col justify-between bg-[#fbfbfa] text-slate-950">
                       {/* Glifo Dorado + del Disco + CENDIS - Centro Nacional del Disco */}
                       <div className="text-center">
                         <GoldenCendisGlyphSVG showTopTitle={false} compact={true} />
-                        <div className="text-[13px] font-bold text-[#0b2545] tracking-tight mt-0.5">
+                        <div className="text-[13px] font-bold text-[#0b2545] tracking-tight mt-1">
                           CENDIS - Centro Nacional del Disco
                         </div>
                       </div>
 
                       {/* FIRMAS AUTORIZADAS */}
-                      <div className="space-y-1.5">
+                      <div className="space-y-2.5">
                         <div className="text-[11px] font-bold uppercase text-[#9e7f3f] tracking-wide">
                           FIRMAS AUTORIZADAS
                         </div>
@@ -8201,7 +8164,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                 backgroundImage:
                                   "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
                               }}
-                              className="col-span-8 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center px-2"
+                              className="col-span-8 h-9 border-b-[1.5px] border-slate-800 flex items-center justify-center px-2"
                             >
                               <svg viewBox="0 0 180 36" className="w-32 h-7">
                                 <path
@@ -8218,7 +8181,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                 backgroundImage:
                                   "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
                               }}
-                              className="col-span-4 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center text-[10.5px] font-bold text-slate-900"
+                              className="col-span-4 h-9 border-b-[1.5px] border-slate-800 flex items-center justify-center text-[10.5px] font-bold text-slate-900"
                             >
                               20 SEP 2024
                             </div>
@@ -8236,7 +8199,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                 backgroundImage:
                                   "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
                               }}
-                              className="col-span-8 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center px-2"
+                              className="col-span-8 h-9 border-b-[1.5px] border-slate-800 flex items-center justify-center px-2"
                             >
                               <svg viewBox="0 0 180 36" className="w-32 h-7">
                                 <path
@@ -8253,7 +8216,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                 backgroundImage:
                                   "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
                               }}
-                              className="col-span-4 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center text-[10.5px] font-bold text-slate-900"
+                              className="col-span-4 h-9 border-b-[1.5px] border-slate-800 flex items-center justify-center text-[10.5px] font-bold text-slate-900"
                             >
                               20 SEP 2024
                             </div>
@@ -8266,20 +8229,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                       {/* POLÍTICA DE USO Y CONFIDENCIALIDAD */}
                       <div className="text-center px-0.5">
-                        <div className="text-[10.5px] font-bold uppercase text-[#9e7f3f] tracking-tight">
+                        <div className="text-[11px] font-bold uppercase text-[#9e7f3f] tracking-tight">
                           POLÍTICA DE USO Y CONFIDENCIALIDAD
                         </div>
-                        <p className="text-[8.6px] text-slate-900 leading-[1.18] text-justify mt-0.5 font-medium">
+                        <p className="text-[9.2px] text-slate-900 leading-[1.25] text-justify mt-1 font-medium">
                           Este carnet es personal e intransferible. Identifica al portador como personal autorizado del CENDIS. Su uso indebido está sujeto a sanciones. En caso de extravío, por favor reportarlo inmediatamente a la Coordinación de Recursos Humanos o a las oficinas del Ministerio. No para uso financiero. [Ley Orgánica de la Administración Pública, Art. 112].
                         </p>
                       </div>
 
                       {/* INFORMACIÓN DE EMERGENCIA */}
-                      <div>
-                        <div className="text-[10.5px] font-bold uppercase text-[#9e7f3f] text-center">
+                      <div className="pb-1">
+                        <div className="text-[11px] font-bold uppercase text-[#9e7f3f] text-center">
                           INFORMACIÓN DE EMERGENCIA
                         </div>
-                        <div className="text-[11px] font-bold text-slate-950 leading-tight mt-0.5">
+                        <div className="text-[11.5px] font-bold text-slate-950 leading-snug mt-1">
                           <div className="truncate">
                             {selectedEmpForCard.emergencia1 || "CONTACTO 1: 0414-1234567"}
                           </div>
@@ -8290,15 +8253,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           </div>
                         </div>
                       </div>
-
-                      {/* CÓDIGO DE BARRA ESCANEABLE POR LECTOR ÓPTICO */}
-                      <div className="pt-0.5">
-                        <ScannableCarnetBarcode value={selectedEmpForCard.codigoBarra} />
-                      </div>
                     </div>
 
                     {/* Pie Azul Marino del Reverso con www.cendis.gob.ve y Ministerio */}
-                    <div className="bg-[#0b2545] border-t-[2.5px] border-[#c5a059] py-1.5 px-3 text-center">
+                    <div className="bg-[#0b294d] border-t-[2.5px] border-[#c5a059] py-2 px-3 text-center">
                       <div className="text-[11.5px] font-bold text-white leading-none">
                         www.cendis.gob.ve
                       </div>
