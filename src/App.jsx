@@ -7846,7 +7846,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       }
                       className="px-2.5 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
                     />
-                    <div className="flex gap-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
                       <input
                         type="text"
                         placeholder="Edad"
@@ -7854,14 +7854,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         onChange={(e) =>
                           setFamilyMemberDraft({ ...familyMemberDraft, edad: e.target.value })
                         }
-                        className="w-14 px-2 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                        className="w-full min-w-0 flex-1 px-2 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
                       />
                       <button
                         type="button"
                         onClick={handleAddFamilyMemberToDraft}
-                        className="flex-1 px-2.5 py-2 rounded-lg neon-orange-nav-active font-black text-[11px] cursor-pointer whitespace-nowrap"
+                        title="Agregar familiar"
+                        className="w-9 h-9 shrink-0 rounded-lg neon-orange-nav-active font-black text-base leading-none flex items-center justify-center cursor-pointer"
                       >
-                        + Agregar
+                        +
                       </button>
                     </div>
                   </div>
@@ -7901,7 +7902,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
                   ) : (
                     <p className="text-[11px] text-slate-400 italic">
-                      Use los campos de arriba y presione <strong>&ldquo;+ Agregar&rdquo;</strong> para incluir hijos, cónyuge, padres u otros familiares a la hoja de vida.
+                      Use los campos de arriba y presione <strong>&ldquo;+&rdquo;</strong> para incluir hijos, cónyuge, padres u otros familiares a la hoja de vida.
                     </p>
                   )}
                 </div>
