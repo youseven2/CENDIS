@@ -920,14 +920,48 @@ export default function App() {
     },
   ]);
 
-  // Estado para nuevo usuario
+  // Estado para nuevo usuario y submódulo Usuarios en Configuración
+  const [configSubTab, setConfigSubTab] = useState("USUARIOS");
+  const [selectedConfigUserId, setSelectedConfigUserId] = useState(() => {
+    const initialList = loadStoredUsers();
+    return initialList[0] ? String(initialList[0].id) : "1";
+  });
   const [newUserForm, setNewUserForm] = useState({
     username: "",
+    email: "",
     password: "",
     fullName: "",
     cargo: "",
     role: "ESTANDAR",
   });
+
+  const MODULE_PERMISSION_KEY_MAP = {
+    editor: "entrar_memo",
+    agenda: "entrar_agenda",
+    hr: "entrar_hr",
+    proyectos: "entrar_proyectos",
+    bienes: "entrar_bienes",
+    attendance: "entrar_attendance",
+    stats: "entrar_stats",
+    org: "entrar_org",
+    config: "entrar_config",
+  };
+
+  const canEnterModule = (modId, userObj = currentUser) => {
+    if (!userObj) return false;
+    if (userObj.role === "ADMIN") return true;
+    const permKey = MODULE_PERMISSION_KEY_MAP[modId];
+    if (!permKey) return true;
+    const perms = userObj.permissions || DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR;
+    return Boolean(perms[permKey]);
+  };
+
+  const hasActionPermission = (actionKey, userObj = currentUser) => {
+    if (!userObj) return false;
+    if (userObj.role === "ADMIN") return true;
+    const perms = userObj.permissions || DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR;
+    return Boolean(perms[actionKey]);
+  };
 
   // Correlativo formateado
   const formattedCorrelative = useMemo(() => {
@@ -1863,12 +1897,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         id: "config",
         theme: "WARM",
         badgeText: "ADMIN",
-        subtitle: "ROLES Y RESPALDO EN .ZIP",
-        title: "CONFIGURACIÓN Y BACKUP",
-        desc: "Administración de usuarios con rol Estándar o Administrador, aprobaciones y botón exclusivo de Administrador para Backup Completo en .ZIP.",
+        subtitle: "SUBMÓDULO DE USUARIOS Y ROLES",
+        title: "CONFIGURACIÓN",
+        desc: "Administración de usuarios del sistema, asignación de rol Administrador o Estándar y control detallado de permisología por pantallas y acciones.",
         pills: [
           { symbol: "🛡", text: `${users.length} Usuarios`, color: "text-amber-400" },
-          { symbol: "🗜", text: "Backup .ZIP", color: "text-emerald-400" },
+          { symbol: "🔑", text: "Permisología", color: "text-emerald-400" },
         ],
         footerCode: "ADMIN-CONTROL",
         icon: Settings,
@@ -1956,6 +1990,13 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <div
                   key={mod.id}
                   onClick={() => {
+                    if (!canEnterModule(mod.id)) {
+                      showToast(
+                        `Acceso restringido: Su usuario no tiene permiso para ingresar a la pantalla "${mod.title}".`,
+                        "error"
+                      );
+                      return;
+                    }
                     setActiveTab(mod.id);
                     setCurrentScreen("APP");
                   }}
@@ -2146,17 +2187,29 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             { id: "attendance", label: "Asistencia", icon: UserCheck },
             { id: "stats", label: "Estadística", icon: BarChart3 },
             { id: "org", label: "Organigrama", icon: GitBranch },
-            { id: "config", label: "Config / Backup", icon: Settings },
+            { id: "config", label: "Configuración", icon: Settings },
           ].map((tab) => {
             const IconT = tab.icon;
+            const allowed = canEnterModule(tab.id);
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (!allowed) {
+                    showToast(
+                      `Acceso restringido: Su usuario no tiene permiso para ingresar a "${tab.label}".`,
+                      "error"
+                    );
+                    return;
+                  }
+                  setActiveTab(tab.id);
+                }}
                 className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 transition cursor-pointer ${
                   activeTab === tab.id
                     ? "bg-[#f59e0b] text-slate-950 font-black shadow"
-                    : "text-slate-300 hover:bg-slate-800"
+                    : allowed
+                    ? "text-slate-300 hover:bg-slate-800"
+                    : "text-slate-600 opacity-60"
                 }`}
               >
                 <IconT className="w-3.5 h-3.5" />
@@ -3990,139 +4043,560 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         )}
 
         {/* ====================================================================
-            MÓDULO 9: CONFIGURACIÓN, ROLES (ESTÁNDAR/ADMIN) Y BACKUP (.ZIP)
+            MÓDULO 9: CONFIGURACIÓN • SUBMÓDULO DE USUARIOS Y PERMISOLOGÍA
            ==================================================================== */}
-        {activeTab === "config" && (
-          <div className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-6">
-            <div className="bg-slate-900 text-white rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4 shadow-lg border border-slate-800">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">
-                  Respaldo Total Institucional y Paquete de Despliegue Web
-                </span>
-                <h2 className="text-base font-black uppercase mt-0.5">
-                  Backup Completo (.ZIP) y Estructura Vercel / GitHub
-                </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  Incluye package.json, index.html, vite.config.js, vercel.json, src/main.jsx, src/App.jsx y LEEME_PASOS_VERCEL.txt
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleDownloadFullBackupZip}
-                  className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow"
-                >
-                  <Archive className="w-4 h-4" />
-                  <span>Descargar Backup Completo (.ZIP)</span>
-                </button>
-                <button
-                  onClick={handleDownloadVercelProjectZip}
-                  className="px-4 py-2.5 rounded-xl bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Descargar sistema-cendis-vercel.zip</span>
-                </button>
-              </div>
-            </div>
+        {activeTab === "config" &&
+          (() => {
+            const selectedUserForPerms =
+              users.find((u) => String(u.id) === String(selectedConfigUserId)) || users[0];
+            const isSelectedAdmin = selectedUserForPerms?.role === "ADMIN";
+            const currentPerms = isSelectedAdmin
+              ? { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN }
+              : {
+                  ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR,
+                  ...(selectedUserForPerms?.permissions || {}),
+                };
 
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
-              <h3 className="text-sm font-black uppercase text-slate-900">
-                Gestión de Usuarios y Roles (Administrador / Usuario Estándar)
-              </h3>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!newUserForm.username || !newUserForm.password) return;
-                  const created = {
-                    id: Date.now(),
-                    ...newUserForm,
-                    active: true,
-                    permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE[newUserForm.role] },
-                  };
-                  setUsers((prev) => [...prev, created]);
-                  addLog(`Creado usuario '${created.username}' con rol ${created.role}`);
-                  showToast(`Usuario ${created.username} creado con rol ${created.role}`);
-                  setNewUserForm({ username: "", password: "", fullName: "", cargo: "", role: "ESTANDAR" });
-                }}
-                className="grid grid-cols-1 md:grid-cols-5 gap-2"
-              >
-                <input
-                  type="text"
-                  required
-                  placeholder="Usuario"
-                  value={newUserForm.username}
-                  onChange={(e) => setNewUserForm({ ...newUserForm, username: e.target.value })}
-                  className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                />
-                <input
-                  type="text"
-                  required
-                  placeholder="Clave"
-                  value={newUserForm.password}
-                  onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
-                  className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                />
-                <input
-                  type="text"
-                  required
-                  placeholder="Nombre Completo"
-                  value={newUserForm.fullName}
-                  onChange={(e) => setNewUserForm({ ...newUserForm, fullName: e.target.value })}
-                  className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                />
-                <select
-                  value={newUserForm.role}
-                  onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value })}
-                  className="px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
-                >
-                  <option value="ESTANDAR">Usuario Estándar</option>
-                  <option value="ADMIN">Usuario Administrador</option>
-                </select>
-                <button
-                  type="submit"
-                  className="py-2 rounded-xl bg-[#8b1538] text-white font-bold text-xs cursor-pointer"
-                >
-                  + Crear Usuario
-                </button>
-              </form>
+            const screenPermissionsList = [
+              { key: "entrar_memo", label: "Memo y Solicitudes", code: "MEMO" },
+              { key: "entrar_agenda", label: "Agenda CENDIS", code: "AGENDA" },
+              { key: "entrar_hr", label: "Recursos Humanos y Carnets", code: "RRHH" },
+              { key: "entrar_proyectos", label: "Proyectos y Tareas (%)", code: "PROY" },
+              { key: "entrar_bienes", label: "Bienes Nacionales", code: "BIENES" },
+              { key: "entrar_attendance", label: "Control de Asistencia", code: "ASIST" },
+              { key: "entrar_stats", label: "Estadística General", code: "STATS" },
+              { key: "entrar_org", label: "Organigrama CENDIS", code: "ORG" },
+              { key: "entrar_config", label: "Configuración", code: "CONFIG" },
+            ];
 
-              <div className="overflow-x-auto pt-3">
-                <table className="w-full text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-slate-900 text-white uppercase text-[10px]">
-                      <th className="p-3 text-left">Usuario</th>
-                      <th className="p-3 text-left">Nombre</th>
-                      <th className="p-3 text-left">Rol Asignado</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    {users.map((u) => (
-                      <tr key={u.id}>
-                        <td className="p-3 font-black">{u.username}</td>
-                        <td className="p-3">{u.fullName}</td>
-                        <td className="p-3">
+            const actionPermissionsList = [
+              {
+                key: "ingresar",
+                label: "Agregar nuevo",
+                desc: "Permite registrar nuevos documentos, actividades, trabajadores, proyectos y bienes.",
+              },
+              {
+                key: "modificar",
+                label: "Modificar",
+                desc: "Permite editar registros existentes y actualizar porcentajes o datos.",
+              },
+              {
+                key: "eliminar",
+                label: "Eliminar",
+                desc: "Permite borrar registros de manera definitiva en los módulos autorizados.",
+              },
+              {
+                key: "anular",
+                label: "Anular",
+                desc: "Permite cambiar el estatus de documentos o solicitudes a ANULADO.",
+              },
+            ];
+
+            const handleChangeUserRole = (targetUserId, newRole) => {
+              const updatedPermissions =
+                newRole === "ADMIN"
+                  ? { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN }
+                  : {
+                      ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR,
+                      ...(users.find((u) => u.id === targetUserId)?.permissions || {}),
+                      entrar_config: false,
+                    };
+
+              setUsers((prev) =>
+                prev.map((item) =>
+                  item.id === targetUserId
+                    ? { ...item, role: newRole, permissions: updatedPermissions }
+                    : item
+                )
+              );
+
+              if (currentUser && currentUser.id === targetUserId) {
+                const updatedCurrent = {
+                  ...currentUser,
+                  role: newRole,
+                  permissions: updatedPermissions,
+                };
+                setCurrentUser(updatedCurrent);
+                setSessionCookie(updatedCurrent);
+              }
+              addLog(
+                `Actualizado rol de usuario ID ${targetUserId} a ${newRole} (${
+                  newRole === "ADMIN" ? "Todos los permisos" : "Permisos personalizados"
+                })`
+              );
+              showToast(
+                newRole === "ADMIN"
+                  ? "Rol Administrador asignado: se habilitaron todos los permisos del sistema."
+                  : "Rol Estándar asignado: ahora puede marcar las pantallas y permisos específicos."
+              );
+            };
+
+            const handleToggleUserPermission = (targetUserId, permKey) => {
+              const target = users.find((u) => u.id === targetUserId);
+              if (!target || target.role === "ADMIN") return;
+
+              const basePerms = {
+                ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR,
+                ...(target.permissions || {}),
+              };
+              const nextPerms = {
+                ...basePerms,
+                [permKey]: !basePerms[permKey],
+              };
+
+              setUsers((prev) =>
+                prev.map((item) =>
+                  item.id === targetUserId ? { ...item, permissions: nextPerms } : item
+                )
+              );
+
+              if (currentUser && currentUser.id === targetUserId) {
+                const updatedCurrent = {
+                  ...currentUser,
+                  permissions: nextPerms,
+                };
+                setCurrentUser(updatedCurrent);
+                setSessionCookie(updatedCurrent);
+              }
+            };
+
+            const handleSetAllScreensForUser = (targetUserId, enableAll) => {
+              const target = users.find((u) => u.id === targetUserId);
+              if (!target || target.role === "ADMIN") return;
+              const basePerms = {
+                ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR,
+                ...(target.permissions || {}),
+              };
+              const nextPerms = { ...basePerms };
+              screenPermissionsList.forEach((sp) => {
+                nextPerms[sp.key] = enableAll;
+              });
+              setUsers((prev) =>
+                prev.map((item) =>
+                  item.id === targetUserId ? { ...item, permissions: nextPerms } : item
+                )
+              );
+              if (currentUser && currentUser.id === targetUserId) {
+                const updatedCurrent = { ...currentUser, permissions: nextPerms };
+                setCurrentUser(updatedCurrent);
+                setSessionCookie(updatedCurrent);
+              }
+              showToast(
+                enableAll
+                  ? "Se habilitaron todas las pantallas para este usuario."
+                  : "Se desmarcaron todas las pantallas para este usuario."
+              );
+            };
+
+            return (
+              <div className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-6">
+                {/* Cabecera del Módulo de Configuración con Submódulo Usuarios */}
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#f59e0b] block">
+                      Panel de Administración y Control de Acceso
+                    </span>
+                    <h2 className="text-base font-black uppercase text-slate-900">
+                      Módulo de Configuración • Submódulo de Usuarios y Permisología
+                    </h2>
+                    <p className="text-xs text-slate-500">
+                      Seleccione un usuario de la lista desplegable para asignarle rol y definir a qué pantallas puede ingresar y qué acciones puede ejecutar.
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setConfigSubTab("USUARIOS")}
+                      className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 cursor-pointer shadow ${
+                        configSubTab === "USUARIOS"
+                          ? "bg-[#f59e0b] text-slate-950"
+                          : "bg-slate-800 text-slate-300"
+                      }`}
+                    >
+                      <Users className="w-4 h-4" />
+                      <span>Submódulo: Usuarios ({users.length})</span>
+                    </button>
+                  </div>
+                </div>
+
+                {configSubTab === "USUARIOS" && selectedUserForPerms && (
+                  <div className="space-y-6">
+                    {/* Selector desplegable de usuario y configuración de permisología */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end border-b border-slate-200 pb-5">
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-black uppercase tracking-wider text-[#f59e0b] mb-2">
+                            1. Seleccionar Usuario del Sistema (Lista Desplegable)
+                          </label>
                           <select
-                            value={u.role}
-                            onChange={(e) =>
-                              setUsers((prev) =>
-                                prev.map((item) =>
-                                  item.id === u.id ? { ...item, role: e.target.value } : item
-                                )
-                              )
-                            }
-                            className="px-2.5 py-1 rounded border border-slate-300 font-bold text-xs"
+                            value={String(selectedUserForPerms.id)}
+                            onChange={(e) => setSelectedConfigUserId(e.target.value)}
+                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-700 text-sm font-bold cursor-pointer"
                           >
-                            <option value="ADMIN">Administrador</option>
-                            <option value="ESTANDAR">Usuario Estándar</option>
+                            {users.map((u) => (
+                              <option key={u.id} value={String(u.id)}>
+                                {u.fullName} ({u.email || u.username}) — Rol:{" "}
+                                {u.role === "ADMIN" ? "Administrador" : "Estándar"}
+                              </option>
+                            ))}
                           </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-wider text-slate-300 mb-2">
+                            2. Tipo de Rol del Usuario
+                          </label>
+                          <select
+                            value={selectedUserForPerms.role}
+                            onChange={(e) =>
+                              handleChangeUserRole(selectedUserForPerms.id, e.target.value)
+                            }
+                            className="w-full px-4 py-3 rounded-xl border-2 border-amber-500/60 text-sm font-black cursor-pointer"
+                          >
+                            <option value="ADMIN">Administrador (Todos los permisos)</option>
+                            <option value="ESTANDAR">Estándar (Permisos seleccionables)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Aviso según el rol seleccionado */}
+                      {isSelectedAdmin ? (
+                        <div className="p-4 rounded-xl bg-emerald-950/70 border border-emerald-500/60 flex items-center gap-3">
+                          <Shield className="w-5 h-5 text-emerald-400 shrink-0" />
+                          <div className="text-xs">
+                            <span className="font-black uppercase text-emerald-300 block">
+                              Usuario Administrador — Acceso Total Habilitado
+                            </span>
+                            <span className="text-slate-200">
+                              Como <strong>{selectedUserForPerms.fullName}</strong> tiene rol{" "}
+                              <strong>Administrador</strong>, posee automáticamente todos los permisos de pantallas y acciones (Agregar nuevo, Modificar, Eliminar y Anular) en todo el sistema.
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-4 rounded-xl bg-blue-950/70 border border-blue-500/60 flex flex-wrap items-center justify-between gap-3">
+                          <div className="text-xs">
+                            <span className="font-black uppercase text-amber-300 block">
+                              Usuario Estándar — Configuración Personalizada de Permisología
+                            </span>
+                            <span className="text-slate-200">
+                              Marque abajo las pantallas a las que puede ingresar{" "}
+                              <strong>{selectedUserForPerms.fullName}</strong> y qué permisos tiene habilitados.
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleSetAllScreensForUser(selectedUserForPerms.id, true)
+                              }
+                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] cursor-pointer"
+                            >
+                              Marcar todas las pantallas
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleSetAllScreensForUser(selectedUserForPerms.id, false)
+                              }
+                              className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-[11px] cursor-pointer"
+                            >
+                              Desmarcar pantallas
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Sección A: Pantallas a las que puede ingresar */}
+                      <div className="space-y-3">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-200">
+                          A. Pantallas / Módulos a los que puede ingresar
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                          {screenPermissionsList.map((screen) => {
+                            const checked = Boolean(currentPerms[screen.key]);
+                            return (
+                              <label
+                                key={screen.key}
+                                className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 transition ${
+                                  isSelectedAdmin
+                                    ? "bg-emerald-950/30 border-emerald-500/40 opacity-90 cursor-not-allowed"
+                                    : checked
+                                    ? "bg-amber-950/40 border-amber-500/70 cursor-pointer"
+                                    : "bg-slate-900/60 border-slate-800 cursor-pointer hover:border-slate-600"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2.5">
+                                  <input
+                                    type="checkbox"
+                                    checked={checked}
+                                    disabled={isSelectedAdmin}
+                                    onChange={() =>
+                                      handleToggleUserPermission(
+                                        selectedUserForPerms.id,
+                                        screen.key
+                                      )
+                                    }
+                                    className="w-4 h-4 accent-[#f59e0b] rounded cursor-pointer"
+                                  />
+                                  <span className="text-xs font-bold text-white">
+                                    {screen.label}
+                                  </span>
+                                </div>
+                                <span
+                                  className={`text-[10px] font-black px-2 py-0.5 rounded ${
+                                    checked
+                                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                                      : "bg-red-500/20 text-red-300 border border-red-500/30"
+                                  }`}
+                                >
+                                  {checked ? "PERMITIDO" : "BLOQUEADO"}
+                                </span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Sección B: Permisos de Operaciones (Agregar nuevo, Modificar, Eliminar, Anular) */}
+                      <div className="space-y-3 pt-4 border-t border-slate-200">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-200">
+                          B. Permisos de Acciones (Agregar nuevo, Modificar, Eliminar y Anular)
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                          {actionPermissionsList.map((act) => {
+                            const checked = Boolean(currentPerms[act.key]);
+                            return (
+                              <label
+                                key={act.key}
+                                className={`p-4 rounded-xl border flex flex-col justify-between gap-2 transition ${
+                                  isSelectedAdmin
+                                    ? "bg-emerald-950/30 border-emerald-500/40 opacity-90 cursor-not-allowed"
+                                    : checked
+                                    ? "bg-amber-950/40 border-amber-500/70 cursor-pointer"
+                                    : "bg-slate-900/60 border-slate-800 cursor-pointer hover:border-slate-600"
+                                }`}
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="checkbox"
+                                      checked={checked}
+                                      disabled={isSelectedAdmin}
+                                      onChange={() =>
+                                        handleToggleUserPermission(
+                                          selectedUserForPerms.id,
+                                          act.key
+                                        )
+                                      }
+                                      className="w-4 h-4 accent-[#f59e0b] rounded cursor-pointer"
+                                    />
+                                    <span className="text-xs font-black uppercase text-white">
+                                      {act.label}
+                                    </span>
+                                  </div>
+                                  <span
+                                    className={`text-[10px] font-black px-2 py-0.5 rounded ${
+                                      checked
+                                        ? "bg-emerald-500/20 text-emerald-300"
+                                        : "bg-red-500/20 text-red-300"
+                                    }`}
+                                  >
+                                    {checked ? "SÍ" : "NO"}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-slate-400 leading-snug">
+                                  {act.desc}
+                                </p>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Formulario para registrar un nuevo usuario en el sistema */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+                      <h3 className="text-sm font-black uppercase text-slate-900">
+                        Registrar Nuevo Usuario en el Sistema
+                      </h3>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          if (!newUserForm.username || !newUserForm.password) return;
+                          const emailClean =
+                            (newUserForm.email || "").trim().toLowerCase() ||
+                            (newUserForm.username.includes("@")
+                              ? newUserForm.username.trim().toLowerCase()
+                              : `${newUserForm.username.trim().toLowerCase()}@gmail.com`);
+                          const created = {
+                            id: Date.now(),
+                            ...newUserForm,
+                            email: emailClean,
+                            active: true,
+                            linkedEmployeeId: null,
+                            permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE[newUserForm.role] },
+                          };
+                          setUsers((prev) => [...prev, created]);
+                          setSelectedConfigUserId(String(created.id));
+                          addLog(`Creado usuario '${created.username}' (${emailClean}) con rol ${created.role}`);
+                          showToast(
+                            `Usuario ${created.fullName} creado y seleccionado para configurar su permisología.`
+                          );
+                          setNewUserForm({
+                            username: "",
+                            email: "",
+                            password: "",
+                            fullName: "",
+                            cargo: "",
+                            role: "ESTANDAR",
+                          });
+                        }}
+                        className="grid grid-cols-1 md:grid-cols-6 gap-2"
+                      >
+                        <input
+                          type="text"
+                          required
+                          placeholder="Usuario"
+                          value={newUserForm.username}
+                          onChange={(e) =>
+                            setNewUserForm({ ...newUserForm, username: e.target.value })
+                          }
+                          className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="email"
+                          placeholder="Correo Gmail"
+                          value={newUserForm.email || ""}
+                          onChange={(e) =>
+                            setNewUserForm({ ...newUserForm, email: e.target.value })
+                          }
+                          className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          required
+                          placeholder="Clave"
+                          value={newUserForm.password}
+                          onChange={(e) =>
+                            setNewUserForm({ ...newUserForm, password: e.target.value })
+                          }
+                          className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          required
+                          placeholder="Nombre Completo"
+                          value={newUserForm.fullName}
+                          onChange={(e) =>
+                            setNewUserForm({ ...newUserForm, fullName: e.target.value })
+                          }
+                          className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <select
+                          value={newUserForm.role}
+                          onChange={(e) =>
+                            setNewUserForm({ ...newUserForm, role: e.target.value })
+                          }
+                          className="px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          <option value="ESTANDAR">Usuario Estándar</option>
+                          <option value="ADMIN">Usuario Administrador</option>
+                        </select>
+                        <button
+                          type="submit"
+                          className="py-2 rounded-xl bg-[#8b1538] hover:bg-[#6e102c] text-white font-bold text-xs cursor-pointer"
+                        >
+                          + Crear Usuario
+                        </button>
+                      </form>
+
+                      {/* Resumen de todos los usuarios */}
+                      <div className="overflow-x-auto pt-3">
+                        <table className="w-full text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-slate-900 text-white uppercase text-[10px]">
+                              <th className="p-3 text-left">Usuario / Correo</th>
+                              <th className="p-3 text-left">Nombre</th>
+                              <th className="p-3 text-left">Rol</th>
+                              <th className="p-3 text-left">Permisos de Acción</th>
+                              <th className="p-3 text-left">Configurar</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-200">
+                            {users.map((u) => {
+                              const uPerms =
+                                u.role === "ADMIN"
+                                  ? DEFAULT_PERMISSIONS_BY_ROLE.ADMIN
+                                  : { ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR, ...(u.permissions || {}) };
+                              return (
+                                <tr key={u.id}>
+                                  <td className="p-3">
+                                    <div className="font-black">{u.username}</div>
+                                    <div className="text-[11px] text-slate-400">
+                                      {u.email || `${u.username}@gmail.com`}
+                                    </div>
+                                  </td>
+                                  <td className="p-3 font-semibold">{u.fullName}</td>
+                                  <td className="p-3">
+                                    <span
+                                      className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
+                                        u.role === "ADMIN"
+                                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                                          : "bg-blue-500/20 text-blue-300 border border-blue-500/40"
+                                      }`}
+                                    >
+                                      {u.role === "ADMIN" ? "Administrador" : "Estándar"}
+                                    </span>
+                                  </td>
+                                  <td className="p-3">
+                                    <div className="flex flex-wrap gap-1">
+                                      {[
+                                        { k: "ingresar", l: "Agregar" },
+                                        { k: "modificar", l: "Modificar" },
+                                        { k: "eliminar", l: "Eliminar" },
+                                        { k: "anular", l: "Anular" },
+                                      ].map((item) => (
+                                        <span
+                                          key={item.k}
+                                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                            uPerms[item.k]
+                                              ? "bg-emerald-500/20 text-emerald-300"
+                                              : "bg-slate-800 text-slate-500 line-through"
+                                          }`}
+                                        >
+                                          {item.l}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </td>
+                                  <td className="p-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedConfigUserId(String(u.id))}
+                                      className={`px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer ${
+                                        String(selectedUserForPerms.id) === String(u.id)
+                                          ? "bg-[#f59e0b] text-slate-950 font-black"
+                                          : "bg-slate-800 text-slate-200 hover:bg-slate-700"
+                                      }`}
+                                    >
+                                      {String(selectedUserForPerms.id) === String(u.id)
+                                        ? "Seleccionado"
+                                        : "Editar Permisos"}
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
-        )}
+            );
+          })()}
       </div>
 
       {/* ====================================================================
