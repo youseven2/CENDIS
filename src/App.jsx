@@ -742,19 +742,23 @@ function OfficialHeaderCintillo({ showRightLogo = true }) {
         WebkitPrintColorAdjust: "exact",
         printColorAdjust: "exact",
       }}
-      className="official-header-cintillo w-full flex items-start justify-between pb-2 select-none bg-white shrink-0"
+      className="official-header-cintillo w-full flex items-center justify-between gap-4 pb-2 select-none bg-white shrink-0"
     >
       <img
         src="/cintillo-mppc.png"
         alt="República Bolivariana de Venezuela - Ministerio del Poder Popular para la Cultura"
-        className="h-[52px] sm:h-[56px] w-auto object-contain block"
+        loading="eager"
+        decoding="sync"
+        className="h-[50px] sm:h-[54px] w-auto max-w-[72%] object-contain block shrink-0"
       />
 
       {showRightLogo && (
         <img
           src="/cintillo-cendis.jpg"
           alt="CENDIS - Centro Nacional del Disco"
-          className="h-[56px] sm:h-[60px] w-auto object-contain block"
+          loading="eager"
+          decoding="sync"
+          className="h-[52px] sm:h-[58px] w-auto max-w-[24%] object-contain block shrink-0"
         />
       )}
     </div>
@@ -768,12 +772,14 @@ function OfficialFooterWave() {
         WebkitPrintColorAdjust: "exact",
         printColorAdjust: "exact",
       }}
-      className="official-footer-wave w-full relative overflow-hidden select-none mt-auto shrink-0 bg-transparent pointer-events-none"
+      className="official-footer-wave w-full h-[88px] relative overflow-hidden select-none mt-auto shrink-0 bg-white pointer-events-none"
     >
       <img
         src="/cintillo-onda-inferior.png"
         alt="Cintillo Ondulado Tricolor Oficial MPPC - CENDIS"
-        className="w-full h-auto block object-cover"
+        loading="eager"
+        decoding="sync"
+        className="w-full h-full block object-fill"
       />
     </div>
   );
@@ -3390,34 +3396,48 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             size: letter portrait;
             margin: 0mm;
           }
-          html, body {
+          html, body, #root {
             margin: 0 !important;
             padding: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            width: 215.9mm !important;
+            height: 279.4mm !important;
+            max-height: 279.4mm !important;
             overflow: hidden !important;
             background: #ffffff !important;
           }
-          body * {
-            visibility: hidden;
+          /* Colapsar por completo todos los elementos fuera de #printable-area para que no empujen la hoja ni corten el cintillo inferior */
+          body *:not(:has(#printable-area)):not(#printable-area):not(#printable-area *) {
+            display: none !important;
           }
-          #printable-area, #printable-area * {
-            visibility: visible;
+          /* Desbloquear cualquier contenedor padre o modal que envuelva a #printable-area */
+          body *:has(#printable-area) {
+            position: static !important;
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            overflow: visible !important;
+            background: transparent !important;
+            transform: none !important;
           }
           #printable-area {
             zoom: 1 !important;
-            position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100vw !important;
-            max-width: 100vw !important;
-            height: 100vh !important;
-            max-height: 100vh !important;
-            min-height: 0 !important;
-            margin: 0 !important;
-            padding: 0 0 95px 0 !important;
+            position: relative !important;
+            width: 215.9mm !important;
+            max-width: 215.9mm !important;
+            height: 278mm !important;
+            min-height: 278mm !important;
+            max-height: 278mm !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            background-color: #ffffff !important;
+            color: #0f172a !important;
             box-shadow: none !important;
             border: none !important;
             border-radius: 0 !important;
@@ -3426,16 +3446,33 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             flex-direction: column !important;
             justify-content: space-between !important;
             box-sizing: border-box !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          #printable-area .official-header-cintillo {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-shrink: 0 !important;
+            visibility: visible !important;
           }
           #printable-area .official-footer-wave {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100vw !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            z-index: 9999 !important;
+            position: relative !important;
+            width: 100% !important;
+            height: 24mm !important;
+            min-height: 24mm !important;
+            max-height: 24mm !important;
+            margin-top: auto !important;
+            flex-shrink: 0 !important;
+            display: block !important;
+            visibility: visible !important;
+          }
+          #printable-area .official-footer-wave img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: fill !important;
+            display: block !important;
           }
         }
       `}</style>
@@ -4661,12 +4698,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 {/* HOJA OFICIAL DE AGENDA IDÉNTICA A agenda.pdf.png */}
                 <div
                   id="printable-area"
-                  className="w-full max-w-[820px] min-h-[1040px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between"
+                  className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between"
                 >
-                  <div className="p-10 pb-4">
-                    <OfficialHeaderCintillo showRightLogo={false} />
+                  <div className="px-9 pt-6 pb-2">
+                    <OfficialHeaderCintillo showRightLogo={true} />
                     <div
-                      className="mt-8 mb-6 space-y-2 text-black"
+                      className="mt-4 mb-4 space-y-1.5 text-black"
                       style={{
                         fontFamily: "Arial, sans-serif",
                         fontSize: "12pt",
@@ -4697,7 +4734,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           {reportDayColumns.map((col) => (
                             <td
                               key={col.dateIso}
-                              className="border border-black p-2.5 align-top h-[430px] text-black leading-tight"
+                              className="border border-black p-2.5 align-top h-[360px] text-black leading-tight"
                             >
                               {col.events.length === 0 ? (
                                 <div className="text-slate-400">Sin actividades</div>
@@ -5823,10 +5860,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                 {/* HOJA IMPRIMIBLE EN PDF DEL REPORTE COMPLETO DEL PERSONAL */}
                 <div
-                  id="printable-area"
+                  id={selectedEmpForCard || selectedEmpForCV ? "printable-area-bg" : "printable-area"}
                   className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
                 >
-                  <div className="p-10">
+                  <div className="px-9 pt-6 pb-2">
                     <OfficialHeaderCintillo showRightLogo={true} />
                     <div className="mt-5 mb-4 text-center border-b-2 border-slate-900 pb-3">
                       <h2 className="text-base font-black uppercase text-slate-900">
@@ -8003,7 +8040,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               id="printable-area"
               className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white border border-slate-200 rounded-xl flex flex-col justify-between text-slate-950"
             >
-              <div className="p-8 sm:p-10 space-y-6">
+              <div className="px-9 pt-6 pb-2 space-y-4">
                 <OfficialHeaderCintillo showRightLogo={true} />
                 <div className="text-center border-b border-slate-300 pb-2">
                   <h2 className="text-sm font-black uppercase text-slate-900">
@@ -8322,29 +8359,29 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               id="printable-area"
               className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white border border-slate-200 rounded-xl flex flex-col justify-between text-xs text-slate-950"
             >
-              <div className="p-10 space-y-5">
+              <div className="px-9 pt-5 pb-2 space-y-2.5">
                 <OfficialHeaderCintillo showRightLogo={true} />
 
                 {/* Título del Perfil / Hoja de Vida */}
-                <div className="text-center border-b-2 border-[#0b2545] pb-2.5">
-                  <h2 className="text-base font-black uppercase text-[#0b2545] tracking-wide">
+                <div className="text-center border-b-2 border-[#0b2545] pb-1.5">
+                  <h2 className="text-sm sm:text-base font-black uppercase text-[#0b2545] tracking-wide">
                     PERFIL INSTITUCIONAL Y HOJA DE VIDA DEL TRABAJADOR • RECURSOS HUMANOS
                   </h2>
-                  <p className="text-[11px] text-slate-700 font-semibold">
+                  <p className="text-[10.5px] text-slate-700 font-semibold">
                     Fundación Centro Nacional del Disco (CENDIS) — Expediente N° {selectedEmpForCV.codigoBarra}
                   </p>
                 </div>
 
                 {/* Encabezado del Perfil con Foto Carnet a la Derecha y Resumen Principal */}
-                <div className="grid grid-cols-12 gap-4 items-center bg-slate-50 p-4 rounded-xl border border-slate-300">
-                  <div className="col-span-9 space-y-1.5">
-                    <div className="text-lg font-black uppercase text-[#0b2545]">
+                <div className="grid grid-cols-12 gap-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-300">
+                  <div className="col-span-9 space-y-1">
+                    <div className="text-base font-black uppercase text-[#0b2545]">
                       {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}
                     </div>
-                    <div className="text-xs font-bold text-[#8b1538] uppercase">
+                    <div className="text-[11px] font-bold text-[#8b1538] uppercase">
                       {selectedEmpForCV.cargo} — {selectedEmpForCV.coordinacion}
                     </div>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1 text-[11px]">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 pt-0.5 text-[10.5px]">
                       <div>
                         <strong>Cédula de Identidad:</strong> {selectedEmpForCV.cedula}
                       </div>
@@ -8383,7 +8420,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                   {/* Foto Tipo Carnet en la Hoja de Vida */}
                   <div className="col-span-3 flex flex-col items-center">
-                    <div className="w-28 h-36 rounded-lg border-[3px] border-[#c5a059] bg-[#e2e4e7] overflow-hidden flex items-center justify-center shadow">
+                    <div className="w-24 h-30 rounded-lg border-[3px] border-[#c5a059] bg-[#e2e4e7] overflow-hidden flex items-center justify-center shadow">
                       {selectedEmpForCV.fotoCarnet ? (
                         <img
                           src={selectedEmpForCV.fotoCarnet}
@@ -8393,7 +8430,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       ) : (
                         <svg
                           viewBox="0 0 120 150"
-                          className="w-24 h-32 text-[#9ea3ab]"
+                          className="w-20 h-26 text-[#9ea3ab]"
                           fill="currentColor"
                         >
                           <circle cx="60" cy="52" r="26" />
@@ -8401,7 +8438,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         </svg>
                       )}
                     </div>
-                    <span className="text-[9px] font-bold uppercase text-slate-600 mt-1">
+                    <span className="text-[8.5px] font-bold uppercase text-slate-600 mt-0.5">
                       Foto Tipo Carnet
                     </span>
                   </div>
@@ -8409,24 +8446,24 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                 {/* Sección II: Información Laboral y Académica en el CENDIS */}
                 <div className="border border-slate-300 rounded-xl overflow-hidden">
-                  <div className="bg-[#0b2545] text-white px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider">
+                  <div className="bg-[#0b2545] text-white px-3 py-1 text-[10.5px] font-black uppercase tracking-wider">
                     II. Datos Laborales, Académicos y Dotación en el CENDIS
                   </div>
-                  <div className="p-3.5 grid grid-cols-2 sm:grid-cols-3 gap-3 text-[11px] bg-white">
+                  <div className="p-2.5 grid grid-cols-3 gap-2 text-[10.5px] bg-white">
                     <div>
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Cargo Institucional:
                       </span>
                       <span className="font-black text-slate-900">{selectedEmpForCV.cargo}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Coordinación de Adscripción:
                       </span>
                       <span className="font-bold text-slate-900">{selectedEmpForCV.coordinacion}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Condición Laboral:
                       </span>
                       <span className="font-bold text-slate-900">
@@ -8434,7 +8471,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Fecha de Ingreso:
                       </span>
                       <span className="font-bold text-slate-900">
@@ -8442,7 +8479,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Nivel Académico:
                       </span>
                       <span className="font-bold text-slate-900">
@@ -8450,7 +8487,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Profesión u Oficio:
                       </span>
                       <span className="font-bold text-slate-900">
@@ -8458,7 +8495,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </span>
                     </div>
                     <div className="col-span-2">
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Tallas de Dotación:
                       </span>
                       <span className="font-semibold text-slate-900">
@@ -8466,7 +8503,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                      <span className="text-slate-500 font-bold block text-[9px] uppercase">
                         Código de Carnet:
                       </span>
                       <span className="font-mono font-bold text-slate-900">
@@ -8475,7 +8512,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
                     {selectedEmpForCV.observacionesLaborales && (
                       <div className="col-span-3 pt-1 border-t border-slate-200">
-                        <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        <span className="text-slate-500 font-bold block text-[9px] uppercase">
                           Funciones y Síntesis Laboral:
                         </span>
                         <span className="text-slate-800">
@@ -8488,39 +8525,39 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                 {/* Sección III: Carga Familiar Registrada */}
                 <div className="border border-slate-300 rounded-xl overflow-hidden">
-                  <div className="bg-[#0b2545] text-white px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider flex justify-between">
+                  <div className="bg-[#0b2545] text-white px-3 py-1 text-[10.5px] font-black uppercase tracking-wider flex justify-between">
                     <span>III. Carga Familiar del Trabajador</span>
                     <span>
                       Tiene Carga Familiar: {selectedEmpForCV.tieneCargaFamiliar === "SI" ? "SÍ" : "NO"}
                     </span>
                   </div>
-                  <div className="p-3.5 bg-white">
+                  <div className="p-2.5 bg-white">
                     {Array.isArray(selectedEmpForCV.familiaresLista) &&
                     selectedEmpForCV.familiaresLista.length > 0 ? (
-                      <table className="w-full border-collapse border border-slate-400 text-[11px]">
+                      <table className="w-full border-collapse border border-slate-400 text-[10px]">
                         <thead>
                           <tr className="bg-slate-100 text-slate-900 font-black uppercase">
-                            <th className="border border-slate-400 p-1.5 text-left">Parentesco</th>
-                            <th className="border border-slate-400 p-1.5 text-left">
+                            <th className="border border-slate-400 p-1 text-left">Parentesco</th>
+                            <th className="border border-slate-400 p-1 text-left">
                               Nombre y Apellido
                             </th>
-                            <th className="border border-slate-400 p-1.5 text-left">
+                            <th className="border border-slate-400 p-1 text-left">
                               Cédula / Condición
                             </th>
-                            <th className="border border-slate-400 p-1.5 text-left">Edad</th>
+                            <th className="border border-slate-400 p-1 text-left">Edad</th>
                           </tr>
                         </thead>
                         <tbody>
                           {selectedEmpForCV.familiaresLista.map((fam, idx) => (
                             <tr key={fam.id || idx}>
-                              <td className="border border-slate-400 p-1.5 font-bold">
+                              <td className="border border-slate-400 p-1 font-bold">
                                 {fam.parentesco}
                               </td>
-                              <td className="border border-slate-400 p-1.5">
+                              <td className="border border-slate-400 p-1">
                                 {fam.nombreCompleto}
                               </td>
-                              <td className="border border-slate-400 p-1.5">{fam.cedula}</td>
-                              <td className="border border-slate-400 p-1.5">
+                              <td className="border border-slate-400 p-1">{fam.cedula}</td>
+                              <td className="border border-slate-400 p-1">
                                 {fam.edad ? `${fam.edad} años` : "-"}
                               </td>
                             </tr>
@@ -8528,7 +8565,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         </tbody>
                       </table>
                     ) : (
-                      <p className="text-[11px] text-slate-700">
+                      <p className="text-[10.5px] text-slate-700">
                         <strong>Resumen Familiar:</strong>{" "}
                         {selectedEmpForCV.familiares || "Sin carga familiar registrada en el expediente."}
                       </p>
@@ -8537,9 +8574,9 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </div>
 
                 {/* Sección IV: Contactos en Caso de Emergencia y Código de Barra */}
-                <div className="grid grid-cols-12 gap-4 items-center border border-slate-300 rounded-xl p-3.5 bg-slate-50">
-                  <div className="col-span-7 space-y-1 text-[11px]">
-                    <div className="font-black uppercase text-[#0b2545] text-xs mb-1">
+                <div className="grid grid-cols-12 gap-3 items-center border border-slate-300 rounded-xl p-2.5 bg-slate-50">
+                  <div className="col-span-7 space-y-0.5 text-[10.5px]">
+                    <div className="font-black uppercase text-[#0b2545] text-[11px] mb-0.5">
                       IV. Contactos en Caso de Emergencia
                     </div>
                     <div>
@@ -8557,20 +8594,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </div>
 
                 {/* Firmas de Validación de la Hoja de Vida */}
-                <div className="grid grid-cols-2 gap-12 pt-6 text-center text-[11px]">
-                  <div className="border-t border-slate-900 pt-1.5">
+                <div className="grid grid-cols-2 gap-12 pt-3 text-center text-[10.5px]">
+                  <div className="border-t border-slate-900 pt-1">
                     <div className="font-black uppercase text-slate-900">
                       {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}
                     </div>
-                    <div className="text-[10px] text-slate-600">
+                    <div className="text-[9.5px] text-slate-600">
                       Firma del Trabajador(a) • C.I. {selectedEmpForCV.cedula}
                     </div>
                   </div>
-                  <div className="border-t border-slate-900 pt-1.5">
+                  <div className="border-t border-slate-900 pt-1">
                     <div className="font-black uppercase text-slate-900">
                       COORDINACIÓN DE RECURSOS HUMANOS
                     </div>
-                    <div className="text-[10px] text-slate-600">
+                    <div className="text-[9.5px] text-slate-600">
                       Fundación Centro Nacional del Disco (CENDIS)
                     </div>
                   </div>
