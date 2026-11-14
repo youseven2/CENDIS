@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   FileText,
   Send,
@@ -169,6 +169,7 @@ const DEFAULT_USERS = [
     username: "admin",
     email: "admin.cendis@gmail.com",
     password: "Qwerty123.",
+    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
     fullName: "Administrador General CENDIS",
     cargo: "Coordinación de Tecnología y Sistemas",
     role: "ADMIN",
@@ -181,6 +182,7 @@ const DEFAULT_USERS = [
     username: "presidencia",
     email: "presidencia.cendis@gmail.com",
     password: "Cendis2026*",
+    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
     fullName: "Presidencia CENDIS",
     cargo: "Presidente de la Fundación CENDIS",
     role: "ADMIN",
@@ -193,6 +195,7 @@ const DEFAULT_USERS = [
     username: "produccion",
     email: "produccion.cendis@gmail.com",
     password: "Cendis2026*",
+    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
     fullName: "Coordinación de Producción",
     cargo: "Coordinador(a) de Producción Fonográfica",
     role: "ESTANDAR",
@@ -205,6 +208,7 @@ const DEFAULT_USERS = [
     username: "recepcion",
     email: "recepcion.cendis@gmail.com",
     password: "Cendis2026*",
+    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
     fullName: "Recepción y Despacho",
     cargo: "Asistente Administrativo",
     role: "ESTANDAR",
@@ -573,12 +577,33 @@ function OfficialFooterWave() {
 }
 
 // ============================================================================
-// GESTIÓN DE SESIÓN PERSISTENTE MEDIANTE COOKIE (DURACIÓN: 7 DÍAS) Y ALMACENAMIENTO
+// GESTIÓN DE SESIÓN PERSISTENTE, INACTIVIDAD (5 MIN) Y VIGENCIA DE CLAVE (90 DÍAS)
 // ============================================================================
 const SESSION_COOKIE_NAME = "cendis_session";
 const SESSION_DURATION_DAYS = 7;
+const PASSWORD_MAX_AGE_DAYS = 90;
+const INACTIVITY_LIMIT_MS = 5 * 60 * 1000; // 5 minutos de inactividad
 const STORAGE_USERS_KEY = "cendis_users_v1";
 const STORAGE_EMPLOYEES_KEY = "cendis_employees_v1";
+
+function getPasswordExpirationInfo(userObj) {
+  const defaultIso = "2026-11-13T12:00:00.000Z";
+  const rawDate = userObj?.passwordUpdatedAt || defaultIso;
+  const parsedTime = new Date(rawDate).getTime();
+  const baseTime = Number.isNaN(parsedTime) ? Date.now() : parsedTime;
+  const elapsedMs = Math.max(0, Date.now() - baseTime);
+  const daysElapsed = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
+  const daysRemaining = Math.max(0, PASSWORD_MAX_AGE_DAYS - daysElapsed);
+  const isExpired = daysElapsed >= PASSWORD_MAX_AGE_DAYS;
+  const expirationDate = new Date(baseTime + PASSWORD_MAX_AGE_DAYS * 24 * 60 * 60 * 1000);
+  return {
+    updatedAtIso: rawDate,
+    daysElapsed,
+    daysRemaining,
+    isExpired,
+    expirationDateStr: expirationDate.toISOString().slice(0, 10),
+  };
+}
 
 function loadStoredUsers() {
   if (typeof window === "undefined") return DEFAULT_USERS;
@@ -631,6 +656,7 @@ function setSessionCookie(userObj) {
       id: userObj.id,
       username: userObj.username,
       email: userObj.email || "",
+      passwordUpdatedAt: userObj.passwordUpdatedAt || new Date().toISOString(),
       fullName: userObj.fullName,
       cargo: userObj.cargo,
       role: userObj.role,
@@ -694,6 +720,17 @@ export default function App() {
   const [googleModalOpen, setGoogleModalOpen] = useState(false);
   const [googleEmailInput, setGoogleEmailInput] = useState("");
   const [googleNameInput, setGoogleNameInput] = useState("");
+
+  // Estado para Cambio de Clave de Seguridad (Límite de renovación: 90 días)
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [pwdCurrent, setPwdCurrent] = useState("");
+  const [pwdNew, setPwdNew] = useState("");
+  const [pwdConfirm, setPwdConfirm] = useState("");
+  const [pwdError, setPwdError] = useState("");
+  const [showPwdFields, setShowPwdFields] = useState(false);
+
+  // Información de vigencia de la clave (90 días) del usuario actual
+  const passwordExpInfo = useMemo(() => getPasswordExpirationInfo(currentUser), [currentUser]);
 
   // Conmutador de vista (DESKTOP | TABLET | MOBILE)
   const [deviceViewport, setDeviceViewport] = useState("DESKTOP");
@@ -1379,10 +1416,274 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   const handleLogout = () => {
     addLog("Cierre de sesión de usuario");
     clearSessionCookie();
+    setPasswordModalOpen(false);
     setCurrentUser(null);
     setLoginUsername("");
     setLoginPassword("");
     setCurrentScreen("LOGIN");
+  };
+
+  // Caducidad automática de la sesión después de 5 minutos (300.000 ms) de inactividad
+  useEffect(() => {
+    if (!currentUser || currentScreen === "LOGIN") return;
+
+    let inactivityTimer = null;
+
+    const expireSessionByInactivity = () => {
+      clearSessionCookie();
+      setPasswordModalOpen(false);
+      setCurrentUser(null);
+      setLoginPassword("");
+      setCurrentScreen("LOGIN");
+      setLoginError(
+        "Su sesión ha caducado automáticamente después de 5 minutos de inactividad. Por favor, inicie sesión nuevamente."
+      );
+    };
+
+    const resetInactivityTimer = () => {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(expireSessionByInactivity, INACTIVITY_LIMIT_MS);
+    };
+
+    const activityEvents = ["mousemove", "mousedown", "keydown", "scroll", "touchstart", "click"];
+    activityEvents.forEach((ev) => window.addEventListener(ev, resetInactivityTimer, { passive: true }));
+    resetInactivityTimer();
+
+    return () => {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      activityEvents.forEach((ev) => window.removeEventListener(ev, resetInactivityTimer));
+    };
+  }, [currentUser, currentScreen]);
+
+  // Verificación automática del límite de 90 días para renovar la clave de seguridad
+  useEffect(() => {
+    if (!currentUser || currentScreen === "LOGIN") return;
+    const exp = getPasswordExpirationInfo(currentUser);
+    if (exp.isExpired) {
+      setPasswordModalOpen(true);
+    }
+  }, [currentUser, currentScreen]);
+
+  const openPasswordModal = () => {
+    setPwdCurrent("");
+    setPwdNew("");
+    setPwdConfirm("");
+    setPwdError("");
+    setPasswordModalOpen(true);
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+
+    const storedUser = users.find((u) => u.id === currentUser.id) || currentUser;
+    const isGoogleDefaultPwd = storedUser.password === "GoogleAuthUser";
+
+    if (!isGoogleDefaultPwd && pwdCurrent !== storedUser.password) {
+      setPwdError("La clave actual ingresada no es correcta.");
+      return;
+    }
+    if (pwdNew.trim().length < 6) {
+      setPwdError("La nueva clave de seguridad debe tener al menos 6 caracteres.");
+      return;
+    }
+    if (pwdNew === storedUser.password) {
+      setPwdError("La nueva clave debe ser diferente a la clave actual.");
+      return;
+    }
+    if (pwdNew !== pwdConfirm) {
+      setPwdError("La confirmación de la nueva clave no coincide.");
+      return;
+    }
+
+    const updatedAt = new Date().toISOString();
+    const updatedUser = {
+      ...currentUser,
+      password: pwdNew,
+      passwordUpdatedAt: updatedAt,
+    };
+
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === updatedUser.id
+          ? { ...u, password: pwdNew, passwordUpdatedAt: updatedAt }
+          : u
+      )
+    );
+    setCurrentUser(updatedUser);
+    setSessionCookie(updatedUser);
+    setPasswordModalOpen(false);
+    setPwdCurrent("");
+    setPwdNew("");
+    setPwdConfirm("");
+    setPwdError("");
+    addLog("Cambio y renovación de clave de seguridad (vigencia renovada por 90 días)", updatedUser);
+    showToast("Clave de seguridad actualizada exitosamente. Vigencia renovada por 90 días.");
+  };
+
+  const renderPasswordChangeModal = () => {
+    if (!passwordModalOpen || !currentUser) return null;
+    const storedUser = users.find((u) => u.id === currentUser.id) || currentUser;
+    const isGoogleDefaultPwd = storedUser.password === "GoogleAuthUser";
+    const isExpired = passwordExpInfo.isExpired;
+
+    return (
+      <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 print:hidden">
+        <div className="bg-[#0b1221] text-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-700/80">
+          <div className="grid grid-cols-3 h-1.5 w-full">
+            <div className="bg-[#facc15]" />
+            <div className="bg-[#1d4ed8]" />
+            <div className="bg-[#dc2626]" />
+          </div>
+
+          <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                <Lock className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black uppercase text-white">
+                  Cambio de Clave de Seguridad
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  Política de renovación obligatoria cada {PASSWORD_MAX_AGE_DAYS} días
+                </p>
+              </div>
+            </div>
+            {!isExpired && (
+              <button
+                type="button"
+                onClick={() => setPasswordModalOpen(false)}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <form onSubmit={handleChangePassword} className="p-5 space-y-3.5">
+            <div
+              className={`p-3 rounded-xl border text-xs ${
+                isExpired
+                  ? "bg-red-950/60 border-red-500/60 text-red-200"
+                  : "bg-slate-900/90 border-slate-800 text-slate-300"
+              }`}
+            >
+              <div className="flex items-center justify-between font-bold mb-1">
+                <span>Estado de vigencia (Límite 90 días):</span>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                    isExpired
+                      ? "bg-red-600 text-white"
+                      : passwordExpInfo.daysRemaining <= 15
+                      ? "bg-amber-500 text-slate-950"
+                      : "bg-emerald-500/20 text-emerald-300"
+                  }`}
+                >
+                  {isExpired
+                    ? "VENCIDA (RENOVAR AHORA)"
+                    : `${passwordExpInfo.daysRemaining} DÍAS RESTANTES`}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Última actualización: <strong>{passwordExpInfo.updatedAtIso.slice(0, 10)}</strong> • Vence el:{" "}
+                <strong>{passwordExpInfo.expirationDateStr}</strong>
+              </p>
+              <p className="text-[11px] text-amber-300/90 mt-1">
+                ⏱ Nota: La sesión activa caduca automáticamente tras 5 minutos de inactividad.
+              </p>
+            </div>
+
+            {pwdError && (
+              <div className="p-3 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs font-semibold">
+                {pwdError}
+              </div>
+            )}
+
+            {!isGoogleDefaultPwd && (
+              <div>
+                <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                  Clave de Seguridad Actual
+                </label>
+                <input
+                  type={showPwdFields ? "text" : "password"}
+                  required
+                  value={pwdCurrent}
+                  onChange={(e) => {
+                    setPwdCurrent(e.target.value);
+                    setPwdError("");
+                  }}
+                  placeholder="Ingrese su clave actual"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#070b14] border border-slate-700 text-white text-xs focus:outline-none focus:border-amber-500"
+                />
+              </div>
+            )}
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[11px] font-bold text-slate-300">
+                  Nueva Clave de Seguridad (mínimo 6 caracteres)
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowPwdFields(!showPwdFields)}
+                  className="text-[11px] font-bold text-amber-400 hover:text-amber-300 cursor-pointer"
+                >
+                  {showPwdFields ? "Ocultar" : "Mostrar"}
+                </button>
+              </div>
+              <input
+                type={showPwdFields ? "text" : "password"}
+                required
+                value={pwdNew}
+                onChange={(e) => {
+                  setPwdNew(e.target.value);
+                  setPwdError("");
+                }}
+                placeholder="Escriba su nueva clave"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#070b14] border border-slate-700 text-white text-xs focus:outline-none focus:border-amber-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                Confirmar Nueva Clave de Seguridad
+              </label>
+              <input
+                type={showPwdFields ? "text" : "password"}
+                required
+                value={pwdConfirm}
+                onChange={(e) => {
+                  setPwdConfirm(e.target.value);
+                  setPwdError("");
+                }}
+                placeholder="Repita la nueva clave"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#070b14] border border-slate-700 text-white text-xs focus:outline-none focus:border-amber-500"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              {!isExpired && (
+                <button
+                  type="button"
+                  onClick={() => setPasswordModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer"
+                >
+                  Cancelar
+                </button>
+              )}
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white text-xs font-black flex items-center gap-1.5 shadow-lg cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                <span>Guardar Clave (Renovar 90 Días)</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
   };
 
   const handleEmitDocument = () => {
@@ -2133,18 +2434,35 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 ({currentUser.email || `${currentUser.username}@gmail.com`}) • Rol:{" "}
                 <span className="font-bold text-[#f59e0b]">
                   {currentUser.role === "ADMIN" ? "Administrador" : "Usuario Estándar"}
-                </span>
+                </span>{" "}
+                • Vigencia de clave:{" "}
+                <span className="font-bold text-emerald-400">
+                  {passwordExpInfo.daysRemaining} de {PASSWORD_MAX_AGE_DAYS} días
+                </span>{" "}
+                • Sesión inactiva: <span className="font-bold text-amber-300">5 min máx.</span>
               </p>
             </div>
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Cerrar Sesión</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={openPasswordModal}
+              className="px-3.5 py-2 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-amber-500/40 text-amber-400 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow"
+              title="Cambiar clave de seguridad (Vigencia límite: 90 días)"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Cambiar Clave ({passwordExpInfo.daysRemaining}d)</span>
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Cerrar Sesión</span>
+            </button>
+          </div>
         </header>
 
         <main className="flex-1 max-w-6xl w-full mx-auto p-5 md:p-8 space-y-6">
@@ -2281,6 +2599,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             })}
           </div>
         </main>
+        {renderPasswordChangeModal()}
       </div>
     );
   }
@@ -2441,6 +2760,16 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               <Smartphone className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={openPasswordModal}
+            className="px-2.5 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-amber-500/40 text-amber-400 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+            title="Cambiar clave de seguridad (Límite de renovación: 90 días)"
+          >
+            <Lock className="w-3.5 h-3.5" />
+            <span>Cambiar Clave ({passwordExpInfo.daysRemaining}d)</span>
+          </button>
 
           <button
             onClick={handleLogout}
@@ -5599,6 +5928,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           </button>
         )}
       </div>
+      {renderPasswordChangeModal()}
     </div>
   );
 }
