@@ -499,8 +499,16 @@ function CendisGlyphLogo({ className = "w-32", showTopAcronym = false }) {
   return (
     <div className={`inline-flex flex-col items-center select-none bg-transparent ${className}`}>
       {showTopAcronym && (
-        <div className="w-full flex justify-between text-[11px] font-black tracking-[0.25em] text-slate-950 uppercase leading-none mb-1">
-          <span>C</span><span>E</span><span>N</span><span>D</span><span>I</span><span>S</span>
+        <div
+          style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
+          className="w-full flex justify-between text-[11.5px] font-semibold tracking-[0.22em] text-black uppercase leading-none mb-1 px-0.5"
+        >
+          <span>C</span>
+          <span>E</span>
+          <span>N</span>
+          <span>D</span>
+          <span>I</span>
+          <span>S</span>
         </div>
       )}
       <img
@@ -514,13 +522,19 @@ function CendisGlyphLogo({ className = "w-32", showTopAcronym = false }) {
 
 function OfficialHeaderCintillo({ showRightLogo = true }) {
   return (
-    <div className="w-full flex items-start justify-between pb-3 select-none">
+    <div
+      style={{
+        WebkitPrintColorAdjust: "exact",
+        printColorAdjust: "exact",
+      }}
+      className="w-full flex items-start justify-between pb-3 select-none bg-white"
+    >
       <div className="flex items-center gap-3">
         <div className="flex flex-col items-center">
           <svg viewBox="0 0 120 75" className="w-14 h-9">
-            <path d="M5,15 Q35,5 60,15 T115,15 L115,32 Q85,42 60,32 T5,32 Z" fill="#facc15" />
-            <path d="M5,32 Q35,22 60,32 T115,32 L115,49 Q85,59 60,49 T5,49 Z" fill="#1e3a8a" />
-            <path d="M5,49 Q35,39 60,49 T115,49 L115,66 Q85,76 60,66 T5,66 Z" fill="#be123c" />
+            <path d="M5,14 Q35,4 60,14 T115,14 L115,31 Q85,41 60,31 T5,31 Z" fill="#f7d117" />
+            <path d="M5,31 Q35,21 60,31 T115,31 L115,48 Q85,58 60,48 T5,48 Z" fill="#1e3163" />
+            <path d="M5,48 Q35,38 60,48 T115,48 L115,65 Q85,75 60,65 T5,65 Z" fill="#b91c1c" />
             <circle cx="42" cy="41" r="1.6" fill="#fff" />
             <circle cx="47" cy="38" r="1.6" fill="#fff" />
             <circle cx="53" cy="36" r="1.6" fill="#fff" />
@@ -530,43 +544,73 @@ function OfficialHeaderCintillo({ showRightLogo = true }) {
             <circle cx="77" cy="38" r="1.6" fill="#fff" />
             <circle cx="82" cy="41" r="1.6" fill="#fff" />
           </svg>
-          <span className="text-[6px] font-bold tracking-tight text-[#1e3a8a] leading-none mt-0.5">
+          <span
+            style={{ fontFamily: "Arial, sans-serif", color: "#1e3163" }}
+            className="text-[5.8px] font-bold tracking-tight leading-none mt-0.5 uppercase"
+          >
             REPÚBLICA BOLIVARIANA DE
           </span>
-          <span className="text-[8.5px] font-black tracking-wider text-[#1e3a8a] leading-none">
+          <span
+            style={{ fontFamily: "Arial, sans-serif", color: "#1e3163" }}
+            className="text-[8.5px] font-black tracking-wider leading-none uppercase"
+          >
             VENEZUELA
           </span>
         </div>
-        <div className="h-11 w-[1.5px] bg-[#1e3a8a]" />
+        <div style={{ backgroundColor: "#1e3163" }} className="h-11 w-[1.5px]" />
         <div className="flex flex-col justify-center">
-          <span className="text-[10.5px] text-slate-600 font-medium leading-tight">
+          <span
+            style={{ fontFamily: "Arial, sans-serif", color: "#52525b" }}
+            className="text-[11px] font-normal leading-tight"
+          >
             Ministerio del Poder Popular para la
           </span>
-          <span className="text-[24px] font-black tracking-tight text-[#1e3a8a] leading-none">
+          <span
+            style={{ fontFamily: "Arial, sans-serif", color: "#1e3163" }}
+            className="text-[26px] font-black tracking-tight leading-none uppercase"
+          >
             CULTURA
           </span>
         </div>
       </div>
 
-      {showRightLogo && <CendisGlyphLogo className="w-28" showTopAcronym={true} />}
+      {showRightLogo && <CendisGlyphLogo className="w-24" showTopAcronym={true} />}
     </div>
   );
 }
 
 function OfficialFooterWave() {
   return (
-    <div className="w-full h-20 relative overflow-hidden select-none mt-auto">
-      <svg viewBox="0 0 800 110" preserveAspectRatio="none" className="w-full h-full">
-        <path d="M0,25 Q220,95 560,35 Q390,85 260,110 L0,110 Z" fill="#facc15" />
-        <path d="M360,110 Q550,25 800,10 L800,110 Z" fill="#1e3a8a" />
-        <path d="M520,110 Q670,65 800,68 L800,110 Z" fill="#9f1239" />
+    <div
+      style={{
+        WebkitPrintColorAdjust: "exact",
+        printColorAdjust: "exact",
+      }}
+      className="w-full h-24 relative overflow-hidden select-none mt-auto shrink-0"
+    >
+      <svg viewBox="0 0 800 115" preserveAspectRatio="none" className="w-full h-full block">
+        {/* Onda amarilla inferior izquierda idéntica al formato PDF */}
+        <path
+          d="M0,28 Q230,102 570,38 Q405,86 270,115 L0,115 Z"
+          fill="#fcc201"
+        />
+        {/* Onda azul marino derecha con 8 estrellas blancas */}
+        <path
+          d="M370,115 Q560,26 800,8 L800,115 Z"
+          fill="#1e2d5e"
+        />
+        {/* Onda roja carmesí inferior derecha */}
+        <path
+          d="M525,115 Q675,68 800,72 L800,115 Z"
+          fill="#9e1b24"
+        />
         {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
-          const x = 525 + i * 32;
-          const y = 92 - i * 6.2;
+          const x = 524 + i * 31;
+          const y = 98 - i * 6.3;
           return (
             <polygon
               key={i}
-              points={`${x},${y - 7} ${x + 2},${y - 2} ${x + 7},${y - 2} ${x + 3},${y + 1} ${x + 4.5},${y + 6} ${x},${y + 3} ${x - 4.5},${y + 6} ${x - 3},${y + 1} ${x - 7},${y - 2} ${x - 2},${y - 2}`}
+              points={`${x},${y - 7.5} ${x + 2.2},${y - 2.2} ${x + 7.5},${y - 2.2} ${x + 3.2},${y + 1.2} ${x + 4.8},${y + 6.5} ${x},${y + 3.2} ${x - 4.8},${y + 6.5} ${x - 3.2},${y + 1.2} ${x - 7.5},${y - 2.2} ${x - 2.2},${y - 2.2}`}
               fill="#ffffff"
             />
           );
@@ -2859,12 +2903,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           outline: none !important;
           border-color: #f59e0b !important;
         }
-        /* Garantizar hoja de impresión blanca intacta */
+        /* Garantizar hoja de impresión blanca intacta con colores exactos del cintillo */
+        #printable-area, #printable-area * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
         #printable-area {
           background-color: #ffffff !important;
           color: #0f172a !important;
         }
         @media print {
+          @page {
+            size: letter portrait;
+            margin: 0;
+          }
           body * {
             visibility: hidden;
           }
@@ -2876,7 +2928,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             left: 0;
             top: 0;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             margin: 0;
             padding: 0;
             box-shadow: none !important;
@@ -5772,46 +5824,63 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </div>
               )}
 
-              <div className="pt-4 border-t border-slate-200">
-                <div className="flex items-center justify-between mb-3">
+              <div className="pt-4 border-t border-slate-200 space-y-4">
+                <div className="flex items-center justify-between print:hidden">
                   <h3 className="text-xs font-black uppercase text-slate-700">
-                    Reporte Semanal de Asistencia del Personal
+                    Vista Previa y Reporte Semanal de Asistencia en PDF (con Cintillo Oficial)
                   </h3>
                   <button
                     onClick={() => window.print()}
-                    className="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
                   >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>Imprimir Reporte Semanal</span>
+                    <Printer className="w-4 h-4" />
+                    <span>Imprimir Reporte Semanal (PDF)</span>
                   </button>
                 </div>
-                <div id="printable-area">
-                  <table className="w-full text-left text-xs border-collapse">
-                    <thead>
-                      <tr className="bg-slate-100 text-slate-700 uppercase font-black">
-                        <th className="p-3">Cédula</th>
-                        <th className="p-3">Trabajador</th>
-                        <th className="p-3">Fecha</th>
-                        <th className="p-3">Hora Entrada</th>
-                        <th className="p-3">Estatus</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
-                      {attendanceRecords.map((att) => (
-                        <tr key={att.id}>
-                          <td className="p-3 font-bold">{att.cedula}</td>
-                          <td className="p-3 font-semibold">{att.nombre}</td>
-                          <td className="p-3">{att.fecha}</td>
-                          <td className="p-3 font-mono font-bold text-cyan-800">{att.hora}</td>
-                          <td className="p-3">
-                            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                              {att.estatus}
-                            </span>
-                          </td>
+
+                <div
+                  id="printable-area"
+                  className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
+                >
+                  <div className="p-10">
+                    <OfficialHeaderCintillo showRightLogo={true} />
+                    <div className="mt-6 mb-4 text-center">
+                      <h2 className="text-base font-black uppercase text-slate-900">
+                        REPORTE SEMANAL DE CONTROL DE ASISTENCIA • FUNDACIÓN CENDIS
+                      </h2>
+                      <p className="text-xs text-slate-600 font-semibold">
+                        Total de Registros de Entrada: {attendanceRecords.length} | Fecha de Emisión: {fecha}
+                      </p>
+                    </div>
+
+                    <table className="w-full text-left text-xs border-collapse border border-slate-900">
+                      <thead>
+                        <tr className="bg-slate-200 text-slate-900 uppercase font-black">
+                          <th className="border border-slate-900 p-2.5">Cédula</th>
+                          <th className="border border-slate-900 p-2.5">Trabajador</th>
+                          <th className="border border-slate-900 p-2.5">Fecha</th>
+                          <th className="border border-slate-900 p-2.5">Hora Entrada</th>
+                          <th className="border border-slate-900 p-2.5">Estatus</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {attendanceRecords.map((att) => (
+                          <tr key={att.id}>
+                            <td className="border border-slate-900 p-2.5 font-bold">{att.cedula}</td>
+                            <td className="border border-slate-900 p-2.5 font-semibold">{att.nombre}</td>
+                            <td className="border border-slate-900 p-2.5">{att.fecha}</td>
+                            <td className="border border-slate-900 p-2.5 font-mono font-bold text-cyan-900">
+                              {att.hora}
+                            </td>
+                            <td className="border border-slate-900 p-2.5 font-bold text-emerald-800">
+                              {att.estatus}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <OfficialFooterWave />
                 </div>
               </div>
             </div>
@@ -5822,51 +5891,83 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             MÓDULO 7: ESTADÍSTICA Y CONTABILIDAD GLOBAL
            ==================================================================== */}
         {activeTab === "stats" && (
-          <div className="flex-1 max-w-6xl w-full mx-auto p-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
-              <h2 className="text-base font-black uppercase text-slate-900">
-                Módulo de Estadística y Contabilidad Institucional CENDIS
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-2xl bg-red-50 border border-red-200">
-                  <span className="text-[11px] font-bold uppercase text-red-700">Memorándums Emitidos</span>
-                  <div className="text-3xl font-black text-red-900 mt-1">
-                    {documents.filter((d) => d.tipo === "MEMORANDUM").length}
+          <div className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
+              <div>
+                <h2 className="text-base font-black uppercase text-slate-900">
+                  Módulo de Estadística y Contabilidad Institucional CENDIS
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Balance global en tiempo real con visualización e impresión en PDF con cintillo oficial.
+                </p>
+              </div>
+              <button
+                onClick={() => window.print()}
+                className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Imprimir Reporte Estadístico (PDF)</span>
+              </button>
+            </div>
+
+            <div
+              id="printable-area"
+              className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
+            >
+              <div className="p-10 space-y-6">
+                <OfficialHeaderCintillo showRightLogo={true} />
+
+                <div className="mt-4 text-center">
+                  <h2 className="text-base font-black uppercase text-slate-900">
+                    REPORTE DE ESTADÍSTICA Y CONTABILIDAD GENERAL • SIACENDIS
+                  </h2>
+                  <p className="text-xs text-slate-600 font-semibold">
+                    Fecha de Corte Institucional: {formatFechaLargaOficial(fecha)}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-2xl bg-red-50 border border-red-200">
+                    <span className="text-[11px] font-bold uppercase text-red-700">Memorándums Emitidos</span>
+                    <div className="text-3xl font-black text-red-900 mt-1">
+                      {documents.filter((d) => d.tipo === "MEMORANDUM").length}
+                    </div>
                   </div>
-                </div>
-                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200">
-                  <span className="text-[11px] font-bold uppercase text-blue-700">Solicitudes Emitidas</span>
-                  <div className="text-3xl font-black text-blue-900 mt-1">
-                    {documents.filter((d) => d.tipo === "SOLICITUD").length}
+                  <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200">
+                    <span className="text-[11px] font-bold uppercase text-blue-700">Solicitudes Emitidas</span>
+                    <div className="text-3xl font-black text-blue-900 mt-1">
+                      {documents.filter((d) => d.tipo === "SOLICITUD").length}
+                    </div>
                   </div>
-                </div>
-                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200">
-                  <span className="text-[11px] font-bold uppercase text-amber-700">Personal en RRHH</span>
-                  <div className="text-3xl font-black text-amber-900 mt-1">{employees.length}</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-                  <span className="text-[11px] font-bold uppercase text-emerald-700">Actividades en Agenda</span>
-                  <div className="text-3xl font-black text-emerald-900 mt-1">{agendaEvents.length}</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200">
-                  <span className="text-[11px] font-bold uppercase text-indigo-700">Proyectos (% Global)</span>
-                  <div className="text-3xl font-black text-indigo-900 mt-1">
-                    {projects.length} ({globalProjectsProgress}%)
+                  <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200">
+                    <span className="text-[11px] font-bold uppercase text-amber-700">Personal en RRHH</span>
+                    <div className="text-3xl font-black text-amber-900 mt-1">{employees.length}</div>
                   </div>
-                </div>
-                <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200">
-                  <span className="text-[11px] font-bold uppercase text-teal-700">Bienes Nacionales</span>
-                  <div className="text-3xl font-black text-teal-900 mt-1">{bienesList.length}</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-cyan-50 border border-cyan-200">
-                  <span className="text-[11px] font-bold uppercase text-cyan-700">Asistencias Registradas</span>
-                  <div className="text-3xl font-black text-cyan-900 mt-1">{attendanceRecords.length}</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200">
-                  <span className="text-[11px] font-bold uppercase text-purple-700">Usuarios Creados</span>
-                  <div className="text-3xl font-black text-purple-900 mt-1">{users.length}</div>
+                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+                    <span className="text-[11px] font-bold uppercase text-emerald-700">Actividades en Agenda</span>
+                    <div className="text-3xl font-black text-emerald-900 mt-1">{agendaEvents.length}</div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200">
+                    <span className="text-[11px] font-bold uppercase text-indigo-700">Proyectos (% Global)</span>
+                    <div className="text-3xl font-black text-indigo-900 mt-1">
+                      {projects.length} ({globalProjectsProgress}%)
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200">
+                    <span className="text-[11px] font-bold uppercase text-teal-700">Bienes Nacionales</span>
+                    <div className="text-3xl font-black text-teal-900 mt-1">{bienesList.length}</div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-cyan-50 border border-cyan-200">
+                    <span className="text-[11px] font-bold uppercase text-cyan-700">Asistencias Registradas</span>
+                    <div className="text-3xl font-black text-cyan-900 mt-1">{attendanceRecords.length}</div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200">
+                    <span className="text-[11px] font-bold uppercase text-purple-700">Usuarios Creados</span>
+                    <div className="text-3xl font-black text-purple-900 mt-1">{users.length}</div>
+                  </div>
                 </div>
               </div>
+              <OfficialFooterWave />
             </div>
           </div>
         )}
@@ -5875,65 +5976,89 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             MÓDULO 8: ORGANIGRAMA (DIAGRAMA Y TEXTUAL)
            ==================================================================== */}
         {activeTab === "org" && (
-          <div className="flex-1 max-w-6xl w-full mx-auto p-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-black uppercase text-slate-900">
-                  Organigrama Oficial • Fundación CENDIS
-                </h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setOrgViewMode("DIAGRAM")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                      orgViewMode === "DIAGRAM" ? "bg-purple-700 text-white" : "bg-slate-100 text-slate-700"
-                    }`}
-                  >
-                    Vista Tipo Diagrama
-                  </button>
-                  <button
-                    onClick={() => setOrgViewMode("TEXT")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                      orgViewMode === "TEXT" ? "bg-purple-700 text-white" : "bg-slate-100 text-slate-700"
-                    }`}
-                  >
-                    Vista Forma Textual
-                  </button>
-                </div>
+          <div className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
+              <h2 className="text-base font-black uppercase text-slate-900">
+                Organigrama Oficial • Fundación CENDIS
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setOrgViewMode("DIAGRAM")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
+                    orgViewMode === "DIAGRAM" ? "bg-purple-700 text-white" : "bg-slate-100 text-slate-700"
+                  }`}
+                >
+                  Vista Tipo Diagrama
+                </button>
+                <button
+                  onClick={() => setOrgViewMode("TEXT")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
+                    orgViewMode === "TEXT" ? "bg-purple-700 text-white" : "bg-slate-100 text-slate-700"
+                  }`}
+                >
+                  Vista Forma Textual
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Imprimir Organigrama PDF</span>
+                </button>
               </div>
+            </div>
 
-              {orgViewMode === "DIAGRAM" ? (
-                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-4">
-                  <div className="px-6 py-3 bg-[#8b1538] text-white rounded-xl text-center shadow font-bold text-xs uppercase">
-                    Presidencia de la Fundación CENDIS
-                    <div className="text-[10px] text-amber-200 font-normal">Lcdo. Ali Alejandro Primera</div>
-                  </div>
-                  <div className="h-5 w-0.5 bg-slate-400" />
-                  <div className="px-6 py-3 bg-blue-900 text-white rounded-xl text-center shadow font-bold text-xs uppercase">
-                    Dirección Ejecutiva
-                    <div className="text-[10px] text-blue-200 font-normal">Lic. Julimar Flores</div>
-                  </div>
-                  <div className="h-5 w-0.5 bg-slate-400" />
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                    {employees.map((emp) => (
-                      <div key={emp.id} className="p-3 bg-white border border-slate-300 rounded-xl text-center">
-                        <div className="font-black text-xs text-slate-900">{emp.coordinacion}</div>
-                        <div className="text-[11px] text-slate-600">
-                          {emp.nombres} {emp.apellidos} ({emp.cargo})
+            <div
+              id="printable-area"
+              className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
+            >
+              <div className="p-10 space-y-6">
+                <OfficialHeaderCintillo showRightLogo={true} />
+
+                <div className="mt-4 text-center">
+                  <h2 className="text-base font-black uppercase text-slate-900">
+                    ESTRUCTURA ORGANIZATIVA Y ORGANIGRAMA OFICIAL • FUNDACIÓN CENDIS
+                  </h2>
+                  <p className="text-xs text-slate-600 font-semibold">
+                    Ministerio del Poder Popular para la Cultura
+                  </p>
+                </div>
+
+                {orgViewMode === "DIAGRAM" ? (
+                  <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-4">
+                    <div className="px-6 py-3 bg-[#8b1538] text-white rounded-xl text-center shadow font-bold text-xs uppercase">
+                      Presidencia de la Fundación CENDIS
+                      <div className="text-[10px] text-amber-200 font-normal">Lcdo. Ali Alejandro Primera</div>
+                    </div>
+                    <div className="h-5 w-0.5 bg-slate-400" />
+                    <div className="px-6 py-3 bg-blue-900 text-white rounded-xl text-center shadow font-bold text-xs uppercase">
+                      Dirección Ejecutiva
+                      <div className="text-[10px] text-blue-200 font-normal">Lic. Julimar Flores</div>
+                    </div>
+                    <div className="h-5 w-0.5 bg-slate-400" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                      {employees.map((emp) => (
+                        <div key={emp.id} className="p-3 bg-white border border-slate-300 rounded-xl text-center">
+                          <div className="font-black text-xs text-slate-900">{emp.coordinacion}</div>
+                          <div className="text-[11px] text-slate-600">
+                            {emp.nombres} {emp.apellidos} ({emp.cargo})
+                          </div>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs text-slate-900">
+                    {employees.map((emp, idx) => (
+                      <div key={emp.id} className="py-1.5 border-b border-slate-200">
+                        <strong>Nivel {idx + 1} - {emp.coordinacion}:</strong> {emp.nombres} {emp.apellidos} —{" "}
+                        <span className="text-slate-600">{emp.cargo}</span>
                       </div>
                     ))}
                   </div>
-                </div>
-              ) : (
-                <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  {employees.map((emp, idx) => (
-                    <div key={emp.id} className="py-1 border-b border-slate-200">
-                      <strong>Nivel {idx + 1} - {emp.coordinacion}:</strong> {emp.nombres} {emp.apellidos} —{" "}
-                      <span className="text-slate-600">{emp.cargo}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                )}
+              </div>
+              <OfficialFooterWave />
             </div>
           </div>
         )}
@@ -6496,21 +6621,21 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       </div>
 
       {/* ====================================================================
-          MODAL DE CARNET OFICIAL CENDIS (FRENTE Y REVERSO CON CÓDIGO DE BARRAS)
+          MODAL DE CARNET OFICIAL CENDIS (FRENTE Y REVERSO CON CINTILLO OFICIAL PDF)
          ==================================================================== */}
       {selectedEmpForCard && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 space-y-4">
-            <div className="flex items-center justify-between border-b pb-3">
+        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[94vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b pb-3 print:hidden">
               <h3 className="text-sm font-black uppercase">
-                Carnet Oficial CENDIS • {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos}
+                Carnet Oficial CENDIS (Reporte PDF) • {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos}
               </h3>
               <div className="flex gap-2">
                 <button
                   onClick={() => window.print()}
-                  className="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer"
                 >
-                  Imprimir Carnet
+                  Imprimir Carnet PDF
                 </button>
                 <button
                   onClick={() => setSelectedEmpForCard(null)}
@@ -6521,78 +6646,96 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-8 py-4" id="printable-area">
-              {/* FRENTE DEL CARNET */}
-              <div className="w-[310px] h-[490px] bg-white rounded-2xl shadow-xl border-4 border-amber-500 flex flex-col justify-between overflow-hidden">
-                <div className="bg-[#111c38] text-white p-3 text-center">
-                  <div className="text-[10px] font-black uppercase tracking-widest">
-                    MINISTERIO DEL PODER POPULAR
-                  </div>
-                  <div className="text-[11px] font-black uppercase text-amber-300">PARA LA CULTURA</div>
+            <div
+              id="printable-area"
+              className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white border border-slate-200 rounded-xl flex flex-col justify-between text-slate-950"
+            >
+              <div className="p-10 space-y-6">
+                <OfficialHeaderCintillo showRightLogo={true} />
+                <div className="text-center">
+                  <h2 className="text-base font-black uppercase text-slate-900">
+                    FICHA DE EMISIÓN DE CARNET INSTITUCIONAL • FUNDACIÓN CENDIS
+                  </h2>
+                  <p className="text-xs text-slate-600 font-semibold">
+                    Trabajador: {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos} ({selectedEmpForCard.cedula})
+                  </p>
                 </div>
-                <div className="p-4 flex flex-col items-center">
-                  <CendisGlyphLogo className="w-28 mb-3" />
-                  <div className="w-full text-left space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-500 block">NOMBRE Y APELLIDO:</span>
-                      <span className="font-black">
-                        {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-500 block">CÉDULA:</span>
-                      <span className="font-black">{selectedEmpForCard.cedula}</span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-500 block">CARGO:</span>
-                      <span className="font-black">{selectedEmpForCard.cargo}</span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-500 block">COORDINACIÓN:</span>
-                      <span className="font-black">{selectedEmpForCard.coordinacion}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-5 bg-[#111c38]" />
-              </div>
 
-              {/* REVERSO DEL CARNET */}
-              <div className="w-[310px] h-[490px] bg-white rounded-2xl shadow-xl border-4 border-amber-500 flex flex-col justify-between p-4 text-[10px]">
-                <div className="text-center">
-                  <CendisGlyphLogo className="w-24 mx-auto" />
-                  <div className="font-black mt-1">CENDIS - Centro Nacional del Disco</div>
-                </div>
-                <div className="text-[9px] text-slate-600 leading-tight">
-                  Este carnet es personal e intransferible. Identifica al portador como trabajador activo de la Fundación CENDIS.
-                </div>
-                <div className="bg-slate-50 p-2 rounded border border-slate-200">
-                  <div className="font-bold uppercase text-[9px]">Emergencia:</div>
-                  <div>{selectedEmpForCard.emergencia1}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-mono tracking-widest text-base font-black">||| | |||| || ||| ||</div>
-                  <div className="font-mono text-[9px] font-bold">{selectedEmpForCard.codigoBarra}</div>
+                <div className="flex flex-wrap justify-center gap-8 py-4">
+                  {/* FRENTE DEL CARNET */}
+                  <div className="w-[300px] h-[470px] bg-white rounded-2xl shadow-xl border-4 border-amber-500 flex flex-col justify-between overflow-hidden">
+                    <div className="bg-[#111c38] text-white p-3 text-center">
+                      <div className="text-[10px] font-black uppercase tracking-widest">
+                        MINISTERIO DEL PODER POPULAR
+                      </div>
+                      <div className="text-[11px] font-black uppercase text-amber-300">PARA LA CULTURA</div>
+                    </div>
+                    <div className="p-4 flex flex-col items-center">
+                      <CendisGlyphLogo className="w-28 mb-3" />
+                      <div className="w-full text-left space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                        <div>
+                          <span className="text-[9px] font-bold text-slate-500 block">NOMBRE Y APELLIDO:</span>
+                          <span className="font-black">
+                            {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-bold text-slate-500 block">CÉDULA:</span>
+                          <span className="font-black">{selectedEmpForCard.cedula}</span>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-bold text-slate-500 block">CARGO:</span>
+                          <span className="font-black">{selectedEmpForCard.cargo}</span>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-bold text-slate-500 block">COORDINACIÓN:</span>
+                          <span className="font-black">{selectedEmpForCard.coordinacion}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="h-5 bg-[#111c38]" />
+                  </div>
+
+                  {/* REVERSO DEL CARNET */}
+                  <div className="w-[300px] h-[470px] bg-white rounded-2xl shadow-xl border-4 border-amber-500 flex flex-col justify-between p-4 text-[10px]">
+                    <div className="text-center">
+                      <CendisGlyphLogo className="w-24 mx-auto" />
+                      <div className="font-black mt-1">CENDIS - Centro Nacional del Disco</div>
+                    </div>
+                    <div className="text-[9px] text-slate-600 leading-tight">
+                      Este carnet es personal e intransferible. Identifica al portador como trabajador activo de la Fundación CENDIS.
+                    </div>
+                    <div className="bg-slate-50 p-2 rounded border border-slate-200">
+                      <div className="font-bold uppercase text-[9px]">Emergencia:</div>
+                      <div>{selectedEmpForCard.emergencia1}</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-mono tracking-widest text-base font-black">||| | |||| || ||| ||</div>
+                      <div className="font-mono text-[9px] font-bold">{selectedEmpForCard.codigoBarra}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <OfficialFooterWave />
             </div>
           </div>
         </div>
       )}
 
       {/* ====================================================================
-          MODAL DE HOJA DE VIDA / PERFIL EN PDF
+          MODAL DE HOJA DE VIDA / PERFIL EN PDF (CON CINTILLO OFICIAL COMPLETO)
          ==================================================================== */}
       {selectedEmpForCV && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4">
-            <div className="flex items-center justify-between border-b pb-3">
+        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[94vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b pb-3 print:hidden">
               <h3 className="text-sm font-black uppercase">
                 Hoja de Vida en PDF • {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}
               </h3>
               <div className="flex gap-2">
                 <button
                   onClick={() => window.print()}
-                  className="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer"
                 >
                   Imprimir PDF
                 </button>
@@ -6604,17 +6747,53 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </button>
               </div>
             </div>
-            <div id="printable-area" className="p-6 border border-slate-200 rounded-xl space-y-4 text-xs">
-              <OfficialHeaderCintillo showRightLogo={true} />
-              <h2 className="text-center text-base font-black uppercase">EXPEDIENTE Y HOJA DE VIDA INSTITUCIONAL</h2>
-              <div className="grid grid-cols-2 gap-3">
-                <div><strong>Nombres y Apellidos:</strong> {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}</div>
-                <div><strong>Cédula:</strong> {selectedEmpForCV.cedula}</div>
-                <div><strong>Cargo:</strong> {selectedEmpForCV.cargo}</div>
-                <div><strong>Coordinación:</strong> {selectedEmpForCV.coordinacion}</div>
-                <div><strong>Teléfono:</strong> {selectedEmpForCV.telefono}</div>
-                <div><strong>Carga Familiar:</strong> {selectedEmpForCV.familiares}</div>
+            <div
+              id="printable-area"
+              className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white border border-slate-200 rounded-xl flex flex-col justify-between text-xs text-slate-950"
+            >
+              <div className="p-10 space-y-6">
+                <OfficialHeaderCintillo showRightLogo={true} />
+                <div className="text-center border-b-2 border-slate-900 pb-3">
+                  <h2 className="text-base font-black uppercase text-slate-900">
+                    EXPEDIENTE Y HOJA DE VIDA INSTITUCIONAL • RECURSOS HUMANOS
+                  </h2>
+                  <p className="text-xs text-slate-600 font-semibold mt-0.5">
+                    Fundación Centro Nacional del Disco (CENDIS) — Código: {selectedEmpForCV.codigoBarra}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 p-5 rounded-xl border border-slate-300 bg-slate-50 text-xs">
+                  <div>
+                    <strong>Nombres y Apellidos:</strong> {selectedEmpForCV.nombres}{" "}
+                    {selectedEmpForCV.apellidos}
+                  </div>
+                  <div>
+                    <strong>Cédula de Identidad:</strong> {selectedEmpForCV.cedula}
+                  </div>
+                  <div>
+                    <strong>Cargo Institucional:</strong> {selectedEmpForCV.cargo}
+                  </div>
+                  <div>
+                    <strong>Coordinación Adscrita:</strong> {selectedEmpForCV.coordinacion}
+                  </div>
+                  <div>
+                    <strong>Teléfono de Contacto:</strong> {selectedEmpForCV.telefono}
+                  </div>
+                  <div>
+                    <strong>Correo Electrónico:</strong> {selectedEmpForCV.correo || "No registrado"}
+                  </div>
+                  <div>
+                    <strong>Fecha de Ingreso:</strong> {selectedEmpForCV.fechaIngreso || "2024-01-15"}
+                  </div>
+                  <div>
+                    <strong>Tipo de Sangre:</strong> {selectedEmpForCV.tipoSangre || "O+"}
+                  </div>
+                  <div className="col-span-2">
+                    <strong>Carga Familiar / Contacto de Emergencia:</strong>{" "}
+                    {selectedEmpForCV.familiares || "Sin carga familiar registrada"}
+                  </div>
+                </div>
               </div>
+              <OfficialFooterWave />
             </div>
           </div>
         </div>
