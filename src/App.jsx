@@ -1503,39 +1503,39 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   // ==========================================================================
   if (currentScreen === "LOGIN") {
     return (
-      <div className="min-h-screen bg-[#050a15] flex items-center justify-center p-4 font-sans text-slate-100">
-        <div className="w-full max-w-[400px] bg-[#0c1322] rounded-[28px] shadow-2xl border border-slate-800/90 overflow-hidden">
+      <div className="min-h-screen max-h-screen overflow-y-auto bg-[#050a15] flex items-center justify-center p-3 font-sans text-slate-100">
+        <div className="w-full max-w-[360px] bg-[#0c1322] rounded-2xl shadow-2xl border border-slate-800/90 overflow-hidden">
           {/* Franja tricolor superior en 3 bloques exactos */}
-          <div className="grid grid-cols-3 h-2 w-full">
+          <div className="grid grid-cols-3 h-1.5 w-full">
             <div className="bg-[#facc15]" />
             <div className="bg-[#1d4ed8]" />
             <div className="bg-[#dc2626]" />
           </div>
 
-          <div className="p-4">
-            <div className="rounded-[22px] border border-white/10 bg-[#0f172a] overflow-hidden shadow-inner">
-              {/* Cabecera con degradado vinotinto oscuro y recuadro blanco del logo */}
-              <div className="bg-gradient-to-b from-[#591318] via-[#2d0f1a] to-[#0f172a] px-6 pt-7 pb-6 text-center border-b border-slate-800/80">
-                <div className="bg-white rounded-2xl px-6 py-4 mx-auto max-w-[260px] shadow-lg mb-5">
+          <div className="p-3">
+            <div className="rounded-xl border border-white/10 bg-[#0f172a] overflow-hidden shadow-inner">
+              {/* Cabecera compacta con degradado vinotinto oscuro y recuadro blanco del logo */}
+              <div className="bg-gradient-to-b from-[#591318] via-[#2d0f1a] to-[#0f172a] px-4 py-3.5 text-center border-b border-slate-800/80">
+                <div className="bg-white rounded-xl px-4 py-2 mx-auto max-w-[175px] shadow mb-2.5">
                   <CendisGlyphLogo className="w-full" />
                 </div>
 
-                <p className="text-[11px] font-black uppercase tracking-[0.12em] text-[#f59e0b] leading-snug">
+                <p className="text-[9.5px] font-black uppercase tracking-[0.1em] text-[#f59e0b] leading-tight">
                   MINISTERIO DEL PODER POPULAR PARA LA CULTURA
                 </p>
-                <h1 className="text-[17px] font-black text-white uppercase tracking-tight leading-snug mt-1.5">
+                <h1 className="text-[13.5px] font-black text-white uppercase tracking-tight leading-tight mt-1">
                   FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)
                 </h1>
-                <p className="text-xs text-slate-400 font-medium mt-1.5">
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">
                   Sistema de Memorándums y Solicitudes
                 </p>
               </div>
 
-              {/* Formulario oscuro con Login por Correo de Google / Gmail */}
-              <div className="p-6 bg-[#0d1526]">
+              {/* Formulario compacto ajustado a la pantalla */}
+              <div className="p-4 bg-[#0d1526]">
                 {loginError && (
-                  <div className="mb-4 p-3 rounded-xl bg-red-950/90 border border-red-500/60 text-red-200 text-xs font-semibold flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <div className="mb-2.5 p-2.5 rounded-lg bg-red-950/90 border border-red-500/60 text-red-200 text-[11px] font-semibold flex items-center gap-2">
+                    <XCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
                     <span>{loginError}</span>
                   </div>
                 )}
@@ -1547,7 +1547,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     setLoginError("");
                     setGoogleModalOpen(true);
                   }}
-                  className="w-full py-3.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-lg transition flex items-center justify-center gap-3 cursor-pointer mb-4 border border-slate-200"
+                  className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow transition flex items-center justify-center gap-2.5 cursor-pointer mb-2.5 border border-slate-200"
                 >
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                     <path
@@ -1570,17 +1570,17 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   <span>Iniciar sesión con Correo Gmail / Google</span>
                 </button>
 
-                <div className="relative flex py-2 items-center mb-3">
+                <div className="relative flex py-1 items-center mb-2">
                   <div className="flex-grow border-t border-slate-800"></div>
-                  <span className="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  <span className="flex-shrink mx-2.5 text-[9.5px] font-bold uppercase tracking-wider text-slate-500">
                     o acceso con correo y clave
                   </span>
                   <div className="flex-grow border-t border-slate-800"></div>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-2.5">
                   <div>
-                    <label className="block text-xs font-bold text-slate-200 mb-2">
+                    <label className="block text-[11px] font-bold text-slate-200 mb-1">
                       Correo Gmail / Usuario
                     </label>
                     <input
@@ -1592,19 +1592,19 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         setLoginError("");
                       }}
                       placeholder="usuario@gmail.com"
-                      className="w-full px-4 py-3.5 rounded-xl bg-[#070b14] border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500/60 transition"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#070b14] border border-slate-800 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-500/60 transition"
                     />
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-xs font-bold text-slate-200">
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-bold text-slate-200">
                         Clave
                       </label>
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="text-xs font-bold text-[#f59e0b] hover:text-amber-400 cursor-pointer"
+                        className="text-[11px] font-bold text-[#f59e0b] hover:text-amber-400 cursor-pointer"
                       >
                         {showPassword ? "Ocultar" : "Mostrar"}
                       </button>
@@ -1618,16 +1618,16 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         setLoginError("");
                       }}
                       placeholder="Escriba su clave"
-                      className="w-full px-4 py-3.5 rounded-xl bg-[#070b14] border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500/60 transition"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#070b14] border border-slate-800 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-500/60 transition"
                     />
                   </div>
 
                   <div className="pt-1">
                     <button
                       type="submit"
-                      className="w-full py-3.5 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white font-bold text-sm shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-2.5 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white font-bold text-xs shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <Lock className="w-4 h-4" />
+                      <Lock className="w-3.5 h-3.5" />
                       <span>Iniciar Sesión con Correo</span>
                     </button>
                   </div>
@@ -1635,7 +1635,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
             </div>
 
-            <div className="pt-4 pb-1 text-center text-[11px] text-slate-500 font-medium">
+            <div className="pt-2 pb-0.5 text-center text-[10px] text-slate-500 font-medium">
               RIF: G-20008344-9 • Caracas, Venezuela
             </div>
           </div>
