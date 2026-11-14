@@ -423,82 +423,11 @@ function CendisGlyphLogo({ className = "w-32", showTopAcronym = false }) {
           <span>C</span><span>E</span><span>N</span><span>D</span><span>I</span><span>S</span>
         </div>
       )}
-      {/* Texto superior: "Centro Nacional" más grande y en negrilla */}
-      <div
-        className="w-full flex justify-between items-center text-black font-black leading-none mb-1"
-        style={{
-          fontFamily: "'Trebuchet MS', 'Arial Black', Arial, sans-serif",
-          fontSize: "14.5px",
-          fontWeight: "900",
-        }}
-      >
-        <span>C</span>
-        <span>e</span>
-        <span>n</span>
-        <span>t</span>
-        <span>r</span>
-        <span>o</span>
-        <span>&nbsp;</span>
-        <span>N</span>
-        <span>a</span>
-        <span>c</span>
-        <span>i</span>
-        <span>o</span>
-        <span>n</span>
-        <span>a</span>
-        <span>l</span>
-      </div>
-
-      {/* Glifo Precolombino Rojo CENDIS trazado fielmente a la imagen adjunta */}
-      <svg viewBox="0 0 680 155" className="w-full h-auto my-0.5 overflow-visible">
-        <g fill="#ba251e">
-          {/* 1. Barra vertical izquierda levemente curva */}
-          <path d="M 10,8 C 22,6 28,10 27,22 C 23,60 22,102 25,140 C 26,148 19,151 11,150 C 5,149 4,142 5,132 C 6,92 6,48 7,16 C 7,10 8,8 10,8 Z" />
-
-          {/* 2. Bloque interior izquierdo con rectángulo vertical y gancho inferior */}
-          <rect x="38" y="39" width="22" height="58" rx="4" />
-          <path d="M 41,7 L 232,7 C 240,7 241,22 232,26 L 194,45 L 236,75 C 242,80 239,90 229,90 L 146,90 C 139,90 137,83 142,78 L 166,58 L 138,44 C 134,41 136,34 143,34 L 178,34 L 198,24 L 84,24 L 84,112 L 154,112 C 162,112 162,130 154,130 L 66,130 L 66,136 L 138,136 C 145,136 145,150 138,150 L 42,150 C 37,150 36,145 36,138 L 36,112 C 36,106 40,104 46,104 L 64,104 L 64,25 L 41,25 C 35,25 35,7 41,7 Z" />
-
-          {/* 3. Corchete inferior bajo el pico triangular */}
-          <path d="M 178,100 L 230,100 C 236,100 238,104 238,110 L 238,142 C 238,148 235,150 228,150 L 178,150 C 171,150 171,135 178,135 L 220,135 L 220,115 L 178,115 C 171,115 171,100 178,100 Z" />
-
-          {/* 4. Bloque central-izquierdo (U con cuadrado flotante y puente central) */}
-          <rect x="292" y="10" width="48" height="44" rx="4" />
-          <path d="M 252,22 L 274,22 L 274,66 L 360,66 L 360,10 C 360,7 363,5 368,5 L 552,5 C 558,5 560,8 560,14 L 560,24 L 380,24 L 380,82 C 380,86 377,88 372,88 L 258,88 C 253,88 251,85 251,79 L 251,26 C 251,23 251,22 252,22 Z" />
-
-          {/* 5. Pilares inferiores centrales y espiral cuadrada concéntrica */}
-          <path d="M 254,102 L 274,102 L 274,148 L 252,148 Z" />
-          <path d="M 292,100 L 378,100 C 382,100 384,103 384,108 L 384,132 L 502,132 L 502,24 L 558,24 L 558,45 L 585,45 L 585,10 C 585,7 588,5 593,5 L 635,5 L 635,22 L 605,22 L 605,46 L 635,48 C 640,50 644,56 644,64 L 644,105 C 644,114 639,120 630,122 L 605,124 L 605,135 L 638,135 L 638,150 L 584,150 L 584,122 L 520,122 L 520,150 L 364,150 L 364,116 L 312,116 L 312,150 L 292,150 Z" />
-
-          {/* 6. Marco interior y núcleo del espiral central derecho */}
-          <path d="M 398,38 L 486,38 L 486,118 L 398,118 L 398,102 L 468,102 L 468,54 L 398,54 Z" />
-          <rect x="400" y="68" width="48" height="44" rx="3" />
-
-          {/* 7. Barra vertical derecha levemente curva */}
-          <path d="M 655,8 C 664,7 669,10 669,18 C 668,58 669,100 672,140 C 672,147 667,150 658,150 C 651,150 649,145 649,136 C 650,96 650,54 650,16 C 650,10 652,8 655,8 Z" />
-        </g>
-      </svg>
-
-      {/* Texto inferior: "d e l   D i s c o" más grande y en negrilla */}
-      <div
-        className="w-full flex justify-between items-center text-black font-black leading-none mt-1 px-0.5"
-        style={{
-          fontFamily: "'Trebuchet MS', 'Arial Black', Arial, sans-serif",
-          fontSize: "15px",
-          fontWeight: "900",
-        }}
-      >
-        <span>d</span>
-        <span>e</span>
-        <span>l</span>
-        <span>&nbsp;</span>
-        <span>&nbsp;</span>
-        <span>D</span>
-        <span>i</span>
-        <span>s</span>
-        <span>c</span>
-        <span>o</span>
-      </div>
+      <img
+        src="/logo-cendis.jpg"
+        alt="Centro Nacional del Disco (CENDIS)"
+        className="w-full h-auto object-contain block"
+      />
     </div>
   );
 }
