@@ -2291,44 +2291,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   </div>
                 )}
 
-                {/* Botón principal de Autenticación con Google / Gmail */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLoginError("");
-                    setGoogleModalOpen(true);
-                  }}
-                  className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow transition flex items-center justify-center gap-2.5 cursor-pointer mb-2.5 border border-slate-200"
-                >
-                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 24c3.3 0 6.08-1.09 8.1-2.96l-3.88-3.05c-1.08.72-2.45 1.16-4.22 1.16-3.24 0-5.98-2.18-6.96-5.12H1.04v3.14C3.05 21.16 7.21 24 12 24z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.04 14.03c-.25-.72-.38-1.49-.38-2.28s.13-1.56.38-2.28V6.33H1.04C.38 7.66 0 9.16 0 11.75s.38 4.09 1.04 5.42l4-3.14z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 4.75c1.8 0 3.41.62 4.68 1.84l3.5-3.5C18.07 1.19 15.3 0 12 0 7.21 0 3.05 2.84 1.04 6.83l4 3.14c.98-2.94 3.72-5.22 6.96-5.22z"
-                    />
-                  </svg>
-                  <span>Iniciar sesión con Correo Gmail / Google</span>
-                </button>
-
-                <div className="relative flex py-1 items-center mb-2">
-                  <div className="flex-grow border-t border-slate-800"></div>
-                  <span className="flex-shrink mx-2.5 text-[9.5px] font-bold uppercase tracking-wider text-slate-500">
-                    o acceso con correo y clave
-                  </span>
-                  <div className="flex-grow border-t border-slate-800"></div>
-                </div>
-
                 <form onSubmit={handleLogin} className="space-y-2.5">
                   <div>
                     <label className="block text-[11px] font-bold text-slate-200 mb-1">
