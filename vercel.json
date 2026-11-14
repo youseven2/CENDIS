@@ -1,0 +1,9 @@
+{
+  "name": "sistema-cendis",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
