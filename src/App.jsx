@@ -128,7 +128,7 @@ const CRC_TABLE = (() => {
 })();
 
 // ============================================================================
-// DATOS INICIALES DEL SISTEMA SGI-CENDIS
+// DATOS INICIALES DEL SISTEMA SIACENDIS
 // ============================================================================
 const DEFAULT_PERMISSIONS_BY_ROLE = {
   ADMIN: {
@@ -365,7 +365,7 @@ const INITIAL_PROJECTS = [
   },
   {
     id: "proj-3",
-    nombre: "Actualización de Red y Servidores SGI-CENDIS",
+    nombre: "Actualización de Red y Servidores SIACENDIS",
     tarea: "Respaldo automatizado e inventario de estaciones de trabajo",
     justificacion: "Continuidad operativa de los sistemas administrativos y de RRHH.",
     responsable: "Julimar Flores",
@@ -676,7 +676,7 @@ export default function App() {
       timestamp: "2026-11-13 08:30:00",
       user: "admin",
       role: "ADMIN",
-      action: "Inicialización del Sistema Web Integrado SGI-CENDIS",
+      action: "Inicialización del Sistema Web Integrado SIACENDIS",
     },
   ]);
 
@@ -837,7 +837,7 @@ export default function App() {
       id: 1,
       sender: "Ali Alejandro Primera",
       recipient: "TODOS",
-      text: "Bienvenidos al Chat Interno del SGI-CENDIS. Recuerden cargar el avance semanal de proyectos.",
+      text: "Bienvenidos al Chat Interno del SIACENDIS. Recuerden cargar el avance semanal de proyectos.",
       time: "08:45 AM",
     },
     {
@@ -925,7 +925,7 @@ export default function App() {
       { name: "cendis_backup_completo.json", content: JSON.stringify(backupData, null, 2) },
       {
         name: "resumen_ejecutivo_cendis.txt",
-        content: `RESPALDO INTEGRAL SGI-CENDIS\nFecha: ${new Date().toLocaleString()}\nMemos/Solicitudes: ${documents.length}\nPersonal RRHH: ${employees.length}\nProyectos: ${projects.length}\nBienes Nacionales: ${bienesList.length}`,
+        content: `RESPALDO INTEGRAL SIACENDIS\nFecha: ${new Date().toLocaleString()}\nMemos/Solicitudes: ${documents.length}\nPersonal RRHH: ${employees.length}\nProyectos: ${projects.length}\nBienes Nacionales: ${bienesList.length}`,
       },
     ]);
 
@@ -975,7 +975,7 @@ export default function App() {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SGI-CENDIS | Fundación Centro Nacional del Disco - MPPC</title>
+    <title>SIACENDIS | Fundación Centro Nacional del Disco - MPPC</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-[#050a15]">
@@ -1011,7 +1011,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 )`;
 
     const leemeTxt = `===================================================================
-SISTEMA INTEGRADO SGI-CENDIS (CON TODAS LAS ACTUALIZACIONES)
+SISTEMA INTEGRADO SIACENDIS (CON TODAS LAS ACTUALIZACIONES)
 Dominio objetivo: https://sistema-cendis.vercel.app
 ===================================================================
 
@@ -1046,7 +1046,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
     // Captura automáticamente el código fuente real completo del sistema o instrucciones directas
     const fullSystemReminder = `// ============================================================================
-// SGI-CENDIS - SISTEMA INTEGRADO DE GESTIÓN (FUNDACIÓN CENDIS - MPPC)
+// SIACENDIS - SISTEMA INTEGRADO DE GESTIÓN (FUNDACIÓN CENDIS - MPPC)
 // ============================================================================
 // NOTA: Si descargaste este archivo desde el botón interno del navegador,
 // recuerda copiar el código completo del archivo App.jsx del editor derecho de Gemini
@@ -1453,10 +1453,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   MINISTERIO DEL PODER POPULAR PARA LA CULTURA
                 </p>
                 <h1 className="text-[13.5px] font-black text-white uppercase tracking-tight leading-tight mt-1">
-                  FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)
+                  SIACENDIS • FUNDACIÓN CENTRO NACIONAL DEL DISCO
                 </h1>
                 <p className="text-[11px] text-slate-400 font-medium mt-0.5">
-                  Sistema de Memorándums y Solicitudes
+                  Sistema Integrado Administrativo CENDIS
                 </p>
               </div>
 
@@ -1596,7 +1596,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   </svg>
                 </div>
                 <h2 className="text-base font-black text-slate-900">
-                  Acceder con Google a SGI-CENDIS
+                  Acceder con Google a SIACENDIS
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">
                   Seleccione una cuenta de Gmail o ingrese su correo de Google para vincularlo con su ficha de trabajador en Recursos Humanos.
@@ -1858,7 +1858,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 MINISTERIO DEL PODER POPULAR PARA LA CULTURA
               </span>
               <h1 className="text-base font-black text-white uppercase tracking-tight">
-                FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)
+                SIACENDIS • FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)
               </h1>
               <p className="text-xs text-slate-400">
                 Usuario: <span className="font-bold text-white">{currentUser.fullName}</span>{" "}
@@ -2102,7 +2102,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             <span>Módulos</span>
           </button>
           <span className="font-black tracking-tight text-xs uppercase text-white hidden sm:inline">
-            SGI-CENDIS
+            SIACENDIS
           </span>
         </div>
 
@@ -2808,7 +2808,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         Aviso: Vincule su correo ({currentUser.email || `${currentUser.username}@gmail.com`}) con los datos personales del trabajador
                       </h3>
                       <p className="text-xs text-slate-200 mt-1">
-                        Para tener control completo de sus gestiones en SGI-CENDIS, asocie su correo de inicio de sesión con su expediente personal en la nómina de Recursos Humanos o registre su ficha abajo.
+                        Para tener control completo de sus gestiones en SIACENDIS, asocie su correo de inicio de sesión con su expediente personal en la nómina de Recursos Humanos o registre su ficha abajo.
                       </p>
                     </div>
                   </div>
