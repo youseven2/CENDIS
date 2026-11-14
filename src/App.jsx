@@ -745,22 +745,33 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  // Estado de Memorándums y Solicitudes
-  const [docType, setDocType] = useState("MEMORANDUM");
-  const [counters, setCounters] = useState({ MEMORANDUM: 2, SOLICITUD: 1 });
+  // Estado Universal de Memorandos, Solicitudes y Oficios (Formato Oficial FC-DG-MEM-2026-007)
+  const [docType, setDocType] = useState("MEMORANDUM"); // MEMORANDUM | SOLICITUD | OFICIO
+  const [docUnitPrefix, setDocUnitPrefix] = useState("FC-DG");
+  const [counters, setCounters] = useState({ MEMORANDUM: 7, SOLICITUD: 1, OFICIO: 1 });
   const [manualCorrelative, setManualCorrelative] = useState(false);
   const [customCorrelative, setCustomCorrelative] = useState("");
 
-  const [para, setPara] = useState("Julimar Flores - Directora Ejecutiva");
-  const [de, setDe] = useState("Ali Alejandro Primera - Presidente CENDIS");
+  const [para, setPara] = useState("Lcdo. Jesús García");
+  const [paraDireccion, setParaDireccion] = useState(
+    "General de Administración del Ministerio del Poder Popular para la Cultura"
+  );
+  const [de, setDe] = useState("Morris López");
+  const [deCargo, setDeCargo] = useState(
+    "Director Ejecutivo de la Fundación Centro Nacional del Disco (CENDIS)"
+  );
   const [fecha, setFecha] = useState("2026-11-13");
-  const [asunto, setAsunto] = useState("Solicitud de dotación y mantenimiento preventivo de equipos");
+  const [asunto, setAsunto] = useState("Solicitud de transporte");
   const [concepto, setConcepto] = useState(
-    "Por medio de la presente me dirijo a usted en la oportunidad de saludarle cordialmente y a su vez solicitar sus buenos oficios para gestionar el mantenimiento correctivo y preventivo de las estaciones de trabajo adscritas a la Coordinación de Producción Fonográfica del Centro Nacional del Disco (CENDIS).\n\nSin más a que hacer referencia y agradeciendo de antemano su valiosa colaboración, se despide."
+    "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y, a su vez, solicitarle transporte para el personal de audiovisuales conformado por 9 personas y equipo técnico, quienes se trasladan el día de mañana 13/11/2026 al Cristo Rey, parroquia 23 de enero a las 12:30pm – 9:00pm.\n\nAgradeciendo de antemano su receptividad, máxima colaboración y constante apoyo interinstitucional para la realización con éxito de este evento, quedo de usted."
   );
 
-  const [signerNombre, setSignerNombre] = useState("LCDO. ALI ALEJANDRO PRIMERA");
-  const [signerCargo, setSignerCargo] = useState("Presidente de la Fundación Centro Nacional del Disco (CENDIS)");
+  const [signerNombre, setSignerNombre] = useState("Lcdo. MORRIS LÓPEZ");
+  const [signerCargo, setSignerCargo] = useState("Director General");
+  const [signerEnte, setSignerEnte] = useState("Fundación Centro Nacional del Disco (CENDIS)");
+  const [signerMinisterio, setSignerMinisterio] = useState(
+    "Ministerio del Poder Popular para la Cultura"
+  );
   const [signerResolucion] = useState(
     "Designado según Gaceta Oficial de la República Bolivariana de Venezuela N° 42.125"
   );
@@ -768,19 +779,62 @@ export default function App() {
   const [documents, setDocuments] = useState([
     {
       id: "doc-1",
-      correlativo: "CENDIS-MEM-2026-0001",
+      correlativo: "FC-DG-MEM-2026-007",
       tipo: "MEMORANDUM",
-      para: "Anaileth Briceño - Coordinadora de Producción",
-      de: "Ali Alejandro Primera - Presidente CENDIS",
+      para: "Lcdo. Jesús García",
+      paraDireccion: "General de Administración del Ministerio del Poder Popular para la Cultura",
+      de: "Morris López",
+      deCargo: "Director Ejecutivo de la Fundación Centro Nacional del Disco (CENDIS)",
+      fecha: "2026-11-13",
+      asunto: "Solicitud de transporte",
+      concepto:
+        "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y, a su vez, solicitarle transporte para el personal de audiovisuales conformado por 9 personas y equipo técnico, quienes se trasladan el día de mañana 13/11/2026 al Cristo Rey, parroquia 23 de enero a las 12:30pm – 9:00pm.\n\nAgradeciendo de antemano su receptividad, máxima colaboración y constante apoyo interinstitucional para la realización con éxito de este evento, quedo de usted.",
+      signerNombre: "Lcdo. MORRIS LÓPEZ",
+      signerCargo: "Director General",
+      signerEnte: "Fundación Centro Nacional del Disco (CENDIS)",
+      signerMinisterio: "Ministerio del Poder Popular para la Cultura",
+      status: "PENDIENTE_APROBACION",
+      creadoPor: "produccion",
+      creadoEn: "2026-11-13 09:15",
+      aprobadoPor: null,
+      fechaAprobacion: null,
+      motivoAnulacion: "",
+      anuladoPor: null,
+      fechaAnulacion: null,
+    },
+    {
+      id: "doc-2",
+      correlativo: "FC-DG-MEM-2026-006",
+      tipo: "MEMORANDUM",
+      para: "Anaileth Briceño",
+      paraDireccion: "Coordinación de Producción Fonográfica del CENDIS",
+      de: "Morris López",
+      deCargo: "Director Ejecutivo de la Fundación Centro Nacional del Disco (CENDIS)",
       fecha: "2026-11-10",
       asunto: "Lineamientos de cierre administrativo mensual",
-      concepto: "Se instruye a todas las coordinaciones remitir la relación de actividades antes del día viernes.",
-      signerNombre: "LCDO. ALI ALEJANDRO PRIMERA",
-      signerCargo: "Presidente de la Fundación CENDIS",
+      concepto:
+        "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y remitir los lineamientos correspondientes a la relación mensual de actividades operativas y técnicas.\n\nAgradeciendo de antemano su receptividad y colaboración, quedo de usted.",
+      signerNombre: "Lcdo. MORRIS LÓPEZ",
+      signerCargo: "Director General",
+      signerEnte: "Fundación Centro Nacional del Disco (CENDIS)",
+      signerMinisterio: "Ministerio del Poder Popular para la Cultura",
       status: "APROBADO",
       creadoPor: "admin",
+      creadoEn: "2026-11-10 10:00",
+      aprobadoPor: "Administrador General CENDIS",
+      fechaAprobacion: "2026-11-10 10:30",
+      motivoAnulacion: "",
+      anuladoPor: null,
+      fechaAnulacion: null,
     },
   ]);
+
+  const [selectedDocId, setSelectedDocId] = useState(null); // null = vista en vivo del editor | id = documento seleccionado
+  const [reviewModalDocId, setReviewModalDocId] = useState(null);
+  const [annulReasonInput, setAnnulReasonInput] = useState("");
+  const [annulError, setAnnulError] = useState("");
+  const [showAnnulBoxInModal, setShowAnnulBoxInModal] = useState(false);
+  const [docStatusFilter, setDocStatusFilter] = useState("TODOS");
 
   // Bitácora (Logs)
   const [logs, setLogs] = useState([
@@ -1045,13 +1099,85 @@ export default function App() {
     return Boolean(perms[actionKey]);
   };
 
-  // Correlativo formateado
+  // Correlativo formateado universal (ej. FC-DG-MEM-2026-007)
   const formattedCorrelative = useMemo(() => {
     if (manualCorrelative && customCorrelative.trim()) return customCorrelative.trim();
-    const prefix = docType === "MEMORANDUM" ? "CENDIS-MEM" : "CENDIS-SOL";
-    const num = String(counters[docType] || 1).padStart(4, "0");
-    return `${prefix}-2026-${num}`;
-  }, [docType, counters, manualCorrelative, customCorrelative]);
+    const typeCode =
+      docType === "MEMORANDUM" ? "MEM" : docType === "SOLICITUD" ? "SOL" : "OFI";
+    const cleanUnit = (docUnitPrefix || "FC-DG").trim().toUpperCase();
+    const num = String(counters[docType] || 1).padStart(3, "0");
+    return `${cleanUnit}-${typeCode}-2026-${num}`;
+  }, [docType, docUnitPrefix, counters, manualCorrelative, customCorrelative]);
+
+  // Formateador de fecha larga oficial (ej. "13 de noviembre de 2026")
+  const formatFechaLargaOficial = (isoStr) => {
+    if (!isoStr) return "";
+    if (isoStr.includes(" de ")) return isoStr;
+    const parts = String(isoStr).split("-");
+    if (parts.length !== 3) return isoStr;
+    const [yyyy, mm, dd] = parts;
+    const meses = [
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
+    ];
+    const mesIdx = Math.max(0, Math.min(11, parseInt(mm, 10) - 1));
+    const diaNum = parseInt(dd, 10) || dd;
+    return `${diaNum} de ${meses[mesIdx]} de ${yyyy}`;
+  };
+
+  // Documento activo en la vista previa (seleccionado de la bandeja o borrador en edición)
+  const activePreviewDoc = useMemo(() => {
+    if (selectedDocId) {
+      const found = documents.find((d) => d.id === selectedDocId);
+      if (found) return found;
+    }
+    return {
+      id: null,
+      correlativo: formattedCorrelative,
+      tipo: docType,
+      para,
+      paraDireccion,
+      de,
+      deCargo,
+      fecha,
+      asunto,
+      concepto,
+      signerNombre,
+      signerCargo,
+      signerEnte,
+      signerMinisterio,
+      status: "BORRADOR",
+      creadoPor: currentUser?.username || "usuario",
+      motivoAnulacion: "",
+    };
+  }, [
+    selectedDocId,
+    documents,
+    formattedCorrelative,
+    docType,
+    para,
+    paraDireccion,
+    de,
+    deCargo,
+    fecha,
+    asunto,
+    concepto,
+    signerNombre,
+    signerCargo,
+    signerEnte,
+    signerMinisterio,
+    currentUser,
+  ]);
 
   // ============================================================================
   // FUNCIONES DE DESCARGA (BACKUP COMPLETO .ZIP)
@@ -1687,41 +1813,168 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   };
 
   const handleEmitDocument = () => {
-    const initialStatus = currentUser?.role === "ADMIN" ? "APROBADO" : "PENDIENTE_APROBACION";
+    if (!hasActionPermission("ingresar")) {
+      showToast("Su usuario no tiene permiso para agregar nuevos documentos.", "error");
+      return;
+    }
+    const now = new Date();
+    const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
     const newDoc = {
       id: `doc-${Date.now()}`,
       correlativo: formattedCorrelative,
       tipo: docType,
       para,
+      paraDireccion,
       de,
+      deCargo,
       fecha,
       asunto,
       concepto,
       signerNombre,
       signerCargo,
-      status: initialStatus,
-      creadoPor: currentUser.username,
+      signerEnte,
+      signerMinisterio,
+      status: "PENDIENTE_APROBACION",
+      creadoPor: currentUser?.fullName || currentUser?.username || "usuario",
+      creadoEn: stamp,
+      aprobadoPor: null,
+      fechaAprobacion: null,
+      motivoAnulacion: "",
+      anuladoPor: null,
+      fechaAnulacion: null,
     };
     setDocuments((prev) => [newDoc, ...prev]);
+    setSelectedDocId(newDoc.id);
     if (!manualCorrelative) {
       setCounters((prev) => ({
         ...prev,
         [docType]: (prev[docType] || 1) + 1,
       }));
     }
-    addLog(`Emitido ${docType} N° ${formattedCorrelative} (${initialStatus})`);
+    addLog(
+      `Creado ${docType} N° ${formattedCorrelative} (En Revisión para Autorización de Administrador)`
+    );
     showToast(
-      initialStatus === "APROBADO"
-        ? `Documento ${formattedCorrelative} emitido y aprobado automáticamente.`
-        : `Documento ${formattedCorrelative} registrado (Pendiente de Aprobación por Administrador).`
+      `Documento ${formattedCorrelative} creado y enviado a Revisión. Un Administrador debe verificarlo y aprobarlo para habilitar su impresión.`
     );
   };
 
+  const handleLoadDocIntoEditor = (docObj) => {
+    if (!docObj) return;
+    setSelectedDocId(docObj.id);
+    setDocType(docObj.tipo || "MEMORANDUM");
+    setManualCorrelative(true);
+    setCustomCorrelative(docObj.correlativo || "");
+    setPara(docObj.para || "");
+    setParaDireccion(docObj.paraDireccion || "");
+    setDe(docObj.de || "");
+    setDeCargo(docObj.deCargo || "");
+    setFecha(docObj.fecha || "2026-11-13");
+    setAsunto(docObj.asunto || "");
+    setConcepto(docObj.concepto || "");
+    setSignerNombre(docObj.signerNombre || "Lcdo. MORRIS LÓPEZ");
+    setSignerCargo(docObj.signerCargo || "Director General");
+    setSignerEnte(docObj.signerEnte || "Fundación Centro Nacional del Disco (CENDIS)");
+    setSignerMinisterio(docObj.signerMinisterio || "Ministerio del Poder Popular para la Cultura");
+  };
+
+  const handleOpenReviewModal = (docObj) => {
+    if (!docObj) return;
+    setSelectedDocId(docObj.id);
+    setReviewModalDocId(docObj.id);
+    setAnnulReasonInput(docObj.motivoAnulacion || "");
+    setAnnulError("");
+    setShowAnnulBoxInModal(false);
+  };
+
   const handleApproveDocument = (docId) => {
-    if (currentUser?.role !== "ADMIN") return;
-    setDocuments((prev) => prev.map((d) => (d.id === docId ? { ...d, status: "APROBADO" } : d)));
-    addLog(`Aprobado documento ID ${docId} por Administrador`);
-    showToast("Documento aprobado oficialmente por el Administrador.");
+    if (currentUser?.role !== "ADMIN") {
+      showToast("Solo un usuario Administrador puede revisar y autorizar documentos.", "error");
+      return;
+    }
+    const now = new Date();
+    const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
+    const targetDoc = documents.find((d) => d.id === docId);
+    setDocuments((prev) =>
+      prev.map((d) =>
+        d.id === docId
+          ? {
+              ...d,
+              status: "APROBADO",
+              aprobadoPor: currentUser.fullName || currentUser.username,
+              fechaAprobacion: stamp,
+              motivoAnulacion: "",
+              anuladoPor: null,
+              fechaAnulacion: null,
+            }
+          : d
+      )
+    );
+    setSelectedDocId(docId);
+    setReviewModalDocId(null);
+    addLog(
+      `Revisado y AUTORIZADO documento ${targetDoc?.correlativo || docId} por Administrador (${currentUser.username})`
+    );
+    showToast(
+      `✓ Documento ${targetDoc?.correlativo || ""} revisado y AUTORIZADO por el Administrador. Ya puede imprimirse en PDF.`
+    );
+  };
+
+  const handleAnnulDocument = (docId, reasonRaw) => {
+    if (currentUser?.role !== "ADMIN" && !hasActionPermission("anular")) {
+      showToast("Su usuario no tiene permiso para anular documentos.", "error");
+      return;
+    }
+    const cleanReason = (reasonRaw || "").trim();
+    if (!cleanReason) {
+      setAnnulError("Debe escribir obligatoriamente la descripción o motivo por el cual se anula este documento.");
+      return;
+    }
+    const now = new Date();
+    const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
+    const targetDoc = documents.find((d) => d.id === docId);
+    setDocuments((prev) =>
+      prev.map((d) =>
+        d.id === docId
+          ? {
+              ...d,
+              status: "ANULADO",
+              motivoAnulacion: cleanReason,
+              anuladoPor: currentUser?.fullName || currentUser?.username || "Administrador",
+              fechaAnulacion: stamp,
+            }
+          : d
+      )
+    );
+    setSelectedDocId(docId);
+    setReviewModalDocId(null);
+    setShowAnnulBoxInModal(false);
+    setAnnulReasonInput("");
+    setAnnulError("");
+    addLog(
+      `ANULADO documento ${targetDoc?.correlativo || docId}. Motivo: "${cleanReason}"`
+    );
+    showToast(
+      `Documento ${targetDoc?.correlativo || ""} ANULADO con motivo registrado.`
+    );
+  };
+
+  const handlePrintApprovedDocument = () => {
+    if (activePreviewDoc.status !== "APROBADO") {
+      if (activePreviewDoc.status === "ANULADO") {
+        showToast(
+          `Impresión bloqueada: Este documento se encuentra ANULADO. Motivo: ${activePreviewDoc.motivoAnulacion}`,
+          "error"
+        );
+      } else {
+        showToast(
+          "Impresión bloqueada: Primero debe crear el documento y un usuario Administrador debe revisarlo y AUTORIZARLO (APROBADO) para poder imprimirlo.",
+          "error"
+        );
+      }
+      return;
+    }
+    window.print();
   };
 
   const formatReminderLabel = (ev) => {
@@ -2784,240 +3037,649 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       {/* CONTENEDOR ADAPTABLE SEGÚN DISPOSITIVO */}
       <div className={`cendis-dark-workspace bg-[#050a15] flex-1 flex flex-col ${viewportContainerClass}`}>
         {/* ====================================================================
-            MÓDULO 1: MEMORÁNDUMS Y SOLICITUDES
+            MÓDULO 1: MEMORANDOS, SOLICITUDES Y OFICIOS UNIVERSALES
            ==================================================================== */}
         {activeTab === "editor" && (
           <div className="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4 print:hidden h-fit">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h2 className="text-sm font-black uppercase text-slate-800">Emitir Memorándum / Solicitud</h2>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#f59e0b] block">
+                    Módulo Universal con Revisión de Administrador
+                  </span>
+                  <h2 className="text-sm font-black uppercase text-slate-800">
+                    Emitir Memorando / Solicitud Oficial
+                  </h2>
+                </div>
                 <span className="px-2.5 py-1 rounded-full bg-red-50 text-red-800 text-xs font-black">
-                  {formattedCorrelative}
+                  {activePreviewDoc.correlativo}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setDocType("MEMORANDUM")}
-                  className={`py-2 rounded-xl text-xs font-black uppercase border cursor-pointer ${
-                    docType === "MEMORANDUM"
-                      ? "bg-[#8b1538] text-white border-[#8b1538]"
-                      : "bg-slate-50 text-slate-700 border-slate-200"
-                  }`}
-                >
-                  Memorándum
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDocType("SOLICITUD")}
-                  className={`py-2 rounded-xl text-xs font-black uppercase border cursor-pointer ${
-                    docType === "SOLICITUD"
-                      ? "bg-[#8b1538] text-white border-[#8b1538]"
-                      : "bg-slate-50 text-slate-700 border-slate-200"
-                  }`}
-                >
-                  Solicitud
-                </button>
+              {selectedDocId && (
+                <div className="p-2.5 rounded-xl bg-blue-950/60 border border-blue-500/40 flex items-center justify-between gap-2 text-xs">
+                  <div>
+                    <span className="font-black text-blue-300 block">
+                      Visualizando: {activePreviewDoc.correlativo}
+                    </span>
+                    <span className="text-[11px] text-slate-300">
+                      Estado:{" "}
+                      <strong>
+                        {activePreviewDoc.status === "APROBADO"
+                          ? "AUTORIZADO PARA IMPRIMIR"
+                          : activePreviewDoc.status === "ANULADO"
+                          ? "ANULADO"
+                          : "EN REVISIÓN POR ADMINISTRADOR"}
+                      </strong>
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedDocId(null);
+                      setManualCorrelative(false);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] cursor-pointer"
+                  >
+                    + Nuevo Borrador
+                  </button>
+                </div>
+              )}
+
+              {/* Selector Universal de Tipo de Documento */}
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: "MEMORANDUM", label: "Memorando" },
+                  { id: "SOLICITUD", label: "Solicitud" },
+                  { id: "OFICIO", label: "Oficio / Circular" },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedDocId(null);
+                      setDocType(t.id);
+                    }}
+                    className={`py-2 rounded-xl text-xs font-black uppercase border cursor-pointer ${
+                      docType === t.id
+                        ? "bg-[#8b1538] text-white border-[#8b1538]"
+                        : "bg-slate-50 text-slate-700 border-slate-200"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
               </div>
 
               <div className="space-y-3">
-                <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
-                    PARA (Seleccionar de RRHH o escribir):
-                  </label>
-                  <select
-                    onChange={(e) => {
-                      if (e.target.value) setPara(e.target.value);
-                    }}
-                    className="w-full px-3 py-1.5 mb-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs"
-                  >
-                    <option value="">-- Seleccionar trabajador de RRHH --</option>
-                    {employees.map((emp) => (
-                      <option key={emp.id} value={`${emp.nombres} ${emp.apellidos} - ${emp.cargo}`}>
-                        {emp.nombres} {emp.apellidos} ({emp.cargo})
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="text"
-                    value={para}
-                    onChange={(e) => setPara(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">DE:</label>
-                  <input
-                    type="text"
-                    value={de}
-                    onChange={(e) => setDe(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                </div>
+                {/* Prefijo Universal y Correlativo */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">FECHA:</label>
-                    <input
-                      type="date"
-                      value={fecha}
-                      onChange={(e) => setFecha(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                    />
+                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
+                      UNIDAD / SIGLAS (UNIVERSAL):
+                    </label>
+                    <select
+                      value={docUnitPrefix}
+                      onChange={(e) => {
+                        setSelectedDocId(null);
+                        setManualCorrelative(false);
+                        setDocUnitPrefix(e.target.value);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                    >
+                      <option value="FC-DG">FC-DG (Dirección General)</option>
+                      <option value="FC-PRES">FC-PRES (Presidencia CENDIS)</option>
+                      <option value="FC-ADM">FC-ADM (Administración)</option>
+                      <option value="FC-RRHH">FC-RRHH (Recursos Humanos)</option>
+                      <option value="FC-PROD">FC-PROD (Producción)</option>
+                      <option value="CENDIS">CENDIS (General Institucional)</option>
+                    </select>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">CORRELATIVO:</label>
+                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
+                      N° CORRELATIVO:
+                    </label>
                     <input
                       type="text"
                       value={manualCorrelative ? customCorrelative : formattedCorrelative}
                       onChange={(e) => {
+                        setSelectedDocId(null);
                         setManualCorrelative(true);
                         setCustomCorrelative(e.target.value);
                       }}
+                      placeholder="FC-DG-MEM-2026-007"
                       className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">ASUNTO:</label>
+
+                {/* PARA + Dirección / Dependencia del Destinatario */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-[11px] font-black uppercase text-slate-700">
+                      PARA (Destinatario y Dirección / Cargo):
+                    </label>
+                    <select
+                      onChange={(e) => {
+                        if (!e.target.value) return;
+                        const emp = employees.find((x) => x.id === e.target.value);
+                        if (emp) {
+                          setSelectedDocId(null);
+                          setPara(`${emp.nombres} ${emp.apellidos}`);
+                          setParaDireccion(
+                            `${emp.cargo} - Coordinación de ${emp.coordinacion} del CENDIS`
+                          );
+                        }
+                      }}
+                      className="px-2 py-1 rounded border border-slate-300 text-[10px]"
+                    >
+                      <option value="">Cargar de RRHH...</option>
+                      {employees.map((emp) => (
+                        <option key={emp.id} value={emp.id}>
+                          {emp.nombres} {emp.apellidos} ({emp.cargo})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <input
                     type="text"
-                    value={asunto}
-                    onChange={(e) => setAsunto(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-semibold"
+                    value={para}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setPara(e.target.value);
+                    }}
+                    placeholder="Ej. Lcdo. Jesús García"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold"
+                  />
+                  <input
+                    type="text"
+                    value={paraDireccion}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setParaDireccion(e.target.value);
+                    }}
+                    placeholder="Dirección / Dependencia: Ej. General de Administración del Ministerio del Poder Popular para la Cultura"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs"
                   />
                 </div>
+
+                {/* DE + Cargo / Dependencia del Remitente */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                  <label className="block text-[11px] font-black uppercase text-slate-700">
+                    DE (Remitente y Cargo / Institución):
+                  </label>
+                  <input
+                    type="text"
+                    value={de}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setDe(e.target.value);
+                    }}
+                    placeholder="Ej. Morris López"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold"
+                  />
+                  <input
+                    type="text"
+                    value={deCargo}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setDeCargo(e.target.value);
+                    }}
+                    placeholder="Ej. Director Ejecutivo de la Fundación Centro Nacional del Disco (CENDIS)"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs"
+                  />
+                </div>
+
+                {/* FECHA Y ASUNTO */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
+                      FECHA ({formatFechaLargaOficial(fecha)}):
+                    </label>
+                    <input
+                      type="date"
+                      value={fecha}
+                      onChange={(e) => {
+                        setSelectedDocId(null);
+                        setFecha(e.target.value);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
+                      ASUNTO:
+                    </label>
+                    <input
+                      type="text"
+                      value={asunto}
+                      onChange={(e) => {
+                        setSelectedDocId(null);
+                        setAsunto(e.target.value);
+                      }}
+                      placeholder="Ej. Solicitud de transporte"
+                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-semibold"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">CONCEPTO / CUERPO:</label>
+                  <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
+                    CONTENIDO / CUERPO DEL DOCUMENTO:
+                  </label>
                   <textarea
-                    rows={4}
+                    rows={5}
                     value={concepto}
-                    onChange={(e) => setConcepto(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setConcepto(e.target.value);
+                    }}
                     className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs leading-relaxed"
                   />
                 </div>
               </div>
 
+              {/* DATOS DE LA FIRMA CENTRADA */}
               <div className="pt-3 border-t border-slate-200 space-y-2">
-                <span className="text-[11px] font-black uppercase text-slate-700">Firmante Predeterminado o Editable</span>
-                <input
-                  type="text"
-                  value={signerNombre}
-                  onChange={(e) => setSignerNombre(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
-                />
-                <input
-                  type="text"
-                  value={signerCargo}
-                  onChange={(e) => setSignerCargo(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs"
-                />
+                <span className="text-[11px] font-black uppercase text-slate-700 block">
+                  Parámetros de Firma Oficial (Pie de Documento)
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={signerNombre}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setSignerNombre(e.target.value);
+                    }}
+                    placeholder="Nombre Firmante (Ej. Lcdo. MORRIS LÓPEZ)"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                  />
+                  <input
+                    type="text"
+                    value={signerCargo}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setSignerCargo(e.target.value);
+                    }}
+                    placeholder="Cargo (Ej. Director General)"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs"
+                  />
+                  <input
+                    type="text"
+                    value={signerEnte}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setSignerEnte(e.target.value);
+                    }}
+                    placeholder="Institución (Ej. Fundación Centro Nacional del Disco (CENDIS))"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs"
+                  />
+                  <input
+                    type="text"
+                    value={signerMinisterio}
+                    onChange={(e) => {
+                      setSelectedDocId(null);
+                      setSignerMinisterio(e.target.value);
+                    }}
+                    placeholder="Ministerio (Ej. Ministerio del Poder Popular para la Cultura)"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs"
+                  />
+                </div>
               </div>
 
-              <div className="pt-2 flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleEmitDocument}
-                  className="flex-1 py-2.5 rounded-xl bg-[#8b1538] hover:bg-[#6e102c] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow cursor-pointer"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Emitir Documento</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-1.5 shadow cursor-pointer"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>Imprimir PDF</span>
-                </button>
+              {/* BOTONES DE EMISIÓN E IMPRESIÓN CONDICIONADA A APROBACIÓN DE ADMIN */}
+              <div className="pt-2 space-y-2">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={handleEmitDocument}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-[#8b1538] hover:bg-[#6e102c] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow cursor-pointer"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Crear y Enviar a Revisión</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handlePrintApprovedDocument}
+                    disabled={activePreviewDoc.status !== "APROBADO"}
+                    className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow transition ${
+                      activePreviewDoc.status === "APROBADO"
+                        ? "bg-emerald-700 hover:bg-emerald-600 text-white cursor-pointer"
+                        : "bg-slate-800 text-slate-400 opacity-60 cursor-not-allowed"
+                    }`}
+                    title={
+                      activePreviewDoc.status === "APROBADO"
+                        ? "Documento autorizado por Administrador: Imprimir PDF"
+                        : "Requiere autorización de un Administrador antes de poder imprimir"
+                    }
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>
+                      {activePreviewDoc.status === "APROBADO"
+                        ? "Imprimir PDF (Autorizado)"
+                        : "Imprimir PDF (Requiere Aprobación)"}
+                    </span>
+                  </button>
+                </div>
+
+                {activePreviewDoc.status !== "APROBADO" && (
+                  <div className="p-2.5 rounded-xl bg-amber-950/50 border border-amber-500/40 text-[11px] text-amber-200 flex items-center justify-between gap-2">
+                    <span>
+                      🔒{" "}
+                      {activePreviewDoc.status === "ANULADO"
+                        ? `Documento ANULADO (Motivo: ${activePreviewDoc.motivoAnulacion}). No se puede imprimir.`
+                        : "La impresión solo se habilita después de que un Administrador revise si está correcto y lo apruebe."}
+                    </span>
+                    {activePreviewDoc.id && currentUser?.role === "ADMIN" && (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenReviewModal(activePreviewDoc)}
+                        className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[10px] shrink-0 cursor-pointer"
+                      >
+                        Revisar / Autorizar Ahora
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* BANDEJA DE CORRELATIVOS Y APROBACIÓN DEL ADMINISTRADOR */}
-              <div className="pt-4 border-t border-slate-200 space-y-2">
-                <h3 className="text-xs font-black uppercase text-slate-800">
-                  Historial de Correlativos y Aprobación Admin ({documents.length})
-                </h3>
-                <div className="max-h-48 overflow-y-auto space-y-1.5">
-                  {documents.map((d) => (
-                    <div
-                      key={d.id}
-                      className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] flex items-center justify-between gap-2"
-                    >
-                      <div>
-                        <div className="font-black text-slate-900">{d.correlativo}</div>
-                        <div className="text-slate-600 truncate max-w-[180px]">{d.asunto}</div>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-[9px] font-black ${
-                            d.status === "APROBADO"
-                              ? "bg-emerald-100 text-emerald-800"
-                              : "bg-amber-100 text-amber-800"
+              {/* BANDEJA UNIVERSAL DE REVISIÓN, AUTORIZACIÓN Y ANULACIÓN CON MOTIVO */}
+              <div className="pt-4 border-t border-slate-200 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-xs font-black uppercase text-slate-800">
+                    Control de Revisión, Autorización y Anulación ({documents.length})
+                  </h3>
+                  <select
+                    value={docStatusFilter}
+                    onChange={(e) => setDocStatusFilter(e.target.value)}
+                    className="px-2 py-1 rounded-lg border border-slate-300 text-[10px] font-bold"
+                  >
+                    <option value="TODOS">Todos ({documents.length})</option>
+                    <option value="PENDIENTE_APROBACION">En Revisión</option>
+                    <option value="APROBADO">Autorizados (Imprimibles)</option>
+                    <option value="ANULADO">Anulados</option>
+                  </select>
+                </div>
+
+                <div className="max-h-72 overflow-y-auto space-y-2 pr-1">
+                  {documents
+                    .filter((d) =>
+                      docStatusFilter === "TODOS" ? true : d.status === docStatusFilter
+                    )
+                    .map((d) => {
+                      const isSelected = selectedDocId === d.id;
+                      return (
+                        <div
+                          key={d.id}
+                          onClick={() => handleLoadDocIntoEditor(d)}
+                          className={`p-3 rounded-xl border text-[11px] space-y-2 transition cursor-pointer ${
+                            isSelected
+                              ? "bg-slate-800/90 border-amber-500/80"
+                              : "bg-slate-50 border-slate-200 hover:border-slate-400"
                           }`}
                         >
-                          {d.status}
-                        </span>
-                        {d.status !== "APROBADO" && currentUser?.role === "ADMIN" && (
-                          <button
-                            onClick={() => handleApproveDocument(d.id)}
-                            className="px-2 py-0.5 rounded bg-emerald-700 text-white font-bold text-[10px] cursor-pointer"
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <div className="font-black text-slate-900 flex items-center gap-1.5">
+                                <span>{d.correlativo}</span>
+                                <span className="text-[10px] font-normal text-slate-400">
+                                  ({d.fecha})
+                                </span>
+                              </div>
+                              <div className="text-slate-600 font-semibold">{d.asunto}</div>
+                              <div className="text-[10px] text-slate-400">
+                                Para: {d.para} • De: {d.de}
+                              </div>
+                            </div>
+
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase shrink-0 ${
+                                d.status === "APROBADO"
+                                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                                  : d.status === "ANULADO"
+                                  ? "bg-red-500/20 text-red-300 border border-red-500/40"
+                                  : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                              }`}
+                            >
+                              {d.status === "APROBADO"
+                                ? "✓ APROBADO"
+                                : d.status === "ANULADO"
+                                ? "✕ ANULADO"
+                                : "⏳ EN REVISIÓN"}
+                            </span>
+                          </div>
+
+                          {d.status === "ANULADO" && d.motivoAnulacion && (
+                            <div className="p-2 rounded-lg bg-red-950/60 border border-red-500/40 text-[10px] text-red-200">
+                              <strong>Motivo de anulación:</strong> {d.motivoAnulacion}
+                              {d.anuladoPor && (
+                                <span className="block text-[9.5px] text-red-300/80 mt-0.5">
+                                  Anulado por: {d.anuladoPor} ({d.fechaAnulacion})
+                                </span>
+                              )}
+                            </div>
+                          )}
+
+                          {d.status === "APROBADO" && d.aprobadoPor && (
+                            <div className="text-[10px] text-emerald-400">
+                              ✓ Revisado y autorizado por: <strong>{d.aprobadoPor}</strong> ({d.fechaAprobacion})
+                            </div>
+                          )}
+
+                          <div
+                            className="flex flex-wrap items-center justify-end gap-1.5 pt-1 border-t border-slate-700/40"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            ✓ Aprobar
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenReviewModal(d)}
+                              className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] cursor-pointer"
+                            >
+                              🔍 Revisar / Autorizar / Anular
+                            </button>
+
+                            {d.status !== "APROBADO" && currentUser?.role === "ADMIN" && (
+                              <button
+                                type="button"
+                                onClick={() => handleApproveDocument(d.id)}
+                                className="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[10px] cursor-pointer"
+                              >
+                                ✓ Aprobar Directo
+                              </button>
+                            )}
+
+                            {d.status === "APROBADO" && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  handleLoadDocIntoEditor(d);
+                                  setTimeout(() => window.print(), 100);
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                              >
+                                <Printer className="w-3 h-3" />
+                                <span>Imprimir</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>
 
-            {/* VISTA PREVIA DE IMPRESIÓN OFICIAL */}
-            <div className="lg:col-span-7 flex justify-center">
+            {/* VISTA PREVIA DE IMPRESIÓN OFICIAL (PARÁMETROS EXACTOS DE FC-DG-MEM-2026-007 + CINTILLO CONSERVADO) */}
+            <div className="lg:col-span-7 flex flex-col items-center gap-3">
+              {/* Barra de estado de autorización sobre la hoja */}
+              <div className="w-full max-w-[790px] p-3 rounded-2xl bg-[#0b1221] border border-slate-800 flex flex-wrap items-center justify-between gap-2 print:hidden">
+                <div className="flex items-center gap-2 text-xs">
+                  <span
+                    className={`px-2.5 py-1 rounded-lg font-black text-[10px] uppercase ${
+                      activePreviewDoc.status === "APROBADO"
+                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                        : activePreviewDoc.status === "ANULADO"
+                        ? "bg-red-500/20 text-red-300 border border-red-500/40"
+                        : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                    }`}
+                  >
+                    {activePreviewDoc.status === "APROBADO"
+                      ? "✓ AUTORIZADO PARA IMPRIMIR"
+                      : activePreviewDoc.status === "ANULADO"
+                      ? "✕ DOCUMENTO ANULADO"
+                      : "⏳ PENDIENTE DE AUTORIZACIÓN ADMIN"}
+                  </span>
+                  <span className="text-slate-300 font-semibold">
+                    {activePreviewDoc.correlativo}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {activePreviewDoc.id && (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenReviewModal(activePreviewDoc)}
+                      className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer"
+                    >
+                      🔍 Revisar / Autorizar / Anular
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handlePrintApprovedDocument}
+                    disabled={activePreviewDoc.status !== "APROBADO"}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 ${
+                      activePreviewDoc.status === "APROBADO"
+                        ? "bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer shadow"
+                        : "bg-slate-800 text-slate-500 cursor-not-allowed"
+                    }`}
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Imprimir PDF</span>
+                  </button>
+                </div>
+              </div>
+
               <div
                 id="printable-area"
-                className="w-full max-w-[790px] min-h-[1020px] bg-white shadow-xl border border-slate-200 flex flex-col justify-between relative"
+                style={{
+                  fontFamily: "Arial, Calibri, 'Segoe UI', sans-serif",
+                  fontSize: "12pt",
+                  lineHeight: "1.5",
+                }}
+                className="w-full max-w-[790px] min-h-[1040px] bg-white shadow-xl border border-slate-200 flex flex-col justify-between relative text-slate-950"
               >
-                <div className="p-10 pb-4">
+                {/* Cintillo y contenido con márgenes oficiales de documento (2.5 cm laterales) */}
+                <div style={{ padding: "1.6cm 2.4cm 1cm 2.4cm" }}>
+                  {/* CINTILLO OFICIAL CONSERVADO */}
                   <OfficialHeaderCintillo showRightLogo={true} />
 
-                  <div className="mt-6 text-center">
-                    <h2 className="text-lg font-black uppercase tracking-widest text-slate-900">
-                      {docType === "MEMORANDUM" ? "MEMORÁNDUM" : "SOLICITUD"}
+                  {/* AVISO DE DOCUMENTO ANULADO SI APLICA */}
+                  {activePreviewDoc.status === "ANULADO" && (
+                    <div className="my-4 p-3 border-2 border-red-700 bg-red-50 text-red-900 rounded-lg text-xs">
+                      <div className="font-black uppercase">
+                        DOCUMENTO ANULADO ({activePreviewDoc.correlativo})
+                      </div>
+                      <div className="mt-1">
+                        <strong>Descripción / Motivo de anulación:</strong>{" "}
+                        {activePreviewDoc.motivoAnulacion}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* CORRELATIVO ALINEADO A LA DERECHA (EJ. FC-DG-MEM-2026-007) */}
+                  <div className="mt-5 text-right">
+                    <p
+                      style={{ fontSize: "12pt" }}
+                      className="font-bold tracking-normal text-slate-950"
+                    >
+                      {activePreviewDoc.correlativo}
+                    </p>
+                  </div>
+
+                  {/* TÍTULO CENTRADO (MEMORANDO / SOLICITUD / OFICIO) */}
+                  <div className="mt-4 mb-6 text-center">
+                    <h2
+                      style={{ fontSize: "13pt", letterSpacing: "0.04em" }}
+                      className="font-bold uppercase text-slate-950"
+                    >
+                      {activePreviewDoc.tipo === "MEMORANDUM"
+                        ? "MEMORANDO"
+                        : activePreviewDoc.tipo === "SOLICITUD"
+                        ? "SOLICITUD"
+                        : "OFICIO"}
                     </h2>
-                    <p className="text-xs font-bold text-slate-700 mt-0.5">{formattedCorrelative}</p>
                   </div>
 
-                  <div className="mt-6 border-t-2 border-b-2 border-slate-900 py-3 space-y-2 text-xs">
-                    <div className="grid grid-cols-12">
-                      <span className="col-span-2 font-black uppercase">PARA:</span>
-                      <span className="col-span-10 font-semibold">{para}</span>
+                  {/* ENCABEZADO CON PARÁMETROS EXACTOS DEL DOCUMENTO (PARA, DIRECCIÓN, DE, CARGO, FECHA, ASUNTO) */}
+                  <div
+                    style={{ fontSize: "11.5pt", lineHeight: "1.45" }}
+                    className="border-t-2 border-b-2 border-slate-900 py-3.5 space-y-3 text-slate-950"
+                  >
+                    <div className="grid grid-cols-12 items-start">
+                      <span className="col-span-2 font-bold uppercase">PARA:</span>
+                      <div className="col-span-10">
+                        <div className="font-bold">{activePreviewDoc.para}</div>
+                        {activePreviewDoc.paraDireccion && (
+                          <div className="font-bold">
+                            {activePreviewDoc.paraDireccion.startsWith("Dirección:")
+                              ? activePreviewDoc.paraDireccion
+                              : `Dirección: ${activePreviewDoc.paraDireccion}`}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="grid grid-cols-12">
-                      <span className="col-span-2 font-black uppercase">DE:</span>
-                      <span className="col-span-10 font-semibold">{de}</span>
+
+                    <div className="grid grid-cols-12 items-start">
+                      <span className="col-span-2 font-bold uppercase">DE:</span>
+                      <div className="col-span-10">
+                        <div className="font-bold">{activePreviewDoc.de}</div>
+                        {activePreviewDoc.deCargo && (
+                          <div className="font-bold">{activePreviewDoc.deCargo}</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="grid grid-cols-12">
-                      <span className="col-span-2 font-black uppercase">FECHA:</span>
-                      <span className="col-span-10">{fecha}</span>
+
+                    <div className="grid grid-cols-12 items-start">
+                      <span className="col-span-2 font-bold uppercase">FECHA:</span>
+                      <span className="col-span-10 font-bold">
+                        {formatFechaLargaOficial(activePreviewDoc.fecha)}
+                      </span>
                     </div>
-                    <div className="grid grid-cols-12">
-                      <span className="col-span-2 font-black uppercase">ASUNTO:</span>
-                      <span className="col-span-10 font-bold uppercase">{asunto}</span>
+
+                    <div className="grid grid-cols-12 items-start">
+                      <span className="col-span-2 font-bold uppercase">ASUNTO:</span>
+                      <span className="col-span-10 font-bold">{activePreviewDoc.asunto}</span>
                     </div>
                   </div>
 
-                  <div className="mt-6 text-xs leading-relaxed text-justify whitespace-pre-line text-slate-900 min-h-[340px]">
-                    {concepto}
+                  {/* CUERPO DEL MEMORANDO / SOLICITUD (MISMA FUENTE, TAMAÑO 12PT Y SANGRÍA/JUSTIFICADO) */}
+                  <div
+                    style={{ fontSize: "12pt", lineHeight: "1.6" }}
+                    className="mt-7 text-justify whitespace-pre-line text-slate-950 min-h-[290px]"
+                  >
+                    {activePreviewDoc.concepto}
                   </div>
 
-                  <div className="mt-12 text-center">
-                    <p className="text-xs font-semibold mb-10">Atentamente,</p>
-                    <div className="w-64 mx-auto border-t border-slate-900 pt-2">
-                      <p className="text-xs font-black uppercase text-slate-900">{signerNombre}</p>
-                      <p className="text-[11px] font-semibold text-slate-700">{signerCargo}</p>
-                      <p className="text-[9.5px] text-slate-500 mt-0.5">{signerResolucion}</p>
+                  {/* DESPEDIDA Y BLOQUE DE FIRMA CENTRADO */}
+                  <div
+                    style={{ fontSize: "12pt", lineHeight: "1.35" }}
+                    className="mt-10 text-center text-slate-950"
+                  >
+                    <p className="mb-14">Atentamente,</p>
+                    <div className="mx-auto pt-2">
+                      <p className="font-bold uppercase">{activePreviewDoc.signerNombre}</p>
+                      {activePreviewDoc.signerCargo && (
+                        <p className="font-bold">{activePreviewDoc.signerCargo}</p>
+                      )}
+                      {activePreviewDoc.signerEnte && (
+                        <p className="font-bold">{activePreviewDoc.signerEnte}</p>
+                      )}
+                      {activePreviewDoc.signerMinisterio && (
+                        <p className="font-bold">{activePreviewDoc.signerMinisterio}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -3025,6 +3687,160 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <OfficialFooterWave />
               </div>
             </div>
+
+            {/* MODAL DE REVISIÓN, AUTORIZACIÓN Y ANULACIÓN CON DESCRIPCIÓN */}
+            {reviewModalDocId && (() => {
+              const docToReview = documents.find((x) => x.id === reviewModalDocId);
+              if (!docToReview) return null;
+              const isAdmin = currentUser?.role === "ADMIN";
+              const canAnnul = isAdmin || hasActionPermission("anular");
+              return (
+                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 print:hidden">
+                  <div className="bg-[#0b1221] text-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-700">
+                    <div className="grid grid-cols-3 h-1.5 w-full">
+                      <div className="bg-[#facc15]" />
+                      <div className="bg-[#1d4ed8]" />
+                      <div className="bg-[#dc2626]" />
+                    </div>
+
+                    <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">
+                          Control de Calidad y Autorización Administrativa
+                        </span>
+                        <h3 className="text-base font-black uppercase text-white">
+                          Revisión de {docToReview.tipo} • {docToReview.correlativo}
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setReviewModalDocId(null)}
+                        className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="p-5 space-y-4 max-h-[78vh] overflow-y-auto text-xs">
+                      <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                          <span className="font-black text-amber-400">
+                            {docToReview.correlativo}
+                          </span>
+                          <span className="text-slate-400">
+                            Fecha: {formatFechaLargaOficial(docToReview.fecha)}
+                          </span>
+                        </div>
+                        <div>
+                          <strong className="text-slate-400">PARA:</strong> {docToReview.para}
+                          {docToReview.paraDireccion ? ` — ${docToReview.paraDireccion}` : ""}
+                        </div>
+                        <div>
+                          <strong className="text-slate-400">DE:</strong> {docToReview.de}
+                          {docToReview.deCargo ? ` — ${docToReview.deCargo}` : ""}
+                        </div>
+                        <div>
+                          <strong className="text-slate-400">ASUNTO:</strong>{" "}
+                          <span className="font-bold text-white">{docToReview.asunto}</span>
+                        </div>
+                        <div className="pt-2 border-t border-slate-800 whitespace-pre-line text-slate-200 leading-relaxed">
+                          {docToReview.concepto}
+                        </div>
+                        <div className="pt-2 border-t border-slate-800 text-slate-300">
+                          <strong>Firmante:</strong> {docToReview.signerNombre} ({docToReview.signerCargo})
+                        </div>
+                      </div>
+
+                      {docToReview.status === "ANULADO" && docToReview.motivoAnulacion && (
+                        <div className="p-3 rounded-xl bg-red-950/70 border border-red-500/60 text-red-200">
+                          <div className="font-black uppercase text-red-300">
+                            Documento Anulado
+                          </div>
+                          <p className="mt-1">
+                            <strong>Motivo / Descripción de anulación:</strong>{" "}
+                            {docToReview.motivoAnulacion}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Formulario de Descripción de Anulación */}
+                      {showAnnulBoxInModal && (
+                        <div className="p-4 rounded-xl bg-red-950/40 border border-red-500/50 space-y-2.5">
+                          <label className="block text-xs font-black uppercase text-red-300">
+                            Descripción obligatoria de por qué se anula el documento:
+                          </label>
+                          {annulError && (
+                            <div className="p-2 rounded-lg bg-red-900/70 text-red-100 text-[11px] font-bold">
+                              {annulError}
+                            </div>
+                          )}
+                          <textarea
+                            rows={3}
+                            value={annulReasonInput}
+                            onChange={(e) => {
+                              setAnnulReasonInput(e.target.value);
+                              setAnnulError("");
+                            }}
+                            placeholder="Escriba aquí la razón o descripción detallada por la cual se anula este memorando o solicitud..."
+                            className="w-full px-3 py-2 rounded-xl bg-[#070b14] border border-red-500/50 text-white text-xs"
+                          />
+                          <div className="flex justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowAnnulBoxInModal(false);
+                                setAnnulError("");
+                              }}
+                              className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer"
+                            >
+                              Cancelar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleAnnulDocument(docToReview.id, annulReasonInput)
+                              }
+                              className="px-4 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-black text-xs cursor-pointer"
+                            >
+                              Confirmar Anulación con Motivo
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
+                        <div className="text-[11px] text-slate-400">
+                          {isAdmin
+                            ? "Como Administrador puede autorizar la impresión o anular con motivo."
+                            : "Solo un Administrador puede autorizar el documento para impresión."}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {canAnnul && !showAnnulBoxInModal && (
+                            <button
+                              type="button"
+                              onClick={() => setShowAnnulBoxInModal(true)}
+                              className="px-3.5 py-2 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs cursor-pointer"
+                            >
+                              ✕ Anular Documento...
+                            </button>
+                          )}
+
+                          {isAdmin && (
+                            <button
+                              type="button"
+                              onClick={() => handleApproveDocument(docToReview.id)}
+                              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs cursor-pointer shadow-lg"
+                            >
+                              ✓ Está Correcto: Autorizar e Habilitar Impresión
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 
