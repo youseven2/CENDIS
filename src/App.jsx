@@ -556,12 +556,65 @@ function OfficialFooterWave() {
 }
 
 // ============================================================================
+// GESTIÓN DE SESIÓN PERSISTENTE MEDIANTE COOKIE (DURACIÓN: 7 DÍAS)
+// ============================================================================
+const SESSION_COOKIE_NAME = "cendis_session";
+const SESSION_DURATION_DAYS = 7;
+
+function setSessionCookie(userObj) {
+  if (typeof document === "undefined" || !userObj) return;
+  const maxAge = SESSION_DURATION_DAYS * 24 * 60 * 60;
+  const expires = new Date(Date.now() + maxAge * 1000).toUTCString();
+  const payload = encodeURIComponent(
+    JSON.stringify({
+      id: userObj.id,
+      username: userObj.username,
+      fullName: userObj.fullName,
+      cargo: userObj.cargo,
+      role: userObj.role,
+      active: userObj.active,
+      permissions: userObj.permissions,
+    })
+  );
+  document.cookie = `${SESSION_COOKIE_NAME}=${payload}; expires=${expires}; max-age=${maxAge}; path=/; SameSite=Lax`;
+}
+
+function getSessionFromCookie(usersList = DEFAULT_USERS) {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${SESSION_COOKIE_NAME}=`));
+  if (!match) return null;
+  try {
+    const rawValue = match.substring(SESSION_COOKIE_NAME.length + 1);
+    const parsed = JSON.parse(decodeURIComponent(rawValue));
+    if (!parsed || !parsed.username) return null;
+    const foundInList = usersList.find(
+      (u) => u.username.toLowerCase() === parsed.username.toLowerCase()
+    );
+    if (foundInList) {
+      return foundInList.active ? foundInList : null;
+    }
+    return parsed.active !== false ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearSessionCookie() {
+  if (typeof document === "undefined") return;
+  document.cookie = `${SESSION_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/; SameSite=Lax`;
+}
+
+// ============================================================================
 // COMPONENTE PRINCIPAL APP
 // ============================================================================
 export default function App() {
   const [users, setUsers] = useState(DEFAULT_USERS);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [currentScreen, setCurrentScreen] = useState("LOGIN"); // LOGIN | PORTAL | APP
+  const [currentUser, setCurrentUser] = useState(() => getSessionFromCookie(DEFAULT_USERS));
+  const [currentScreen, setCurrentScreen] = useState(() =>
+    getSessionFromCookie(DEFAULT_USERS) ? "PORTAL" : "LOGIN"
+  ); // LOGIN | PORTAL | APP
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -983,6 +1036,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       return;
     }
     setCurrentUser(found);
+    setSessionCookie(found);
     setLoginError("");
     setCurrentScreen("PORTAL");
     addLog(`Inicio de sesión exitoso (${found.fullName})`, found);
@@ -990,6 +1044,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
   const handleLogout = () => {
     addLog("Cierre de sesión de usuario");
+    clearSessionCookie();
     setCurrentUser(null);
     setLoginUsername("");
     setLoginPassword("");
