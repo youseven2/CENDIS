@@ -2285,13 +2285,42 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     return Math.round(sum / projects.length);
   }, [projects]);
 
-  // Contenedor adaptable según el selector PC / Tablet / Teléfono
+  // Contenedor adaptable según el selector PC / Tablet / Celular
   const viewportContainerClass =
     deviceViewport === "MOBILE"
-      ? "max-w-[420px] mx-auto border-x-4 border-slate-800 shadow-2xl min-h-screen"
+      ? "viewport-mobile w-full max-w-[430px] mx-auto border-x-4 border-b-4 border-slate-800/90 rounded-b-3xl shadow-2xl min-h-screen transition-all duration-300 overflow-x-hidden"
       : deviceViewport === "TABLET"
-      ? "max-w-[820px] mx-auto border-x-4 border-slate-800 shadow-2xl min-h-screen"
-      : "w-full min-h-screen";
+      ? "viewport-tablet w-full max-w-[860px] mx-auto border-x-4 border-b-4 border-slate-800/90 rounded-b-3xl shadow-2xl min-h-screen transition-all duration-300 overflow-x-hidden"
+      : "viewport-desktop w-full min-h-screen transition-all duration-300";
+
+  const renderDeviceViewportSwitcher = () => (
+    <div className="flex items-center bg-[#070b14] p-1 rounded-xl border border-slate-700/80 shadow-inner">
+      {[
+        { id: "DESKTOP", label: "PC", icon: Laptop, title: "Vista Computadora (Escritorio)" },
+        { id: "TABLET", label: "Tablet", icon: Tablet, title: "Vista Tablet (860px)" },
+        { id: "MOBILE", label: "Celular", icon: Smartphone, title: "Vista Celular (430px)" },
+      ].map((dev) => {
+        const DevIcon = dev.icon;
+        const active = deviceViewport === dev.id;
+        return (
+          <button
+            key={dev.id}
+            type="button"
+            onClick={() => setDeviceViewport(dev.id)}
+            title={dev.title}
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition cursor-pointer ${
+              active
+                ? "bg-[#f59e0b] text-slate-950 font-black shadow"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <DevIcon className="w-3.5 h-3.5" />
+            <span>{dev.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 
   // ==========================================================================
   // 1) VENTANA ÚNICA DE INICIO DE SESIÓN (IDÉNTICA A LA CAPTURA ADJUNTA)
@@ -2669,196 +2698,228 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     ];
 
     return (
-      <div className="min-h-screen bg-[#050a15] text-slate-100 flex flex-col font-sans">
-        <div className="grid grid-cols-3 h-1.5 w-full">
-          <div className="bg-[#facc15]" />
-          <div className="bg-[#1d4ed8]" />
-          <div className="bg-[#dc2626]" />
-        </div>
-
-        <header className="bg-[#0b1221] border-b border-slate-800/90 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-4">
-            <div className="bg-white px-3 py-1.5 rounded-xl shadow">
-              <CendisGlyphLogo className="w-24" />
-            </div>
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#f59e0b] block">
-                MINISTERIO DEL PODER POPULAR PARA LA CULTURA
-              </span>
-              <h1 className="text-base font-black text-white uppercase tracking-tight">
-                SIACENDIS • FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)
-              </h1>
-              <p className="text-xs text-slate-400">
-                Usuario: <span className="font-bold text-white">{currentUser.fullName}</span>{" "}
-                ({currentUser.email || `${currentUser.username}@gmail.com`}) • Rol:{" "}
-                <span className="font-bold text-[#f59e0b]">
-                  {currentUser.role === "ADMIN" ? "Administrador" : "Usuario Estándar"}
-                </span>{" "}
-                • Vigencia de clave:{" "}
-                <span className="font-bold text-emerald-400">
-                  {passwordExpInfo.daysRemaining} de {PASSWORD_MAX_AGE_DAYS} días
-                </span>{" "}
-                • Sesión inactiva: <span className="font-bold text-amber-300">5 min máx.</span>
-              </p>
-            </div>
+      <div className="min-h-screen bg-[#030710] text-slate-100 flex flex-col font-sans">
+        <div className={`bg-[#050a15] flex flex-col ${viewportContainerClass}`}>
+          <div className="grid grid-cols-3 h-1.5 w-full">
+            <div className="bg-[#facc15]" />
+            <div className="bg-[#1d4ed8]" />
+            <div className="bg-[#dc2626]" />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={openPasswordModal}
-              className="px-3.5 py-2 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-amber-500/40 text-amber-400 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow"
-              title="Cambiar clave de seguridad (Vigencia límite: 90 días)"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>Cambiar Clave ({passwordExpInfo.daysRemaining}d)</span>
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Cerrar Sesión</span>
-            </button>
-          </div>
-        </header>
-
-        <main className="flex-1 max-w-6xl w-full mx-auto p-5 md:p-8 space-y-6">
-          {!currentUserLinkedEmployee && (
-            <div className="rounded-2xl bg-amber-950/70 border border-amber-500/60 p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg">
-              <div className="flex items-center gap-3">
-                <span className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-base shrink-0">
-                  !
-                </span>
-                <div>
-                  <h3 className="text-xs font-black uppercase text-amber-300">
-                    Aviso de Recursos Humanos: Cuenta de Google pendiente por vincular
-                  </h3>
-                  <p className="text-xs text-slate-200 mt-0.5">
-                    Ha iniciado sesión con{" "}
-                    <span className="font-bold text-white">
-                      {currentUser.email || `${currentUser.username}@gmail.com`}
-                    </span>
-                    . Ingrese al módulo de <strong>RECURSOS HUMANOS</strong> para vincular su correo con los datos personales del trabajador.
-                  </p>
-                </div>
+          <header
+            className={`bg-[#0b1221] border-b border-slate-800/90 ${
+              deviceViewport === "MOBILE" ? "px-3.5 py-3" : "px-6 py-4"
+            } flex flex-wrap items-center justify-between gap-3`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-white px-2.5 py-1.5 rounded-xl shadow shrink-0">
+                <CendisGlyphLogo className={deviceViewport === "MOBILE" ? "w-16" : "w-24"} />
               </div>
-              <button
-                onClick={() => {
-                  setActiveTab("hr");
-                  setCurrentScreen("APP");
-                }}
-                className="px-4 py-2 rounded-xl bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950 font-black text-xs cursor-pointer shadow"
-              >
-                Ir a Recursos Humanos para Vincular →
-              </button>
+              <div>
+                <span className="text-[9.5px] font-black uppercase tracking-widest text-[#f59e0b] block">
+                  MINISTERIO DEL PODER POPULAR PARA LA CULTURA
+                </span>
+                <h1
+                  className={`${
+                    deviceViewport === "MOBILE" ? "text-xs" : "text-base"
+                  } font-black text-white uppercase tracking-tight leading-snug`}
+                >
+                  SIACENDIS • FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)
+                </h1>
+                <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
+                  Usuario: <span className="font-bold text-white">{currentUser.fullName}</span>{" "}
+                  ({currentUser.email || `${currentUser.username}@gmail.com`}) • Rol:{" "}
+                  <span className="font-bold text-[#f59e0b]">
+                    {currentUser.role === "ADMIN" ? "Administrador" : "Usuario Estándar"}
+                  </span>{" "}
+                  • Vigencia clave:{" "}
+                  <span className="font-bold text-emerald-400">
+                    {passwordExpInfo.daysRemaining}d
+                  </span>
+                </p>
+              </div>
             </div>
-          )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {portalModules.map((mod) => {
-              const IconComp = mod.icon;
-              const isWarm = mod.theme === "WARM";
-              return (
-                <div
-                  key={mod.id}
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+              {renderDeviceViewportSwitcher()}
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={openPasswordModal}
+                  className="px-3 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-amber-500/40 text-amber-400 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shadow"
+                  title="Cambiar clave de seguridad (Vigencia límite: 90 días)"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Clave ({passwordExpInfo.daysRemaining}d)</span>
+                </button>
+
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1.5 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shadow"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Salir</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <main
+            className={`flex-1 max-w-6xl w-full mx-auto ${
+              deviceViewport === "MOBILE"
+                ? "p-3.5 space-y-4"
+                : deviceViewport === "TABLET"
+                ? "p-5 space-y-5"
+                : "p-5 md:p-8 space-y-6"
+            }`}
+          >
+            {!currentUserLinkedEmployee && (
+              <div className="rounded-2xl bg-amber-950/70 border border-amber-500/60 p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+                <div className="flex items-center gap-3">
+                  <span className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-base shrink-0">
+                    !
+                  </span>
+                  <div>
+                    <h3 className="text-xs font-black uppercase text-amber-300">
+                      Aviso de Recursos Humanos: Cuenta pendiente por vincular
+                    </h3>
+                    <p className="text-xs text-slate-200 mt-0.5">
+                      Ha iniciado sesión con{" "}
+                      <span className="font-bold text-white">
+                        {currentUser.email || `${currentUser.username}@gmail.com`}
+                      </span>
+                      . Ingrese al módulo de <strong>RECURSOS HUMANOS</strong> para vincular su correo con los datos personales del trabajador.
+                    </p>
+                  </div>
+                </div>
+                <button
                   onClick={() => {
-                    if (!canEnterModule(mod.id)) {
-                      showToast(
-                        `Acceso restringido: Su usuario no tiene permiso para ingresar a la pantalla "${mod.title}".`,
-                        "error"
-                      );
-                      return;
-                    }
-                    setActiveTab(mod.id);
+                    setActiveTab("hr");
                     setCurrentScreen("APP");
                   }}
-                  className={`group relative rounded-[28px] p-6 transition-all duration-300 flex flex-col justify-between cursor-pointer border ${
-                    isWarm
-                      ? "bg-gradient-to-br from-[#2a1215] via-[#17111a] to-[#0c1220] border-[#7c2d12]/70 hover:border-[#f59e0b]"
-                      : "bg-gradient-to-br from-[#10203b] via-[#0d182c] to-[#09101d] border-[#1e3a8a]/80 hover:border-[#3b82f6]"
-                  } shadow-2xl`}
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950 font-black text-xs cursor-pointer shadow"
                 >
-                  <div>
-                    {/* Fila superior: Icono con insignia en la esquina + Píldora de estado */}
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="relative">
-                        <div
-                          className={`w-14 h-14 rounded-2xl flex items-center justify-center border ${
+                  Ir a Recursos Humanos para Vincular →
+                </button>
+              </div>
+            )}
+
+            <div
+              className={`grid ${
+                deviceViewport === "MOBILE"
+                  ? "grid-cols-1 gap-4"
+                  : deviceViewport === "TABLET"
+                  ? "grid-cols-1 sm:grid-cols-2 gap-5"
+                  : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              }`}
+            >
+              {portalModules.map((mod) => {
+                const IconComp = mod.icon;
+                const isWarm = mod.theme === "WARM";
+                return (
+                  <div
+                    key={mod.id}
+                    onClick={() => {
+                      if (!canEnterModule(mod.id)) {
+                        showToast(
+                          `Acceso restringido: Su usuario no tiene permiso para ingresar a la pantalla "${mod.title}".`,
+                          "error"
+                        );
+                        return;
+                      }
+                      setActiveTab(mod.id);
+                      setCurrentScreen("APP");
+                    }}
+                    className={`group relative rounded-[24px] ${
+                      deviceViewport === "MOBILE" ? "p-4" : "p-6"
+                    } transition-all duration-300 flex flex-col justify-between cursor-pointer border ${
+                      isWarm
+                        ? "bg-gradient-to-br from-[#2a1215] via-[#17111a] to-[#0c1220] border-[#7c2d12]/70 hover:border-[#f59e0b]"
+                        : "bg-gradient-to-br from-[#10203b] via-[#0d182c] to-[#09101d] border-[#1e3a8a]/80 hover:border-[#3b82f6]"
+                    } shadow-2xl`}
+                  >
+                    <div>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="relative">
+                          <div
+                            className={`${
+                              deviceViewport === "MOBILE" ? "w-11 h-11" : "w-14 h-14"
+                            } rounded-2xl flex items-center justify-center border ${
+                              isWarm
+                                ? "bg-[#2a1712] border-amber-500/40 text-[#f59e0b]"
+                                : "bg-[#112445] border-blue-400/40 text-blue-400"
+                            }`}
+                          >
+                            <IconComp className={deviceViewport === "MOBILE" ? "w-5 h-5" : "w-7 h-7"} />
+                          </div>
+                          <span
+                            className={`absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-lg ${mod.cornerBg} font-black text-[10px] flex items-center justify-center shadow-md`}
+                          >
+                            {mod.cornerBadge}
+                          </span>
+                        </div>
+
+                        <span
+                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 border ${
                             isWarm
-                              ? "bg-[#2a1712] border-amber-500/40 text-[#f59e0b]"
-                              : "bg-[#112445] border-blue-400/40 text-blue-400"
+                              ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-400"
+                              : "bg-blue-950/80 border-blue-400/40 text-blue-300"
                           }`}
                         >
-                          <IconComp className="w-7 h-7" />
-                        </div>
-                        <span
-                          className={`absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-lg ${mod.cornerBg} font-black text-xs flex items-center justify-center shadow-md`}
-                        >
-                          {mod.cornerBadge}
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              isWarm ? "bg-emerald-400" : "bg-blue-400"
+                            }`}
+                          />
+                          {mod.badgeText}
                         </span>
                       </div>
 
-                      <span
-                        className={`px-3.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 border ${
-                          isWarm
-                            ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-400"
-                            : "bg-blue-950/80 border-blue-400/40 text-blue-300"
+                      <p
+                        className={`text-[11px] font-black uppercase tracking-wider mb-1 ${
+                          isWarm ? "text-[#f59e0b]" : "text-[#38bdf8]"
                         }`}
                       >
-                        <span
-                          className={`w-2 h-2 rounded-full ${
-                            isWarm ? "bg-emerald-400" : "bg-blue-400"
-                          }`}
-                        />
-                        {mod.badgeText}
+                        {mod.subtitle}
+                      </p>
+                      <h3
+                        className={`${
+                          deviceViewport === "MOBILE" ? "text-lg" : "text-2xl"
+                        } font-black text-white tracking-tight uppercase`}
+                      >
+                        {mod.title}
+                      </h3>
+
+                      <p className="text-xs sm:text-sm text-slate-300/90 mt-2.5 leading-relaxed">
+                        {mod.desc}
+                      </p>
+
+                      <div className="flex flex-wrap gap-1.5 mt-4">
+                        {mod.pills.map((pill, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2.5 py-1 rounded-full bg-[#090d16]/90 border border-slate-700/80 text-[11px] font-semibold text-slate-200 flex items-center gap-1.5"
+                          >
+                            <span className={`font-black ${pill.color}`}>{pill.symbol}</span>
+                            <span>{pill.text}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between">
+                      <span className="font-mono text-[11px] font-bold text-slate-400 tracking-wider">
+                        {mod.footerCode}
                       </span>
                     </div>
-
-                    {/* Subtítulo y Título */}
-                    <p
-                      className={`text-xs font-black uppercase tracking-wider mb-1 ${
-                        isWarm ? "text-[#f59e0b]" : "text-[#38bdf8]"
-                      }`}
-                    >
-                      {mod.subtitle}
-                    </p>
-                    <h3 className="text-2xl font-black text-white tracking-tight uppercase">
-                      {mod.title}
-                    </h3>
-
-                    {/* Descripción */}
-                    <p className="text-sm text-slate-300/90 mt-3 leading-relaxed">
-                      {mod.desc}
-                    </p>
-
-                    {/* Píldoras informativas */}
-                    <div className="flex flex-wrap gap-2 mt-5">
-                      {mod.pills.map((pill, idx) => (
-                        <span
-                          key={idx}
-                          className="px-3 py-1.5 rounded-full bg-[#090d16]/90 border border-slate-700/80 text-xs font-semibold text-slate-200 flex items-center gap-1.5"
-                        >
-                          <span className={`font-black ${pill.color}`}>{pill.symbol}</span>
-                          <span>{pill.text}</span>
-                        </span>
-                      ))}
-                    </div>
                   </div>
-
-                  {/* Barra inferior con código */}
-                  <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-                    <span className="font-mono text-xs font-bold text-slate-400 tracking-wider">
-                      {mod.footerCode}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </main>
-        {renderPasswordChangeModal()}
+                );
+              })}
+            </div>
+          </main>
+          {renderPasswordChangeModal()}
+        </div>
       </div>
     );
   }
@@ -2867,7 +2928,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   // 3) ÁREA DE TRABAJO PRINCIPAL (ESTILO OSCURO CÁLIDO/AZUL COMO LAS CAPTURAS)
   // ==========================================================================
   return (
-    <div className="min-h-screen bg-[#050a15] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#030710] text-slate-100 flex flex-col font-sans">
       <style>{`
         /* Adaptación de paneles al tema oscuro de las capturas fuera del área de impresión */
         .cendis-dark-workspace .bg-white:not(#printable-area):not(#printable-area *) {
@@ -2903,6 +2964,69 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           outline: none !important;
           border-color: #f59e0b !important;
         }
+
+        /* ====================================================================
+           AJUSTE INTELIGENTE DE PANTALLA PARA CELULAR (MOBILE) Y TABLET
+           ==================================================================== */
+        .viewport-mobile .lg\\:grid-cols-12:not(#printable-area *),
+        .viewport-mobile .lg\\:grid-cols-4:not(#printable-area *),
+        .viewport-mobile .lg\\:grid-cols-3:not(#printable-area *),
+        .viewport-mobile .md\\:grid-cols-6:not(#printable-area *),
+        .viewport-mobile .md\\:grid-cols-5:not(#printable-area *),
+        .viewport-mobile .md\\:grid-cols-4:not(#printable-area *),
+        .viewport-mobile .md\\:grid-cols-3:not(#printable-area *),
+        .viewport-mobile .md\\:grid-cols-2:not(#printable-area *),
+        .viewport-mobile .sm\\:grid-cols-4:not(#printable-area *),
+        .viewport-mobile .sm\\:grid-cols-3:not(#printable-area *),
+        .viewport-mobile .sm\\:grid-cols-2:not(#printable-area *),
+        .viewport-mobile .grid-cols-3:not(.h-1\\.5):not(#printable-area *),
+        .viewport-mobile .grid-cols-2:not(#printable-area *) {
+          grid-template-columns: minmax(0, 1fr) !important;
+        }
+        .viewport-mobile .lg\\:col-span-5:not(#printable-area *),
+        .viewport-mobile .lg\\:col-span-7:not(#printable-area *),
+        .viewport-mobile .md\\:col-span-3:not(#printable-area *),
+        .viewport-mobile .md\\:col-span-2:not(#printable-area *),
+        .viewport-mobile .sm\\:col-span-2:not(#printable-area *) {
+          grid-column: span 1 / span 1 !important;
+        }
+        .viewport-mobile .p-6:not(#printable-area *),
+        .viewport-mobile .p-5:not(#printable-area *) {
+          padding: 0.85rem !important;
+        }
+        .viewport-mobile table:not(#printable-area *) {
+          display: block !important;
+          width: 100% !important;
+          overflow-x: auto !important;
+          -webkit-overflow-scrolling: touch;
+        }
+        .viewport-mobile #printable-area {
+          zoom: 0.46;
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+
+        .viewport-tablet .lg\\:grid-cols-12:not(#printable-area *) {
+          grid-template-columns: minmax(0, 1fr) !important;
+        }
+        .viewport-tablet .lg\\:col-span-5:not(#printable-area *),
+        .viewport-tablet .lg\\:col-span-7:not(#printable-area *) {
+          grid-column: span 1 / span 1 !important;
+        }
+        .viewport-tablet .md\\:grid-cols-6:not(#printable-area *),
+        .viewport-tablet .md\\:grid-cols-5:not(#printable-area *),
+        .viewport-tablet .md\\:grid-cols-4:not(#printable-area *),
+        .viewport-tablet .md\\:grid-cols-3:not(#printable-area *),
+        .viewport-tablet .lg\\:grid-cols-4:not(#printable-area *) {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+        .viewport-tablet .md\\:col-span-3:not(#printable-area *) {
+          grid-column: span 2 / span 2 !important;
+        }
+        .viewport-tablet #printable-area {
+          zoom: 0.9;
+        }
+
         /* Garantizar hoja de impresión blanca intacta con colores exactos del cintillo */
         #printable-area, #printable-area * {
           -webkit-print-color-adjust: exact !important;
@@ -2924,10 +3048,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             visibility: visible;
           }
           #printable-area {
+            zoom: 1 !important;
             position: fixed;
             left: 0;
             top: 0;
-            width: 100%;
+            width: 100% !important;
+            max-width: 100% !important;
             min-height: 100vh;
             margin: 0;
             padding: 0;
@@ -2945,111 +3071,101 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         </div>
       )}
 
-      {/* BARRA SUPERIOR DE NAVEGACIÓN */}
-      <header className="print:hidden bg-[#0b1221] text-white px-3 py-2.5 flex flex-wrap items-center justify-between gap-2 shadow-lg border-b border-slate-800">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setCurrentScreen("PORTAL")}
-            className="px-3 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] text-xs font-bold flex items-center gap-1.5 border border-slate-700 text-[#f59e0b] cursor-pointer"
-          >
-            <Grid className="w-3.5 h-3.5 text-[#f59e0b]" />
-            <span>Módulos</span>
-          </button>
-          <span className="font-black tracking-tight text-xs uppercase text-white hidden sm:inline">
-            SIACENDIS
-          </span>
+      {/* CONTENEDOR ADAPTABLE SEGÚN DISPOSITIVO (INCLUYE BARRA DE NAVEGACIÓN Y ÁREA DE TRABAJO) */}
+      <div className={`cendis-dark-workspace bg-[#050a15] flex-1 flex flex-col ${viewportContainerClass}`}>
+        <div className="grid grid-cols-3 h-1.5 w-full print:hidden">
+          <div className="bg-[#facc15]" />
+          <div className="bg-[#1d4ed8]" />
+          <div className="bg-[#dc2626]" />
         </div>
 
-        <nav className="flex flex-wrap items-center gap-1">
-          {[
-            { id: "editor", label: "Memos", icon: FileText },
-            { id: "agenda", label: "Agenda", icon: CalendarIcon },
-            { id: "hr", label: "RRHH & Carnets", icon: Users },
-            { id: "proyectos", label: "Proyectos (%)", icon: Briefcase },
-            { id: "bienes", label: "Bienes Nacionales", icon: Package },
-            { id: "attendance", label: "Asistencia", icon: UserCheck },
-            { id: "stats", label: "Estadística", icon: BarChart3 },
-            { id: "org", label: "Organigrama", icon: GitBranch },
-            { id: "config", label: "Configuración", icon: Settings },
-          ].map((tab) => {
-            const IconT = tab.icon;
-            const allowed = canEnterModule(tab.id);
-            return (
+        {/* BARRA SUPERIOR DE NAVEGACIÓN ADAPTABLE */}
+        <header className="print:hidden bg-[#0b1221] text-white px-3 py-2.5 flex flex-col gap-2 shadow-lg border-b border-slate-800">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
               <button
-                key={tab.id}
-                onClick={() => {
-                  if (!allowed) {
-                    showToast(
-                      `Acceso restringido: Su usuario no tiene permiso para ingresar a "${tab.label}".`,
-                      "error"
-                    );
-                    return;
-                  }
-                  setActiveTab(tab.id);
-                }}
-                className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 transition cursor-pointer ${
-                  activeTab === tab.id
-                    ? "bg-[#f59e0b] text-slate-950 font-black shadow"
-                    : allowed
-                    ? "text-slate-300 hover:bg-slate-800"
-                    : "text-slate-600 opacity-60"
-                }`}
+                onClick={() => setCurrentScreen("PORTAL")}
+                className="px-3 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] text-xs font-bold flex items-center gap-1.5 border border-slate-700 text-[#f59e0b] cursor-pointer"
               >
-                <IconT className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
+                <Grid className="w-3.5 h-3.5 text-[#f59e0b]" />
+                <span>Módulos</span>
               </button>
-            );
-          })}
-        </nav>
+              <span className="font-black tracking-tight text-xs uppercase text-white">
+                SIACENDIS
+              </span>
+            </div>
 
-        <div className="flex items-center gap-1.5">
-          {/* Selector de vista PC / Tablet / Móvil */}
-          <div className="flex items-center bg-[#070b14] p-0.5 rounded-lg border border-slate-800">
-            <button
-              onClick={() => setDeviceViewport("DESKTOP")}
-              className={`p-1 rounded ${deviceViewport === "DESKTOP" ? "bg-[#f59e0b] text-slate-950" : "text-slate-400"}`}
-              title="Vista Computadora"
-            >
-              <Laptop className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setDeviceViewport("TABLET")}
-              className={`p-1 rounded ${deviceViewport === "TABLET" ? "bg-[#f59e0b] text-slate-950" : "text-slate-400"}`}
-              title="Vista Tablet"
-            >
-              <Tablet className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setDeviceViewport("MOBILE")}
-              className={`p-1 rounded ${deviceViewport === "MOBILE" ? "bg-[#f59e0b] text-slate-950" : "text-slate-400"}`}
-              title="Vista Teléfono"
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {renderDeviceViewportSwitcher()}
+
+              <button
+                type="button"
+                onClick={openPasswordModal}
+                className="px-2.5 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-amber-500/40 text-amber-400 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                title="Cambiar clave de seguridad (Límite de renovación: 90 días)"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                <span>{deviceViewport === "MOBILE" ? `${passwordExpInfo.daysRemaining}d` : `Cambiar Clave (${passwordExpInfo.daysRemaining}d)`}</span>
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="px-2.5 py-1.5 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Salir</span>
+              </button>
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={openPasswordModal}
-            className="px-2.5 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-amber-500/40 text-amber-400 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
-            title="Cambiar clave de seguridad (Límite de renovación: 90 días)"
+          <nav
+            className={`flex items-center gap-1 ${
+              deviceViewport === "MOBILE"
+                ? "overflow-x-auto flex-nowrap pb-1"
+                : "flex-wrap"
+            }`}
           >
-            <Lock className="w-3.5 h-3.5" />
-            <span>Cambiar Clave ({passwordExpInfo.daysRemaining}d)</span>
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="px-3 py-1.5 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Salir</span>
-          </button>
-        </div>
-      </header>
-
-      {/* CONTENEDOR ADAPTABLE SEGÚN DISPOSITIVO */}
-      <div className={`cendis-dark-workspace bg-[#050a15] flex-1 flex flex-col ${viewportContainerClass}`}>
+            {[
+              { id: "editor", label: "Memos", icon: FileText },
+              { id: "agenda", label: "Agenda", icon: CalendarIcon },
+              { id: "hr", label: "RRHH & Carnets", icon: Users },
+              { id: "proyectos", label: "Proyectos (%)", icon: Briefcase },
+              { id: "bienes", label: "Bienes Nacionales", icon: Package },
+              { id: "attendance", label: "Asistencia", icon: UserCheck },
+              { id: "stats", label: "Estadística", icon: BarChart3 },
+              { id: "org", label: "Organigrama", icon: GitBranch },
+              { id: "config", label: "Configuración", icon: Settings },
+            ].map((tab) => {
+              const IconT = tab.icon;
+              const allowed = canEnterModule(tab.id);
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    if (!allowed) {
+                      showToast(
+                        `Acceso restringido: Su usuario no tiene permiso para ingresar a "${tab.label}".`,
+                        "error"
+                      );
+                      return;
+                    }
+                    setActiveTab(tab.id);
+                  }}
+                  className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 transition cursor-pointer shrink-0 ${
+                    activeTab === tab.id
+                      ? "bg-[#f59e0b] text-slate-950 font-black shadow"
+                      : allowed
+                      ? "text-slate-300 hover:bg-slate-800"
+                      : "text-slate-600 opacity-60"
+                  }`}
+                >
+                  <IconT className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </header>
         {/* ====================================================================
             MÓDULO 1: MEMORANDOS, SOLICITUDES Y OFICIOS UNIVERSALES
            ==================================================================== */}
