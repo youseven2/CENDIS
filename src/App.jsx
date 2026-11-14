@@ -167,41 +167,49 @@ const DEFAULT_USERS = [
   {
     id: 1,
     username: "admin",
+    email: "admin.cendis@gmail.com",
     password: "Qwerty123.",
     fullName: "Administrador General CENDIS",
     cargo: "Coordinación de Tecnología y Sistemas",
     role: "ADMIN",
     active: true,
+    linkedEmployeeId: null,
     permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN },
   },
   {
     id: 2,
     username: "presidencia",
+    email: "presidencia.cendis@gmail.com",
     password: "Cendis2026*",
     fullName: "Presidencia CENDIS",
     cargo: "Presidente de la Fundación CENDIS",
     role: "ADMIN",
     active: true,
+    linkedEmployeeId: "emp-1",
     permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN },
   },
   {
     id: 3,
     username: "produccion",
+    email: "produccion.cendis@gmail.com",
     password: "Cendis2026*",
     fullName: "Coordinación de Producción",
     cargo: "Coordinador(a) de Producción Fonográfica",
     role: "ESTANDAR",
     active: true,
+    linkedEmployeeId: "emp-3",
     permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR },
   },
   {
     id: 4,
     username: "recepcion",
+    email: "recepcion.cendis@gmail.com",
     password: "Cendis2026*",
     fullName: "Recepción y Despacho",
     cargo: "Asistente Administrativo",
     role: "ESTANDAR",
     active: true,
+    linkedEmployeeId: null,
     permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR },
   },
 ];
@@ -215,6 +223,7 @@ const INITIAL_EMPLOYEES = [
     cargo: "Presidente CENDIS",
     coordinacion: "Presidencia",
     telefono: "0414-1234567",
+    correo: "presidencia.cendis@gmail.com",
     direccion: "Caracas, Av. Libertador",
     fechaNacimiento: "1980-05-12",
     fechaIngreso: "2022-01-15",
@@ -233,6 +242,7 @@ const INITIAL_EMPLOYEES = [
     cargo: "Directora Ejecutiva",
     coordinacion: "Dirección Ejecutiva",
     telefono: "0424-9988776",
+    correo: "",
     direccion: "Caracas, El Paraíso",
     fechaNacimiento: "1985-09-20",
     fechaIngreso: "2023-03-10",
@@ -251,6 +261,7 @@ const INITIAL_EMPLOYEES = [
     cargo: "Coordinadora de Producción",
     coordinacion: "Producción Fonográfica",
     telefono: "0424-1643007",
+    correo: "produccion.cendis@gmail.com",
     direccion: "Caracas, Centro",
     fechaNacimiento: "1990-11-04",
     fechaIngreso: "2024-02-01",
@@ -269,6 +280,7 @@ const INITIAL_EMPLOYEES = [
     cargo: "Especialista Audiovisual",
     coordinacion: "Cultura Audiovisual",
     telefono: "0426-3243246",
+    correo: "",
     direccion: "Los Valles del Tuy, Miranda",
     fechaNacimiento: "1988-07-22",
     fechaIngreso: "2023-08-19",
@@ -556,10 +568,54 @@ function OfficialFooterWave() {
 }
 
 // ============================================================================
-// GESTIÓN DE SESIÓN PERSISTENTE MEDIANTE COOKIE (DURACIÓN: 7 DÍAS)
+// GESTIÓN DE SESIÓN PERSISTENTE MEDIANTE COOKIE (DURACIÓN: 7 DÍAS) Y ALMACENAMIENTO
 // ============================================================================
 const SESSION_COOKIE_NAME = "cendis_session";
 const SESSION_DURATION_DAYS = 7;
+const STORAGE_USERS_KEY = "cendis_users_v1";
+const STORAGE_EMPLOYEES_KEY = "cendis_employees_v1";
+
+function loadStoredUsers() {
+  if (typeof window === "undefined") return DEFAULT_USERS;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_USERS_KEY);
+    if (!raw) return DEFAULT_USERS;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_USERS;
+  } catch {
+    return DEFAULT_USERS;
+  }
+}
+
+function saveStoredUsers(list) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(list));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+function loadStoredEmployees() {
+  if (typeof window === "undefined") return INITIAL_EMPLOYEES;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_EMPLOYEES_KEY);
+    if (!raw) return INITIAL_EMPLOYEES;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_EMPLOYEES;
+  } catch {
+    return INITIAL_EMPLOYEES;
+  }
+}
+
+function saveStoredEmployees(list) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_EMPLOYEES_KEY, JSON.stringify(list));
+  } catch {
+    // ignore storage errors
+  }
+}
 
 function setSessionCookie(userObj) {
   if (typeof document === "undefined" || !userObj) return;
@@ -569,10 +625,12 @@ function setSessionCookie(userObj) {
     JSON.stringify({
       id: userObj.id,
       username: userObj.username,
+      email: userObj.email || "",
       fullName: userObj.fullName,
       cargo: userObj.cargo,
       role: userObj.role,
       active: userObj.active,
+      linkedEmployeeId: userObj.linkedEmployeeId || null,
       permissions: userObj.permissions,
     })
   );
@@ -588,12 +646,14 @@ function getSessionFromCookie(usersList = DEFAULT_USERS) {
   try {
     const rawValue = match.substring(SESSION_COOKIE_NAME.length + 1);
     const parsed = JSON.parse(decodeURIComponent(rawValue));
-    if (!parsed || !parsed.username) return null;
+    if (!parsed || (!parsed.username && !parsed.email)) return null;
     const foundInList = usersList.find(
-      (u) => u.username.toLowerCase() === parsed.username.toLowerCase()
+      (u) =>
+        (parsed.email && u.email && u.email.toLowerCase() === parsed.email.toLowerCase()) ||
+        (parsed.username && u.username.toLowerCase() === parsed.username.toLowerCase())
     );
     if (foundInList) {
-      return foundInList.active ? foundInList : null;
+      return foundInList.active ? { ...foundInList, email: parsed.email || foundInList.email } : null;
     }
     return parsed.active !== false ? parsed : null;
   } catch {
@@ -610,15 +670,25 @@ function clearSessionCookie() {
 // COMPONENTE PRINCIPAL APP
 // ============================================================================
 export default function App() {
-  const [users, setUsers] = useState(DEFAULT_USERS);
-  const [currentUser, setCurrentUser] = useState(() => getSessionFromCookie(DEFAULT_USERS));
+  const [users, setUsersState] = useState(() => loadStoredUsers());
+  const setUsers = (updater) => {
+    setUsersState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredUsers(next);
+      return next;
+    });
+  };
+  const [currentUser, setCurrentUser] = useState(() => getSessionFromCookie(loadStoredUsers()));
   const [currentScreen, setCurrentScreen] = useState(() =>
-    getSessionFromCookie(DEFAULT_USERS) ? "PORTAL" : "LOGIN"
+    getSessionFromCookie(loadStoredUsers()) ? "PORTAL" : "LOGIN"
   ); // LOGIN | PORTAL | APP
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [googleModalOpen, setGoogleModalOpen] = useState(false);
+  const [googleEmailInput, setGoogleEmailInput] = useState("");
+  const [googleNameInput, setGoogleNameInput] = useState("");
 
   // Conmutador de vista (DESKTOP | TABLET | MOBILE)
   const [deviceViewport, setDeviceViewport] = useState("DESKTOP");
@@ -697,10 +767,19 @@ export default function App() {
   };
 
   // Estado de Recursos Humanos
-  const [employees, setEmployees] = useState(INITIAL_EMPLOYEES);
+  const [employees, setEmployeesState] = useState(() => loadStoredEmployees());
+  const setEmployees = (updater) => {
+    setEmployeesState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredEmployees(next);
+      return next;
+    });
+  };
   const [hrSubTab, setHrSubTab] = useState("LISTA"); // LISTA | REPORTE_FILTROS
   const [selectedEmpForCard, setSelectedEmpForCard] = useState(null);
   const [selectedEmpForCV, setSelectedEmpForCV] = useState(null);
+  const [selectedEmpIdToLink, setSelectedEmpIdToLink] = useState("");
+  const [showLinkChangeSelector, setShowLinkChangeSelector] = useState(false);
   const [newEmpForm, setNewEmpForm] = useState({
     nombres: "",
     apellidos: "",
@@ -708,6 +787,7 @@ export default function App() {
     cargo: "",
     coordinacion: "Producción Fonográfica",
     telefono: "",
+    correo: "",
     direccion: "",
     fechaNacimiento: "",
     fechaIngreso: "2026-11-13",
@@ -718,6 +798,19 @@ export default function App() {
     tieneCargaFamiliar: "SI",
     codigoBarra: "2024-CENDIS-000127",
   });
+
+  // Trabajador de RRHH vinculado al correo del usuario actual
+  const currentUserLinkedEmployee = useMemo(() => {
+    if (!currentUser) return null;
+    const emailLower = (currentUser.email || "").trim().toLowerCase();
+    return (
+      employees.find(
+        (emp) =>
+          (currentUser.linkedEmployeeId && emp.id === currentUser.linkedEmployeeId) ||
+          (emailLower && emp.correo && emp.correo.trim().toLowerCase() === emailLower)
+      ) || null
+    );
+  }, [currentUser, employees]);
 
   // Filtros para el Reporte General de Personal
   const [hrFilterCoord, setHrFilterCoord] = useState("TODAS");
@@ -1022,24 +1115,186 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   // ============================================================================
   // MANEJADORES DE NEGOCIO E INTEGRACIÓN ENTRE MÓDULOS
   // ============================================================================
+  const handleGoogleAccountSignIn = (emailRaw, displayNameRaw = "") => {
+    const cleanEmail = (emailRaw || "").trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      setLoginError("Por favor ingrese un correo válido de Gmail / Google (ejemplo@gmail.com).");
+      return;
+    }
+
+    let existingUser = users.find(
+      (u) =>
+        (u.email && u.email.toLowerCase() === cleanEmail) ||
+        u.username.toLowerCase() === cleanEmail ||
+        u.username.toLowerCase() === cleanEmail.split("@")[0]
+    );
+
+    if (existingUser) {
+      if (!existingUser.active) {
+        setLoginError("Cuenta suspendida por el Administrador.");
+        return;
+      }
+      const updatedUser = {
+        ...existingUser,
+        email: cleanEmail,
+      };
+      setUsers((prev) => prev.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+      setCurrentUser(updatedUser);
+      setSessionCookie(updatedUser);
+      setLoginError("");
+      setGoogleModalOpen(false);
+      setCurrentScreen("PORTAL");
+      addLog(`Inicio de sesión con Google (${cleanEmail})`, updatedUser);
+
+      const isLinked = employees.some(
+        (emp) =>
+          (updatedUser.linkedEmployeeId && emp.id === updatedUser.linkedEmployeeId) ||
+          (emp.correo && emp.correo.trim().toLowerCase() === cleanEmail)
+      );
+      if (!isLinked) {
+        showToast(
+          `Bienvenido (${cleanEmail}). En el módulo RECURSOS HUMANOS tiene un aviso pendiente para vincular su correo con sus datos personales.`,
+          "info"
+        );
+      }
+      return;
+    }
+
+    // Si es un correo Gmail nuevo que entra por primera vez con Google
+    const emailPrefix = cleanEmail.split("@")[0];
+    const isAdminEmail =
+      cleanEmail === "youseven.adm@gmail.com" ||
+      cleanEmail === "admin@gmail.com" ||
+      cleanEmail === "admin.cendis@gmail.com";
+    const assignedRole = isAdminEmail ? "ADMIN" : "ESTANDAR";
+    const derivedName =
+      displayNameRaw.trim() ||
+      emailPrefix
+        .replace(/[._-]+/g, " ")
+        .replace(/\b\w/g, (l) => l.toUpperCase());
+
+    const matchedEmp = employees.find(
+      (emp) => emp.correo && emp.correo.trim().toLowerCase() === cleanEmail
+    );
+
+    const newGoogleUser = {
+      id: Date.now(),
+      username: emailPrefix,
+      email: cleanEmail,
+      password: "GoogleAuthUser",
+      fullName: matchedEmp ? `${matchedEmp.nombres} ${matchedEmp.apellidos}` : derivedName,
+      cargo: matchedEmp ? matchedEmp.cargo : "Trabajador CENDIS (Pendiente vincular RRHH)",
+      role: assignedRole,
+      active: true,
+      linkedEmployeeId: matchedEmp ? matchedEmp.id : null,
+      permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE[assignedRole] },
+    };
+
+    setUsers((prev) => [...prev, newGoogleUser]);
+    setCurrentUser(newGoogleUser);
+    setSessionCookie(newGoogleUser);
+    setLoginError("");
+    setGoogleModalOpen(false);
+    setCurrentScreen("PORTAL");
+    addLog(`Registro e inicio de sesión con Google (${cleanEmail})`, newGoogleUser);
+
+    if (!matchedEmp) {
+      showToast(
+        `Sesión iniciada con ${cleanEmail}. Diríjase a RECURSOS HUMANOS para vincular su cuenta con sus datos personales de trabajador.`,
+        "info"
+      );
+    }
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
+    const rawInput = loginUsername.trim().toLowerCase();
+    const isEmailInput = rawInput.includes("@");
+
     const found = users.find(
-      (u) => u.username.toLowerCase() === loginUsername.trim().toLowerCase() && u.password === loginPassword
+      (u) =>
+        (u.username.toLowerCase() === rawInput ||
+          (u.email && u.email.toLowerCase() === rawInput)) &&
+        u.password === loginPassword
     );
+
     if (!found) {
-      setLoginError("Usuario o contraseña incorrectos.");
+      // Si ingresa un correo @gmail.com directamente en el login con clave
+      if (isEmailInput && (rawInput.endsWith("@gmail.com") || rawInput.endsWith("@googlemail.com"))) {
+        const existingByEmail = users.find(
+          (u) => u.email && u.email.toLowerCase() === rawInput
+        );
+        if (!existingByEmail && loginPassword.trim().length >= 4) {
+          handleGoogleAccountSignIn(rawInput);
+          return;
+        }
+      }
+      setLoginError("Correo de Google / usuario o contraseña incorrectos.");
       return;
     }
     if (!found.active) {
       setLoginError("Cuenta suspendida por el Administrador.");
       return;
     }
-    setCurrentUser(found);
-    setSessionCookie(found);
+    const userWithEmail = {
+      ...found,
+      email: found.email || (isEmailInput ? rawInput : `${found.username}.cendis@gmail.com`),
+    };
+    setUsers((prev) => prev.map((u) => (u.id === userWithEmail.id ? userWithEmail : u)));
+    setCurrentUser(userWithEmail);
+    setSessionCookie(userWithEmail);
     setLoginError("");
     setCurrentScreen("PORTAL");
-    addLog(`Inicio de sesión exitoso (${found.fullName})`, found);
+    addLog(`Inicio de sesión exitoso (${userWithEmail.email})`, userWithEmail);
+
+    const isLinked = employees.some(
+      (emp) =>
+        (userWithEmail.linkedEmployeeId && emp.id === userWithEmail.linkedEmployeeId) ||
+        (emp.correo && emp.correo.trim().toLowerCase() === userWithEmail.email.toLowerCase())
+    );
+    if (!isLinked) {
+      showToast(
+        `Aviso RRHH: Su correo (${userWithEmail.email}) aún no está vinculado a un expediente de trabajador en Recursos Humanos.`,
+        "info"
+      );
+    }
+  };
+
+  const handleLinkUserToEmployee = (empId) => {
+    if (!currentUser || !empId) return;
+    const targetEmp = employees.find((emp) => emp.id === empId);
+    if (!targetEmp) return;
+
+    const userEmail = currentUser.email || `${currentUser.username}@gmail.com`;
+    const updatedEmployees = employees.map((emp) => {
+      if (emp.id === empId) {
+        return { ...emp, correo: userEmail };
+      }
+      if (emp.correo && emp.correo.toLowerCase() === userEmail.toLowerCase()) {
+        return { ...emp, correo: "" };
+      }
+      return emp;
+    });
+    setEmployees(updatedEmployees);
+
+    const updatedUser = {
+      ...currentUser,
+      email: userEmail,
+      fullName: `${targetEmp.nombres} ${targetEmp.apellidos}`,
+      cargo: targetEmp.cargo,
+      linkedEmployeeId: targetEmp.id,
+    };
+    setCurrentUser(updatedUser);
+    setSessionCookie(updatedUser);
+    setUsers((prev) => prev.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+    setShowLinkChangeSelector(false);
+    addLog(
+      `Vinculado correo ${userEmail} con expediente RRHH de ${targetEmp.nombres} ${targetEmp.apellidos} (${targetEmp.cedula})`,
+      updatedUser
+    );
+    showToast(
+      `Correo ${userEmail} vinculado exitosamente a los datos personales de ${targetEmp.nombres} ${targetEmp.apellidos}.`
+    );
   };
 
   const handleLogout = () => {
@@ -1242,7 +1497,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </p>
               </div>
 
-              {/* Formulario oscuro exacto a la captura */}
+              {/* Formulario oscuro con Login por Correo de Google / Gmail */}
               <div className="p-6 bg-[#0d1526]">
                 {loginError && (
                   <div className="mb-4 p-3 rounded-xl bg-red-950/90 border border-red-500/60 text-red-200 text-xs font-semibold flex items-center gap-2">
@@ -1251,10 +1506,48 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   </div>
                 )}
 
+                {/* Botón principal de Autenticación con Google / Gmail */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginError("");
+                    setGoogleModalOpen(true);
+                  }}
+                  className="w-full py-3.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-lg transition flex items-center justify-center gap-3 cursor-pointer mb-4 border border-slate-200"
+                >
+                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 24c3.3 0 6.08-1.09 8.1-2.96l-3.88-3.05c-1.08.72-2.45 1.16-4.22 1.16-3.24 0-5.98-2.18-6.96-5.12H1.04v3.14C3.05 21.16 7.21 24 12 24z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.04 14.03c-.25-.72-.38-1.49-.38-2.28s.13-1.56.38-2.28V6.33H1.04C.38 7.66 0 9.16 0 11.75s.38 4.09 1.04 5.42l4-3.14z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 4.75c1.8 0 3.41.62 4.68 1.84l3.5-3.5C18.07 1.19 15.3 0 12 0 7.21 0 3.05 2.84 1.04 6.83l4 3.14c.98-2.94 3.72-5.22 6.96-5.22z"
+                    />
+                  </svg>
+                  <span>Iniciar sesión con Correo Gmail / Google</span>
+                </button>
+
+                <div className="relative flex py-2 items-center mb-3">
+                  <div className="flex-grow border-t border-slate-800"></div>
+                  <span className="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    o acceso con correo y clave
+                  </span>
+                  <div className="flex-grow border-t border-slate-800"></div>
+                </div>
+
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-200 mb-2">
-                      Usuario
+                      Correo Gmail / Usuario
                     </label>
                     <input
                       type="text"
@@ -1264,7 +1557,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         setLoginUsername(e.target.value);
                         setLoginError("");
                       }}
-                      placeholder="Escriba su usuario"
+                      placeholder="usuario@gmail.com"
                       className="w-full px-4 py-3.5 rounded-xl bg-[#070b14] border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500/60 transition"
                     />
                   </div>
@@ -1301,7 +1594,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       className="w-full py-3.5 rounded-xl bg-[#b91c1c] hover:bg-[#991b1b] text-white font-bold text-sm shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <Lock className="w-4 h-4" />
-                      <span>Iniciar Sesión</span>
+                      <span>Iniciar Sesión con Correo</span>
                     </button>
                   </div>
                 </form>
@@ -1313,6 +1606,116 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             </div>
           </div>
         </div>
+
+        {/* MODAL DE AUTENTICACIÓN CON SERVIDORES DE GOOGLE / GMAIL */}
+        {googleModalOpen && (
+          <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+            <div className="bg-white text-slate-900 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
+              <div className="px-6 pt-6 pb-4 border-b border-slate-100 text-center">
+                <div className="flex justify-center mb-3">
+                  <svg className="w-8 h-8" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 24c3.3 0 6.08-1.09 8.1-2.96l-3.88-3.05c-1.08.72-2.45 1.16-4.22 1.16-3.24 0-5.98-2.18-6.96-5.12H1.04v3.14C3.05 21.16 7.21 24 12 24z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.04 14.03c-.25-.72-.38-1.49-.38-2.28s.13-1.56.38-2.28V6.33H1.04C.38 7.66 0 9.16 0 11.75s.38 4.09 1.04 5.42l4-3.14z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 4.75c1.8 0 3.41.62 4.68 1.84l3.5-3.5C18.07 1.19 15.3 0 12 0 7.21 0 3.05 2.84 1.04 6.83l4 3.14c.98-2.94 3.72-5.22 6.96-5.22z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-base font-black text-slate-900">
+                  Acceder con Google a SGI-CENDIS
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Seleccione una cuenta de Gmail o ingrese su correo de Google para vincularlo con su ficha de trabajador en Recursos Humanos.
+                </p>
+              </div>
+
+              <div className="p-5 space-y-4">
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Cuentas institucionales registradas:
+                  </span>
+                  {users.slice(0, 4).map((u) => {
+                    const emailAddr = u.email || `${u.username}.cendis@gmail.com`;
+                    return (
+                      <button
+                        key={u.id}
+                        type="button"
+                        onClick={() => handleGoogleAccountSignIn(emailAddr, u.fullName)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 hover:bg-blue-50/70 hover:border-blue-300 flex items-center justify-between text-left transition cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">
+                            {emailAddr.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-slate-900">{u.fullName}</div>
+                            <div className="text-[11px] text-slate-500">{emailAddr}</div>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                          {u.role}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleGoogleAccountSignIn(googleEmailInput, googleNameInput);
+                  }}
+                  className="pt-3 border-t border-slate-200 space-y-3"
+                >
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                    Usar otra cuenta de Gmail / Google:
+                  </span>
+                  <input
+                    type="email"
+                    required
+                    placeholder="tucorreo@gmail.com"
+                    value={googleEmailInput}
+                    onChange={(e) => setGoogleEmailInput(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Nombre del trabajador (opcional)"
+                    value={googleNameInput}
+                    onChange={(e) => setGoogleNameInput(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                  />
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setGoogleModalOpen(false)}
+                      className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow cursor-pointer"
+                    >
+                      Continuar con Gmail
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -1357,18 +1760,24 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       {
         id: "hr",
         theme: "WARM",
-        badgeText: "ACTIVO",
+        badgeText: currentUserLinkedEmployee ? "ACTIVO" : "⚠ VINCULAR CORREO",
         subtitle: "EXPEDIENTES, CARNETS Y FILTROS",
         title: "RECURSOS HUMANOS",
         desc: "Ingreso de todo el personal del CENDIS, carga familiar, Hoja de Vida en PDF, Carnet Oficial con código de barras y reporte general con filtros.",
         pills: [
           { symbol: "👥", text: `${employees.length} Trabajadores`, color: "text-amber-400" },
-          { symbol: "🪪", text: "Carnet Código Barra", color: "text-emerald-400" },
+          {
+            symbol: currentUserLinkedEmployee ? "✓" : "⚠",
+            text: currentUserLinkedEmployee ? "Correo Vinculado" : "Vincular con mi Ficha",
+            color: currentUserLinkedEmployee ? "text-emerald-400" : "text-amber-300",
+          },
         ],
         footerCode: "2024-CENDIS-RRHH",
         icon: Users,
-        cornerBadge: "+",
-        cornerBg: "bg-emerald-500 text-slate-950",
+        cornerBadge: currentUserLinkedEmployee ? "+" : "!",
+        cornerBg: currentUserLinkedEmployee
+          ? "bg-emerald-500 text-slate-950"
+          : "bg-amber-400 text-slate-950",
       },
       {
         id: "proyectos",
@@ -1489,7 +1898,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)
               </h1>
               <p className="text-xs text-slate-400">
-                Usuario: <span className="font-bold text-white">{currentUser.fullName}</span> • Rol:{" "}
+                Usuario: <span className="font-bold text-white">{currentUser.fullName}</span>{" "}
+                ({currentUser.email || `${currentUser.username}@gmail.com`}) • Rol:{" "}
                 <span className="font-bold text-[#f59e0b]">
                   {currentUser.role === "ADMIN" ? "Administrador" : "Usuario Estándar"}
                 </span>
@@ -1506,7 +1916,38 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           </button>
         </header>
 
-        <main className="flex-1 max-w-6xl w-full mx-auto p-5 md:p-8">
+        <main className="flex-1 max-w-6xl w-full mx-auto p-5 md:p-8 space-y-6">
+          {!currentUserLinkedEmployee && (
+            <div className="rounded-2xl bg-amber-950/70 border border-amber-500/60 p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+              <div className="flex items-center gap-3">
+                <span className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-base shrink-0">
+                  !
+                </span>
+                <div>
+                  <h3 className="text-xs font-black uppercase text-amber-300">
+                    Aviso de Recursos Humanos: Cuenta de Google pendiente por vincular
+                  </h3>
+                  <p className="text-xs text-slate-200 mt-0.5">
+                    Ha iniciado sesión con{" "}
+                    <span className="font-bold text-white">
+                      {currentUser.email || `${currentUser.username}@gmail.com`}
+                    </span>
+                    . Ingrese al módulo de <strong>RECURSOS HUMANOS</strong> para vincular su correo con los datos personales del trabajador.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setActiveTab("hr");
+                  setCurrentScreen("APP");
+                }}
+                className="px-4 py-2 rounded-xl bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950 font-black text-xs cursor-pointer shadow"
+              >
+                Ir a Recursos Humanos para Vincular →
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {portalModules.map((mod) => {
               const IconComp = mod.icon;
@@ -2369,6 +2810,124 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
             </div>
 
+            {/* AVISO DE VINCULACIÓN DE CUENTA GOOGLE / GMAIL CON DATOS PERSONALES DEL TRABAJADOR */}
+            {!currentUserLinkedEmployee || showLinkChangeSelector ? (
+              <div className="rounded-2xl bg-amber-950/85 border-2 border-amber-500/80 p-5 space-y-4 shadow-xl print:hidden">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <span className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-lg shrink-0 shadow">
+                      !
+                    </span>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
+                        Control de Identidad Google Workspace / Gmail • Recursos Humanos
+                      </span>
+                      <h3 className="text-sm font-black uppercase text-white mt-0.5">
+                        Aviso: Vincule su correo ({currentUser.email || `${currentUser.username}@gmail.com`}) con los datos personales del trabajador
+                      </h3>
+                      <p className="text-xs text-slate-200 mt-1">
+                        Para tener control completo de sus gestiones en SGI-CENDIS, asocie su correo de inicio de sesión con su expediente personal en la nómina de Recursos Humanos o registre su ficha abajo.
+                      </p>
+                    </div>
+                  </div>
+                  {currentUserLinkedEmployee && (
+                    <button
+                      type="button"
+                      onClick={() => setShowLinkChangeSelector(false)}
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-200 text-xs font-bold cursor-pointer"
+                    >
+                      Cancelar cambio
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-amber-500/30">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <select
+                      value={selectedEmpIdToLink}
+                      onChange={(e) => setSelectedEmpIdToLink(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-bold"
+                    >
+                      <option value="">-- Seleccione trabajador existente en RRHH --</option>
+                      {employees.map((emp) => (
+                        <option key={emp.id} value={emp.id}>
+                          {emp.nombres} {emp.apellidos} ({emp.cedula} • {emp.cargo})
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!selectedEmpIdToLink) {
+                          showToast("Seleccione un trabajador de la lista para vincular su correo.", "error");
+                          return;
+                        }
+                        handleLinkUserToEmployee(selectedEmpIdToLink);
+                      }}
+                      className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs cursor-pointer shadow"
+                    >
+                      Vincular con este Trabajador
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const userEmail = currentUser.email || `${currentUser.username}@gmail.com`;
+                        const parts = (currentUser.fullName || "").trim().split(" ");
+                        setHrSubTab("LISTA");
+                        setNewEmpForm((prev) => ({
+                          ...prev,
+                          nombres: parts[0] || "",
+                          apellidos: parts.slice(1).join(" ") || "",
+                          correo: userEmail,
+                        }));
+                        showToast(
+                          `Correo ${userEmail} cargado en el formulario. Complete su Cédula, Cargo y Teléfono y presione "+ Ingresar Trabajador".`
+                        );
+                      }}
+                      className="w-full md:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer shadow"
+                    >
+                      + Cargar mi correo en formulario de nuevo trabajador
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-2xl bg-emerald-950/75 border border-emerald-500/60 p-4 flex flex-wrap items-center justify-between gap-3 shadow print:hidden">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 block">
+                      Cuenta de Correo Vinculada con Recursos Humanos
+                    </span>
+                    <p className="text-xs text-slate-100">
+                      Correo Google:{" "}
+                      <strong className="text-white">
+                        {currentUser.email || `${currentUser.username}@gmail.com`}
+                      </strong>{" "}
+                      → Trabajador:{" "}
+                      <strong className="text-amber-300">
+                        {currentUserLinkedEmployee.nombres} {currentUserLinkedEmployee.apellidos}
+                      </strong>{" "}
+                      ({currentUserLinkedEmployee.cedula} • {currentUserLinkedEmployee.cargo})
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedEmpIdToLink(currentUserLinkedEmployee.id);
+                    setShowLinkChangeSelector(true);
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-slate-600"
+                >
+                  Cambiar vinculación
+                </button>
+              </div>
+            )}
+
             {hrSubTab === "LISTA" ? (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
                 <form
@@ -2377,7 +2936,32 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     const created = { id: `emp-${Date.now()}`, ...newEmpForm };
                     setEmployees((prev) => [...prev, created]);
                     addLog(`Ingresado trabajador en RRHH: ${created.nombres} ${created.apellidos}`);
-                    showToast(`Trabajador ${created.nombres} ${created.apellidos} registrado e integrado.`);
+
+                    const currentEmail = (currentUser?.email || "").trim().toLowerCase();
+                    if (
+                      currentEmail &&
+                      created.correo &&
+                      created.correo.trim().toLowerCase() === currentEmail
+                    ) {
+                      const updatedUser = {
+                        ...currentUser,
+                        fullName: `${created.nombres} ${created.apellidos}`,
+                        cargo: created.cargo,
+                        linkedEmployeeId: created.id,
+                      };
+                      setCurrentUser(updatedUser);
+                      setSessionCookie(updatedUser);
+                      setUsers((prev) =>
+                        prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+                      );
+                      setShowLinkChangeSelector(false);
+                      showToast(
+                        `Trabajador ${created.nombres} ${created.apellidos} registrado y vinculado a su cuenta ${created.correo}.`
+                      );
+                    } else {
+                      showToast(`Trabajador ${created.nombres} ${created.apellidos} registrado e integrado.`);
+                    }
+
                     setNewEmpForm({
                       ...newEmpForm,
                       nombres: "",
@@ -2385,6 +2969,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       cedula: "",
                       cargo: "",
                       telefono: "",
+                      correo: "",
                       direccion: "",
                       codigoBarra: "2024-CENDIS-000" + Math.floor(130 + Math.random() * 800),
                     });
@@ -2443,6 +3028,13 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     onChange={(e) => setNewEmpForm({ ...newEmpForm, telefono: e.target.value })}
                     className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
                   />
+                  <input
+                    type="email"
+                    placeholder="Correo Gmail (ej. trabajador@gmail.com)"
+                    value={newEmpForm.correo || ""}
+                    onChange={(e) => setNewEmpForm({ ...newEmpForm, correo: e.target.value })}
+                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                  />
                   <select
                     value={newEmpForm.tieneCargaFamiliar}
                     onChange={(e) => setNewEmpForm({ ...newEmpForm, tieneCargaFamiliar: e.target.value })}
@@ -2458,11 +3050,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     onChange={(e) =>
                       setNewEmpForm({ ...newEmpForm, familiares: e.target.value, emergencia1: e.target.value })
                     }
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                    className="md:col-span-2 px-3 py-2 rounded-lg border border-slate-300 text-xs"
                   />
                   <button
                     type="submit"
-                    className="md:col-span-4 py-2.5 rounded-xl bg-[#8b1538] hover:bg-[#6e102c] text-white font-bold text-xs shadow cursor-pointer"
+                    className="md:col-span-2 py-2.5 rounded-xl bg-[#8b1538] hover:bg-[#6e102c] text-white font-bold text-xs shadow cursor-pointer"
                   >
                     + Ingresar Trabajador al Padrón de Recursos Humanos CENDIS
                   </button>
@@ -2476,38 +3068,60 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         <th className="p-3">Trabajador</th>
                         <th className="p-3">Cargo</th>
                         <th className="p-3">Coordinación</th>
+                        <th className="p-3">Correo Google Vinculado</th>
                         <th className="p-3">Código Carnet</th>
                         <th className="p-3">Acciones</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
-                      {employees.map((emp) => (
-                        <tr key={emp.id} className="hover:bg-slate-50">
-                          <td className="p-3 font-bold text-slate-900">{emp.cedula}</td>
-                          <td className="p-3 font-semibold">
-                            {emp.nombres} {emp.apellidos}
-                          </td>
-                          <td className="p-3">{emp.cargo}</td>
-                          <td className="p-3">{emp.coordinacion}</td>
-                          <td className="p-3 font-mono text-[11px]">{emp.codigoBarra}</td>
-                          <td className="p-3 flex items-center gap-2">
-                            <button
-                              onClick={() => setSelectedEmpForCard(emp)}
-                              className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-900 font-bold text-[10px] flex items-center gap-1 cursor-pointer"
-                            >
-                              <QrCode className="w-3.5 h-3.5" />
-                              <span>Carnet</span>
-                            </button>
-                            <button
-                              onClick={() => setSelectedEmpForCV(emp)}
-                              className="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold text-[10px] flex items-center gap-1 cursor-pointer"
-                            >
-                              <FileText className="w-3.5 h-3.5" />
-                              <span>Hoja de Vida PDF</span>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {employees.map((emp) => {
+                        const isMyLinkedEmp = currentUserLinkedEmployee?.id === emp.id;
+                        return (
+                          <tr key={emp.id} className="hover:bg-slate-50">
+                            <td className="p-3 font-bold text-slate-900">{emp.cedula}</td>
+                            <td className="p-3 font-semibold">
+                              {emp.nombres} {emp.apellidos}
+                            </td>
+                            <td className="p-3">{emp.cargo}</td>
+                            <td className="p-3">{emp.coordinacion}</td>
+                            <td className="p-3">
+                              {emp.correo ? (
+                                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[10px]">
+                                  {emp.correo}
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 italic text-[11px]">Sin vincular</span>
+                              )}
+                            </td>
+                            <td className="p-3 font-mono text-[11px]">{emp.codigoBarra}</td>
+                            <td className="p-3 flex flex-wrap items-center gap-1.5">
+                              {!isMyLinkedEmp && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleLinkUserToEmployee(emp.id)}
+                                  className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold text-[10px] cursor-pointer"
+                                >
+                                  Vincular mi correo
+                                </button>
+                              )}
+                              <button
+                                onClick={() => setSelectedEmpForCard(emp)}
+                                className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-900 font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                              >
+                                <QrCode className="w-3.5 h-3.5" />
+                                <span>Carnet</span>
+                              </button>
+                              <button
+                                onClick={() => setSelectedEmpForCV(emp)}
+                                className="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                              >
+                                <FileText className="w-3.5 h-3.5" />
+                                <span>Hoja de Vida PDF</span>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
