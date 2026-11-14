@@ -297,45 +297,121 @@ const INITIAL_AGENDA_EVENTS = [
   {
     id: "ev-1",
     date: "2026-11-16",
+    endDate: "2026-11-16",
     ente: "Cendis",
     title: "Taller de Audiovisual",
-    startTime: "9:00am",
-    location: "Los valle del tuy",
+    eventType: "EVENTO",
+    allDay: false,
+    startTime: "09:00",
+    endTime: "11:00",
+    timeZone: "America/Caracas (GMT-04:00)",
+    recurrence: "NO_REPETIR",
+    location: "Los Valles del Tuy",
+    meetLink: "https://meet.google.com/cen-dis-aud",
+    description:
+      "Taller formativo de producción audiovisual comunitaria, captura de sonido directo y edición digital.",
     responsable: "Morris López",
+    emailInvitado: "morris.lopez.cendis@gmail.com",
+    invitadosAdicionales: "presidencia.cendis@gmail.com",
     contacto: "0426.324.32.46",
+    visibility: "PUBLICO",
+    availability: "OCUPADO",
+    color: "BLUE",
+    reminderValue: 2,
+    reminderUnit: "HORAS",
+    notifyApp: true,
+    notifyEmail: true,
+    notifyWhatsapp: true,
     status: "APROBADO",
   },
   {
     id: "ev-2",
     date: "2026-11-17",
+    endDate: "2026-11-17",
     ente: "Cendis",
-    title: "Apoyo a IAEM en el marco de la chinita.",
-    startTime: "10:00am",
+    title: "Apoyo a IAEM en el marco de la Chinita",
+    eventType: "SESION_ESTUDIO",
+    allDay: false,
+    startTime: "10:00",
+    endTime: "14:00",
+    timeZone: "America/Caracas (GMT-04:00)",
+    recurrence: "DIARIO",
     location: "Por definir",
-    responsable: "Anaileth briceño",
+    meetLink: "https://meet.google.com/cen-dis-iaem",
+    description:
+      "Despliegue técnico de grabación móvil y asistencia sonora en articulación con el IAEM para las festividades de la Chinita.",
+    responsable: "Anaileth Briceño",
+    emailInvitado: "produccion.cendis@gmail.com",
+    invitadosAdicionales: "",
     contacto: "0424.164.30.07",
+    visibility: "PUBLICO",
+    availability: "OCUPADO",
+    color: "AMBER",
+    reminderValue: 1,
+    reminderUnit: "DIAS",
+    notifyApp: true,
+    notifyEmail: true,
+    notifyWhatsapp: true,
     status: "APROBADO",
   },
   {
     id: "ev-3",
     date: "2026-11-18",
+    endDate: "2026-11-18",
     ente: "Cendis",
-    title: "Apoyo a IAEM en el marco de la chinita.",
-    startTime: "10:00am",
-    location: "por definir",
-    responsable: "Anaileth briceño",
+    title: "Apoyo a IAEM en el marco de la Chinita (Día 2)",
+    eventType: "SESION_ESTUDIO",
+    allDay: false,
+    startTime: "10:00",
+    endTime: "14:00",
+    timeZone: "America/Caracas (GMT-04:00)",
+    recurrence: "DIARIO",
+    location: "Por definir",
+    meetLink: "https://meet.google.com/cen-dis-iaem",
+    description:
+      "Segunda jornada de cobertura técnica, sonido y registro fonográfico junto al IAEM.",
+    responsable: "Anaileth Briceño",
+    emailInvitado: "produccion.cendis@gmail.com",
+    invitadosAdicionales: "",
     contacto: "0424.164.30.07",
+    visibility: "PUBLICO",
+    availability: "OCUPADO",
+    color: "EMERALD",
+    reminderValue: 12,
+    reminderUnit: "HORAS",
+    notifyApp: true,
+    notifyEmail: true,
+    notifyWhatsapp: true,
     status: "APROBADO",
   },
   {
     id: "ev-4",
     date: "2026-11-19",
+    endDate: "2026-11-19",
     ente: "Cendis",
-    title: "Apoyo a IAEM en el marco de la chinita.",
-    startTime: "10:00am",
-    location: "Cendis",
-    responsable: "Anaileth briceño",
+    title: "Cierre Técnico IAEM - Marco de la Chinita",
+    eventType: "EVENTO",
+    allDay: false,
+    startTime: "10:00",
+    endTime: "13:00",
+    timeZone: "America/Caracas (GMT-04:00)",
+    recurrence: "NO_REPETIR",
+    location: "Sede CENDIS, Caracas",
+    meetLink: "https://meet.google.com/cen-dis-cierre",
+    description:
+      "Revisión de material grabado, respaldo en servidor maestro y entrega de acta técnica.",
+    responsable: "Anaileth Briceño",
+    emailInvitado: "produccion.cendis@gmail.com",
+    invitadosAdicionales: "presidencia.cendis@gmail.com",
     contacto: "0424.164.30.07",
+    visibility: "PUBLICO",
+    availability: "OCUPADO",
+    color: "ROSE",
+    reminderValue: 1,
+    reminderUnit: "DIAS",
+    notifyApp: true,
+    notifyEmail: true,
+    notifyWhatsapp: true,
     status: "APROBADO",
   },
 ];
@@ -748,9 +824,31 @@ export default function App() {
   const [hrFilterSearch, setHrFilterSearch] = useState("");
   const [hrReportType, setHrReportType] = useState("NOMINA_COMPLETA");
 
-  // Estado de Agenda
-  const [agendaEvents, setAgendaEvents] = useState(INITIAL_AGENDA_EVENTS);
-  const [agendaViewMode, setAgendaViewMode] = useState("CALENDAR"); // CALENDAR | REPORT
+  // Estado de Agenda (Google Calendar Completo con Recordatorios App / Correo / WhatsApp)
+  const [agendaEvents, setAgendaEventsState] = useState(() => {
+    if (typeof window === "undefined") return INITIAL_AGENDA_EVENTS;
+    try {
+      const raw = window.localStorage.getItem("cendis_agenda_v1");
+      if (!raw) return INITIAL_AGENDA_EVENTS;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_AGENDA_EVENTS;
+    } catch {
+      return INITIAL_AGENDA_EVENTS;
+    }
+  });
+  const setAgendaEvents = (updater) => {
+    setAgendaEventsState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      try {
+        window.localStorage.setItem("cendis_agenda_v1", JSON.stringify(next));
+      } catch {
+        // ignore storage errors
+      }
+      return next;
+    });
+  };
+  const [agendaViewMode, setAgendaViewMode] = useState("CALENDAR"); // CALENDAR | REPORT | REMINDERS
+  const [selectedEventDetail, setSelectedEventDetail] = useState(null);
   const [reportPeriodType, setReportPeriodType] = useState("SEMANAL");
   const [reportColumnsCount] = useState(4);
   const [reportViceministerio] = useState("Viceministerio Cultura Audiovisual");
@@ -761,10 +859,28 @@ export default function App() {
   const [newEventForm, setNewEventForm] = useState({
     ente: "Cendis",
     title: "",
-    startTime: "9:00am",
+    eventType: "EVENTO", // EVENTO | TAREA | FUERA_DE_OFICINA | SESION_ESTUDIO
+    allDay: false,
+    endDate: "",
+    startTime: "09:00",
+    endTime: "10:30",
+    timeZone: "America/Caracas (GMT-04:00)",
+    recurrence: "NO_REPETIR", // NO_REPETIR | DIARIO | SEMANAL | MENSUAL | ANUAL | DIAS_LABORALES
     location: "",
+    meetLink: "https://meet.google.com/cen-dis-mppc",
+    description: "",
     responsable: "Morris López",
+    emailInvitado: "morris.lopez.cendis@gmail.com",
+    invitadosAdicionales: "",
     contacto: "0426.324.32.46",
+    visibility: "PUBLICO", // PUBLICO | PRIVADO | PREDETERMINADO
+    availability: "OCUPADO", // OCUPADO | DISPONIBLE
+    color: "BLUE", // BLUE | EMERALD | AMBER | ROSE | VIOLET | CYAN
+    reminderValue: 2,
+    reminderUnit: "HORAS", // HORAS | DIAS
+    notifyApp: true,
+    notifyEmail: true,
+    notifyWhatsapp: true,
   });
 
   // Estado de Asistencia
@@ -1307,6 +1423,117 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     showToast("Documento aprobado oficialmente por el Administrador.");
   };
 
+  const formatReminderLabel = (ev) => {
+    const val = ev?.reminderValue || 1;
+    const unit = ev?.reminderUnit === "DIAS" ? (val === 1 ? "día" : "días") : val === 1 ? "hora" : "horas";
+    return `${val} ${unit} de anticipación`;
+  };
+
+  const triggerInAppReminder = (ev) => {
+    const anticipacion = formatReminderLabel(ev);
+    const msg = `🔔 Recordatorio SIACENDIS (${anticipacion}): "${ev.title}" el ${ev.date} (${
+      ev.allDay ? "Todo el día" : `${ev.startTime} - ${ev.endTime || ""}`
+    }) en ${ev.location || "Sede CENDIS"}. Responsable: ${ev.responsable}.`;
+    showToast(msg);
+    addLog(`Notificación en aplicación enviada a ${ev.responsable}: ${ev.title}`);
+
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (window.Notification.permission === "granted") {
+        new window.Notification(`SIACENDIS • Recordatorio (${anticipacion})`, {
+          body: `${ev.title} — ${ev.date} ${ev.startTime} (${ev.responsable})`,
+          icon: "/logo-cendis.jpg",
+        });
+      } else if (window.Notification.permission !== "denied") {
+        window.Notification.requestPermission().then((perm) => {
+          if (perm === "granted") {
+            new window.Notification(`SIACENDIS • Recordatorio (${anticipacion})`, {
+              body: `${ev.title} — ${ev.date} ${ev.startTime} (${ev.responsable})`,
+              icon: "/logo-cendis.jpg",
+            });
+          }
+        });
+      }
+    }
+  };
+
+  const sendEmailReminder = (ev) => {
+    const toEmail =
+      ev.emailInvitado ||
+      employees.find((emp) => `${emp.nombres} ${emp.apellidos}`.toLowerCase() === (ev.responsable || "").toLowerCase())
+        ?.correo ||
+      currentUser?.email ||
+      "presidencia.cendis@gmail.com";
+    const subject = encodeURIComponent(
+      `[Recordatorio SIACENDIS - ${formatReminderLabel(ev)}] ${ev.title} (${ev.date})`
+    );
+    const body = encodeURIComponent(
+      `RECORDATORIO OFICIAL DE AGENDA CENDIS (SIACENDIS)\n` +
+        `===================================================\n` +
+        `Actividad: ${ev.title}\n` +
+        `Tipo de Evento: ${ev.eventType || "EVENTO"}\n` +
+        `Fecha: ${ev.date}${ev.endDate && ev.endDate !== ev.date ? ` al ${ev.endDate}` : ""}\n` +
+        `Horario: ${ev.allDay ? "Todo el día" : `${ev.startTime} a ${ev.endTime || ""}`} (${
+          ev.timeZone || "America/Caracas"
+        })\n` +
+        `Ubicación: ${ev.location || "Sede CENDIS"}\n` +
+        `Enlace Google Meet: ${ev.meetLink || "No aplica"}\n` +
+        `Responsable: ${ev.responsable} (${ev.contacto || ""})\n` +
+        `Descripción / Notas:\n${ev.description || "Sin notas adicionales."}\n\n` +
+        `Aviso programado con: ${formatReminderLabel(ev)}.`
+    );
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+      toEmail
+    )}${ev.invitadosAdicionales ? `&cc=${encodeURIComponent(ev.invitadosAdicionales)}` : ""}&su=${subject}&body=${body}`;
+    window.open(gmailUrl, "_blank", "noopener,noreferrer");
+    addLog(`Recordatorio por correo Gmail enviado a ${toEmail} para '${ev.title}'`);
+    showToast(`Abriendo recordatorio de correo Gmail para ${toEmail}`);
+  };
+
+  const sendWhatsappReminder = (ev) => {
+    const rawDigits = String(ev.contacto || "").replace(/\D/g, "");
+    const intlPhone = rawDigits.startsWith("0")
+      ? `58${rawDigits.slice(1)}`
+      : rawDigits.startsWith("58")
+      ? rawDigits
+      : `58${rawDigits}`;
+    const text = encodeURIComponent(
+      `*🔔 RECORDATORIO DE AGENDA CENDIS (SIACENDIS)*\n` +
+        `Hola *${ev.responsable}*, te recordamos con *${formatReminderLabel(ev)}* tu actividad agendada:\n\n` +
+        `📌 *Actividad:* ${ev.title}\n` +
+        `📅 *Fecha:* ${ev.date}${ev.endDate && ev.endDate !== ev.date ? ` al ${ev.endDate}` : ""}\n` +
+        `⏰ *Hora:* ${ev.allDay ? "Todo el día" : `${ev.startTime} - ${ev.endTime || ""}`}\n` +
+        `📍 *Lugar:* ${ev.location || "Sede CENDIS"}\n` +
+        `📝 *Descripción:* ${ev.description || "Actividad institucional CENDIS"}\n` +
+        `${ev.meetLink ? `🎥 *Google Meet:* ${ev.meetLink}\n` : ""}` +
+        `🏛 *Ente:* ${ev.ente || "CENDIS - MPPC"}`
+    );
+    const waUrl = `https://wa.me/${intlPhone}?text=${text}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+    addLog(`Recordatorio por WhatsApp enviado a ${ev.responsable} (${ev.contacto}) para '${ev.title}'`);
+    showToast(`Abriendo WhatsApp de recordatorio para ${ev.responsable}`);
+  };
+
+  const openInGoogleCalendar = (ev) => {
+    const cleanDate = (ev.date || "2026-11-16").replace(/-/g, "");
+    const cleanEndDate = (ev.endDate || ev.date || "2026-11-16").replace(/-/g, "");
+    const startH = (ev.startTime || "09:00").replace(/[^0-9]/g, "").padEnd(4, "0").slice(0, 4);
+    const endH = (ev.endTime || "10:30").replace(/[^0-9]/g, "").padEnd(4, "0").slice(0, 4);
+    const datesParam = ev.allDay
+      ? `${cleanDate}/${cleanEndDate}`
+      : `${cleanDate}T${startH}00/${cleanEndDate}T${endH}00`;
+    const gcalUrl =
+      `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+      `&text=${encodeURIComponent(ev.title)}` +
+      `&dates=${datesParam}` +
+      `&details=${encodeURIComponent(
+        `${ev.description || ""}\n\nResponsable: ${ev.responsable} (${ev.contacto})\nRecordatorio: ${formatReminderLabel(
+          ev
+        )}`
+      )}` +
+      `&location=${encodeURIComponent(ev.location || "CENDIS, Caracas")}`;
+    window.open(gcalUrl, "_blank", "noopener,noreferrer");
+  };
+
   const handleAddEventToDay = (e) => {
     e.preventDefault();
     if (!selectedDayModal || !newEventForm.title.trim()) return;
@@ -1314,19 +1541,60 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     const created = {
       id: `ev-${Date.now()}`,
       date: selectedDayModal,
+      endDate: newEventForm.endDate || selectedDayModal,
       ...newEventForm,
+      reminderValue: Number(newEventForm.reminderValue) || 1,
       status: initialStatus,
     };
     setAgendaEvents((prev) => [...prev, created]);
-    addLog(`Agendada actividad '${created.title}' para el ${selectedDayModal} (${initialStatus})`);
-    showToast(`Alerta enviada (App/Correo/WhatsApp): "${created.title}" [${initialStatus}]`);
+
+    const channels = [
+      created.notifyApp ? "App" : null,
+      created.notifyEmail ? "Correo" : null,
+      created.notifyWhatsapp ? "WhatsApp" : null,
+    ]
+      .filter(Boolean)
+      .join(" + ");
+
+    addLog(
+      `Agendada actividad '${created.title}' para el ${selectedDayModal} con recordatorio (${formatReminderLabel(
+        created
+      )} vía ${channels || "App"})`
+    );
+
+    if (created.notifyApp) {
+      triggerInAppReminder(created);
+    } else {
+      showToast(
+        `Actividad "${created.title}" agendada con recordatorio (${formatReminderLabel(created)} vía ${channels}).`
+      );
+    }
+
     setNewEventForm({
       ente: "Cendis",
       title: "",
-      startTime: "9:00am",
+      eventType: "EVENTO",
+      allDay: false,
+      endDate: selectedDayModal,
+      startTime: "09:00",
+      endTime: "10:30",
+      timeZone: "America/Caracas (GMT-04:00)",
+      recurrence: "NO_REPETIR",
       location: "",
+      meetLink: "https://meet.google.com/cen-dis-mppc",
+      description: "",
       responsable: employees[0] ? `${employees[0].nombres} ${employees[0].apellidos}` : "Morris López",
+      emailInvitado: employees[0]?.correo || "morris.lopez.cendis@gmail.com",
+      invitadosAdicionales: "",
       contacto: employees[0]?.telefono || "0426.324.32.46",
+      visibility: "PUBLICO",
+      availability: "OCUPADO",
+      color: "BLUE",
+      reminderValue: 2,
+      reminderUnit: "HORAS",
+      notifyApp: true,
+      notifyEmail: true,
+      notifyWhatsapp: true,
     });
   };
 
@@ -2432,47 +2700,124 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         )}
 
         {/* ====================================================================
-            MÓDULO 2: AGENDA INSTITUCIONAL
+            MÓDULO 2: AGENDA CENDIS (ESTILO GOOGLE CALENDAR COMPLETO + RECORDATORIOS)
            ==================================================================== */}
         {activeTab === "agenda" && (
           <div className="flex-1 max-w-7xl w-full mx-auto p-4 space-y-4">
+            {/* Barra superior estilo Google Calendar */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-wrap items-center justify-between gap-3 print:hidden">
               <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#f59e0b] block">
+                  Sincronización de Actividades, Parámetros de Google Calendar y Alertas Anticipadas
+                </span>
                 <h2 className="text-base font-black text-slate-900 uppercase">
-                  Agenda Institucional y Alertas • Fundación CENDIS
+                  AGENDA CENDIS • Google Calendar & Centro de Recordatorios
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Notificaciones por App/Correo/WhatsApp, aprobación por Administrador y Reporte en Arial 12 / Calibri 11 Negrilla.
+                  Parámetros completos de Google Calendar, descripciones detalladas y recordatorios con días u horas de anticipación por Aplicación, Correo Gmail y WhatsApp.
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedDayModal("2026-11-16");
+                    setNewEventForm((prev) => ({ ...prev, endDate: "2026-11-16" }));
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950 text-xs font-black flex items-center gap-1.5 cursor-pointer shadow"
+                >
+                  <span>+ Crear Actividad</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setAgendaViewMode("CALENDAR")}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer ${
-                    agendaViewMode === "CALENDAR" ? "bg-blue-800 text-white" : "bg-slate-100 text-slate-700"
+                    agendaViewMode === "CALENDAR" ? "bg-blue-700 text-white" : "bg-slate-100 text-slate-700"
                   }`}
                 >
                   <CalendarIcon className="w-4 h-4" />
-                  <span>Calendario Mensual</span>
+                  <span>Google Calendar</span>
                 </button>
                 <button
+                  type="button"
+                  onClick={() => setAgendaViewMode("REMINDERS")}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer ${
+                    agendaViewMode === "REMINDERS" ? "bg-emerald-700 text-white" : "bg-slate-100 text-slate-700"
+                  }`}
+                >
+                  <Bell className="w-4 h-4" />
+                  <span>Recordatorios ({agendaEvents.length})</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setAgendaViewMode("REPORT")}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer ${
                     agendaViewMode === "REPORT" ? "bg-[#8b1538] text-white" : "bg-slate-100 text-slate-700"
                   }`}
                 >
                   <Printer className="w-4 h-4" />
-                  <span>Reporte Semanal / Mensual PDF</span>
+                  <span>Reporte PDF</span>
                 </button>
               </div>
             </div>
 
+            {/* Banner de notificaciones en aplicación para las actividades agendadas */}
+            {agendaEvents.length > 0 && (
+              <div className="rounded-2xl bg-blue-950/75 border border-blue-500/50 p-3.5 flex flex-wrap items-center justify-between gap-3 print:hidden">
+                <div className="flex items-center gap-3">
+                  <Bell className="w-5 h-5 text-amber-400 shrink-0" />
+                  <div className="text-xs">
+                    <span className="font-black uppercase text-amber-300 block">
+                      Notificaciones Activas en Aplicación (Con Días u Horas de Anticipación)
+                    </span>
+                    <span className="text-slate-200">
+                      Próxima actividad:{" "}
+                      <strong className="text-white">{agendaEvents[0].title}</strong> ({agendaEvents[0].date} •{" "}
+                      {agendaEvents[0].allDay ? "Todo el día" : agendaEvents[0].startTime}) — Responsable:{" "}
+                      <strong>{agendaEvents[0].responsable}</strong> • Aviso:{" "}
+                      <span className="text-emerald-300 font-bold">
+                        {formatReminderLabel(agendaEvents[0])}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => triggerInAppReminder(agendaEvents[0])}
+                    className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[11px] cursor-pointer"
+                  >
+                    🔔 Notificar en App
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => sendEmailReminder(agendaEvents[0])}
+                    className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] cursor-pointer"
+                  >
+                    ✉ Recordatorio Correo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => sendWhatsappReminder(agendaEvents[0])}
+                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] cursor-pointer"
+                  >
+                    💬 Recordatorio WhatsApp
+                  </button>
+                </div>
+              </div>
+            )}
+
             {agendaViewMode === "CALENDAR" ? (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="bg-slate-900 text-white px-6 py-3 flex items-center justify-between">
-                  <span className="text-sm font-black uppercase tracking-wider">Noviembre 2026</span>
+                <div className="bg-slate-900 text-white px-6 py-3 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-black uppercase tracking-wider">Noviembre 2026</span>
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                      Zona horaria: America/Caracas (GMT-04:00)
+                    </span>
+                  </div>
                   <span className="text-xs text-amber-400 font-semibold">
-                    Haz clic en cualquier día para abrir la ventana flotante
+                    Haz clic en cualquier día para agendar o ver todos los parámetros estilo Google Calendar
                   </span>
                 </div>
                 <div className="grid grid-cols-7 bg-slate-100 border-b border-slate-200 text-center text-[11px] font-black uppercase text-slate-600 py-2">
@@ -2481,35 +2826,148 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <div className="grid grid-cols-7 divide-x divide-y divide-slate-200">
                   {calendarDays.map((d) => {
                     const dayEvents = agendaEvents.filter((ev) => ev.date === d.dateStr);
+                    const colorClasses = {
+                      BLUE: "bg-blue-700 border-l-4 border-blue-300",
+                      EMERALD: "bg-emerald-700 border-l-4 border-emerald-300",
+                      AMBER: "bg-amber-600 border-l-4 border-amber-200",
+                      ROSE: "bg-[#8b1538] border-l-4 border-rose-300",
+                      VIOLET: "bg-purple-700 border-l-4 border-purple-300",
+                      CYAN: "bg-cyan-700 border-l-4 border-cyan-300",
+                    };
                     return (
                       <div
                         key={d.dateStr}
-                        onClick={() => setSelectedDayModal(d.dateStr)}
-                        className="min-h-[105px] p-2 hover:bg-blue-50/60 cursor-pointer transition flex flex-col justify-between"
+                        onClick={() => {
+                          setSelectedDayModal(d.dateStr);
+                          setNewEventForm((prev) => ({ ...prev, endDate: d.dateStr }));
+                        }}
+                        className="min-h-[120px] p-2 hover:bg-blue-50/40 cursor-pointer transition flex flex-col justify-between"
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-black text-slate-800">{d.dayNumber}</span>
                           {dayEvents.length > 0 && (
-                            <span className="px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold">
-                              {dayEvents.length}
+                            <span className="px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-bold">
+                              {dayEvents.length} act.
                             </span>
                           )}
                         </div>
                         <div className="space-y-1 mt-1">
-                          {dayEvents.map((ev) => (
-                            <div
-                              key={ev.id}
-                              className={`px-1.5 py-1 rounded text-white text-[10px] font-semibold truncate ${
-                                ev.status === "APROBADO" ? "bg-blue-900" : "bg-amber-600"
-                              }`}
-                            >
-                              {ev.startTime} • {ev.title}
-                            </div>
-                          ))}
+                          {dayEvents.map((ev) => {
+                            const pillClass =
+                              colorClasses[ev.color] ||
+                              (ev.status === "APROBADO" ? colorClasses.BLUE : colorClasses.AMBER);
+                            return (
+                              <div
+                                key={ev.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedEventDetail(ev);
+                                }}
+                                title={`${ev.title}\n${ev.description || ""}\nRecordatorio: ${formatReminderLabel(ev)}`}
+                                className={`px-1.5 py-1 rounded text-white text-[10px] font-semibold truncate shadow-2xs ${pillClass}`}
+                              >
+                                <div className="flex items-center justify-between gap-1">
+                                  <span className="truncate">
+                                    {ev.allDay ? "Todo el día" : ev.startTime} • {ev.title}
+                                  </span>
+                                  <span className="text-[9px] opacity-90 shrink-0">
+                                    🔔{ev.reminderValue || 1}
+                                    {ev.reminderUnit === "DIAS" ? "d" : "h"}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     );
                   })}
+                </div>
+              </div>
+            ) : agendaViewMode === "REMINDERS" ? (
+              /* CENTRO DE RECORDATORIOS Y ALERTAS (APP / CORREO / WHATSAPP) */
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                  <div>
+                    <h3 className="text-sm font-black uppercase text-slate-900">
+                      Centro de Recordatorios Programados (Aplicación, Correo Gmail y WhatsApp)
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Gestione y envíe recordatorios con días u horas de anticipación a cada responsable e invitado de las actividades agendadas.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {agendaEvents.map((ev) => (
+                    <div
+                      key={ev.id}
+                      className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1 max-w-2xl">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full bg-blue-600/20 text-blue-300 border border-blue-500/40 text-[10px] font-black uppercase">
+                            {ev.eventType || "EVENTO"}
+                          </span>
+                          <span className="text-sm font-black text-slate-900">{ev.title}</span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black">
+                            🔔 Anticipación: {formatReminderLabel(ev)}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500">
+                          📅 <strong>{ev.date}</strong>{" "}
+                          {ev.endDate && ev.endDate !== ev.date ? `al ${ev.endDate}` : ""} • ⏰{" "}
+                          {ev.allDay ? "Todo el día" : `${ev.startTime} - ${ev.endTime || "11:00"}`} • 📍{" "}
+                          {ev.location || "Sede CENDIS"}
+                        </p>
+                        {ev.description && (
+                          <p className="text-xs text-slate-400 italic">"{ev.description}"</p>
+                        )}
+                        <p className="text-[11px] text-slate-400">
+                          👤 Responsable: <strong>{ev.responsable}</strong> ({ev.contacto}) • ✉{" "}
+                          {ev.emailInvitado || "Sin correo"} • Canales activos:{" "}
+                          {[
+                            ev.notifyApp !== false ? "App SIACENDIS" : null,
+                            ev.notifyEmail !== false ? "Correo Gmail" : null,
+                            ev.notifyWhatsapp !== false ? "WhatsApp" : null,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => triggerInAppReminder(ev)}
+                          className="px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs cursor-pointer shadow"
+                        >
+                          🔔 Notificar en App
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => sendEmailReminder(ev)}
+                          className="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer shadow"
+                        >
+                          ✉ Enviar Correo
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => sendWhatsappReminder(ev)}
+                          className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs cursor-pointer shadow"
+                        >
+                          💬 Enviar WhatsApp
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openInGoogleCalendar(ev)}
+                          className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-slate-700"
+                        >
+                          📅 Google Calendar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
@@ -2593,8 +3051,14 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                     <div key={ev.id} className="space-y-0.5">
                                       <div>Ente: {ev.ente}</div>
                                       <div>Actividad: {ev.title}</div>
-                                      <div>Hora: {ev.startTime}</div>
+                                      <div>
+                                        Hora:{" "}
+                                        {ev.allDay
+                                          ? "Todo el día"
+                                          : `${ev.startTime}${ev.endTime ? ` - ${ev.endTime}` : ""}`}
+                                      </div>
                                       <div>Lugar: {ev.location}</div>
+                                      {ev.description && <div>Descripción: {ev.description}</div>}
                                       <div>Responsable: {ev.responsable}</div>
                                       <div>Contacto: {ev.contacto}</div>
                                     </div>
@@ -2612,69 +3076,263 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
             )}
 
-            {/* SEGUNDA VENTANA FLOTANTE DEL DÍA */}
-            {selectedDayModal && (
-              <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            {/* MODAL DE DETALLE DE EVENTO ESTILO GOOGLE CALENDAR */}
+            {selectedEventDetail && (
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
                 <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200">
+                  <div className="bg-blue-900 text-white px-5 py-4 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
+                        {selectedEventDetail.eventType || "EVENTO"} • {selectedEventDetail.visibility || "PÚBLICO"} •{" "}
+                        {selectedEventDetail.availability || "OCUPADO"}
+                      </span>
+                      <h3 className="text-base font-black">{selectedEventDetail.title}</h3>
+                    </div>
+                    <button
+                      onClick={() => setSelectedEventDetail(null)}
+                      className="text-white/80 hover:text-white text-xs font-bold px-2.5 py-1 rounded bg-blue-800 cursor-pointer"
+                    >
+                      Cerrar ✕
+                    </button>
+                  </div>
+                  <div className="p-5 space-y-3 text-xs">
+                    <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block">Fecha:</span>
+                        <span className="font-bold">
+                          {selectedEventDetail.date}
+                          {selectedEventDetail.endDate &&
+                          selectedEventDetail.endDate !== selectedEventDetail.date
+                            ? ` al ${selectedEventDetail.endDate}`
+                            : ""}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block">Horario:</span>
+                        <span className="font-bold">
+                          {selectedEventDetail.allDay
+                            ? "Todo el día"
+                            : `${selectedEventDetail.startTime} - ${selectedEventDetail.endTime || "11:00"}`}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block">Ubicación:</span>
+                        <span className="font-bold">{selectedEventDetail.location || "Sede CENDIS"}</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase block">Repetición:</span>
+                        <span className="font-bold">{selectedEventDetail.recurrence || "NO_REPETIR"}</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                        Descripción completa de la actividad:
+                      </span>
+                      <p className="text-xs leading-relaxed">
+                        {selectedEventDetail.description || "Sin descripción detallada registrada."}
+                      </p>
+                    </div>
+
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                        Responsable, Invitados y Google Meet:
+                      </span>
+                      <p>
+                        <strong>Responsable:</strong> {selectedEventDetail.responsable} ({selectedEventDetail.contacto})
+                      </p>
+                      <p>
+                        <strong>Correo invitado:</strong>{" "}
+                        {selectedEventDetail.emailInvitado || "No especificado"}
+                      </p>
+                      {selectedEventDetail.invitadosAdicionales && (
+                        <p>
+                          <strong>Otros invitados:</strong> {selectedEventDetail.invitadosAdicionales}
+                        </p>
+                      )}
+                      {selectedEventDetail.meetLink && (
+                        <p>
+                          <strong>Google Meet:</strong>{" "}
+                          <a
+                            href={selectedEventDetail.meetLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-400 underline"
+                          >
+                            {selectedEventDetail.meetLink}
+                          </a>
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="bg-amber-950/40 p-3 rounded-xl border border-amber-500/40 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-black uppercase text-amber-300 block">
+                          Configuración de Recordatorio
+                        </span>
+                        <span className="text-xs font-bold">
+                          Notificar con {formatReminderLabel(selectedEventDetail)}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-300">
+                        {[
+                          selectedEventDetail.notifyApp !== false ? "App" : null,
+                          selectedEventDetail.notifyEmail !== false ? "Correo" : null,
+                          selectedEventDetail.notifyWhatsapp !== false ? "WhatsApp" : null,
+                        ]
+                          .filter(Boolean)
+                          .join(" • ")}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => triggerInAppReminder(selectedEventDetail)}
+                        className="py-2 px-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[11px] cursor-pointer"
+                      >
+                        🔔 Aviso App
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => sendEmailReminder(selectedEventDetail)}
+                        className="py-2 px-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] cursor-pointer"
+                      >
+                        ✉ Enviar Correo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => sendWhatsappReminder(selectedEventDetail)}
+                        className="py-2 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] cursor-pointer"
+                      >
+                        💬 WhatsApp
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openInGoogleCalendar(selectedEventDetail)}
+                        className="py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] cursor-pointer border border-slate-700"
+                      >
+                        📅 Google Cal
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* VENTANA FLOTANTE DEL DÍA CON TODOS LOS PARÁMETROS DE GOOGLE CALENDAR */}
+            {selectedDayModal && (
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200">
                   <div className="bg-blue-900 text-white px-5 py-3.5 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
-                        Ventana Flotante de Programación y Alertas
+                        Google Calendar SIACENDIS • Parámetros Completos y Recordatorios Anticipados
                       </span>
-                      <h3 className="text-sm font-black">Actividades del Día: {selectedDayModal}</h3>
+                      <h3 className="text-sm font-black">Agenda del Día: {selectedDayModal}</h3>
                     </div>
                     <button
                       onClick={() => setSelectedDayModal(null)}
-                      className="text-white/80 hover:text-white text-xs font-bold px-2 py-1 rounded bg-blue-800 cursor-pointer"
+                      className="text-white/80 hover:text-white text-xs font-bold px-2.5 py-1 rounded bg-blue-800 cursor-pointer"
                     >
                       Cerrar ✕
                     </button>
                   </div>
 
-                  <div className="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
+                  <div className="p-5 space-y-4 max-h-[84vh] overflow-y-auto">
+                    {/* Lista de actividades existentes en la fecha */}
                     <div className="space-y-2">
-                      <h4 className="text-xs font-black uppercase text-slate-700">Eventos en esta fecha</h4>
+                      <h4 className="text-xs font-black uppercase text-slate-700">
+                        Actividades agendadas en esta fecha ({agendaEvents.filter((e) => e.date === selectedDayModal).length})
+                      </h4>
                       {agendaEvents.filter((e) => e.date === selectedDayModal).length === 0 ? (
-                        <p className="text-xs text-slate-400 italic">No hay eventos agendados.</p>
+                        <p className="text-xs text-slate-400 italic">No hay actividades agendadas en este día.</p>
                       ) : (
                         agendaEvents
                           .filter((e) => e.date === selectedDayModal)
                           .map((ev) => (
                             <div
                               key={ev.id}
-                              className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs flex justify-between items-center gap-2"
+                              className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2"
                             >
-                              <div>
-                                <div className="font-black text-slate-900">
-                                  {ev.startTime} - {ev.title}
+                              <div className="flex flex-wrap justify-between items-start gap-2">
+                                <div>
+                                  <div className="font-black text-slate-900 flex items-center gap-2">
+                                    <span>
+                                      {ev.allDay
+                                        ? "Todo el día"
+                                        : `${ev.startTime}${ev.endTime ? ` - ${ev.endTime}` : ""}`}{" "}
+                                      • {ev.title}
+                                    </span>
+                                    <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold">
+                                      🔔 {formatReminderLabel(ev)}
+                                    </span>
+                                  </div>
+                                  {ev.description && (
+                                    <p className="text-[11px] text-slate-400 mt-0.5">{ev.description}</p>
+                                  )}
+                                  <div className="text-slate-500 text-[11px] mt-0.5">
+                                    📍 {ev.location || "Sede CENDIS"} • 👤 Resp: {ev.responsable} ({ev.contacto}) •{" "}
+                                    <span className="font-bold">{ev.status}</span>
+                                  </div>
                                 </div>
-                                <div className="text-slate-600">
-                                  Resp: {ev.responsable} ({ev.contacto}) •{" "}
-                                  <span className="font-bold">{ev.status}</span>
+                                <div className="flex items-center gap-1">
+                                  {ev.status !== "APROBADO" && currentUser?.role === "ADMIN" && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setAgendaEvents((prev) =>
+                                          prev.map((item) =>
+                                            item.id === ev.id ? { ...item, status: "APROBADO" } : item
+                                          )
+                                        )
+                                      }
+                                      className="px-2 py-1 rounded bg-emerald-700 text-white text-[10px] font-bold cursor-pointer"
+                                    >
+                                      ✓ Aprobar
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setAgendaEvents((prev) => prev.filter((item) => item.id !== ev.id))
+                                    }
+                                    className="text-red-500 hover:text-red-400 p-1 cursor-pointer"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-1">
-                                {ev.status !== "APROBADO" && currentUser?.role === "ADMIN" && (
-                                  <button
-                                    onClick={() =>
-                                      setAgendaEvents((prev) =>
-                                        prev.map((item) =>
-                                          item.id === ev.id ? { ...item, status: "APROBADO" } : item
-                                        )
-                                      )
-                                    }
-                                    className="px-2 py-1 rounded bg-emerald-700 text-white text-[10px] font-bold"
-                                  >
-                                    ✓ Aprobar
-                                  </button>
-                                )}
+
+                              {/* Botones rápidos de recordatorio por cada evento */}
+                              <div className="flex flex-wrap gap-1.5 pt-1 border-t border-slate-800">
                                 <button
-                                  onClick={() =>
-                                    setAgendaEvents((prev) => prev.filter((item) => item.id !== ev.id))
-                                  }
-                                  className="text-red-600 hover:text-red-800"
+                                  type="button"
+                                  onClick={() => triggerInAppReminder(ev)}
+                                  className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[10px] cursor-pointer"
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  🔔 Notificar en App
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => sendEmailReminder(ev)}
+                                  className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] cursor-pointer"
+                                >
+                                  ✉ Enviar Correo Gmail
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => sendWhatsappReminder(ev)}
+                                  className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] cursor-pointer"
+                                >
+                                  💬 Enviar WhatsApp
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => openInGoogleCalendar(ev)}
+                                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[10px] cursor-pointer"
+                                >
+                                  📅 Abrir en Google Calendar
                                 </button>
                               </div>
                             </div>
@@ -2682,45 +3340,106 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       )}
                     </div>
 
+                    {/* FORMULARIO COMPLETO CON TODOS LOS PARÁMETROS DE GOOGLE CALENDAR */}
                     <form onSubmit={handleAddEventToDay} className="space-y-3 pt-3 border-t border-slate-200">
-                      <h4 className="text-xs font-black uppercase text-blue-900">
-                        + Programar Actividad (Vinculado con Personal de RRHH)
+                      <h4 className="text-xs font-black uppercase text-amber-400">
+                        + Crear Actividad (Todos los Parámetros de Google Calendar)
                       </h4>
-                      <div className="grid grid-cols-2 gap-2">
+
+                      {/* 1. Título y Tipo de Evento */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <input
                           type="text"
                           required
-                          placeholder="Ente"
+                          placeholder="Añade un título de actividad..."
+                          value={newEventForm.title}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, title: e.target.value })}
+                          className="sm:col-span-2 px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                        />
+                        <select
+                          value={newEventForm.eventType}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, eventType: e.target.value })}
+                          className="px-2.5 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          <option value="EVENTO">Tipo: Evento</option>
+                          <option value="TAREA">Tipo: Tarea</option>
+                          <option value="SESION_ESTUDIO">Sesión de Estudio CENDIS</option>
+                          <option value="FUERA_DE_OFICINA">Fuera de la oficina</option>
+                        </select>
+                      </div>
+
+                      {/* 2. Horario, Todo el día, Fecha Fin y Repetición */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-center">
+                        <label className="flex items-center gap-2 text-xs font-bold cursor-pointer px-2 py-1.5 rounded-lg border border-slate-700">
+                          <input
+                            type="checkbox"
+                            checked={newEventForm.allDay}
+                            onChange={(e) => setNewEventForm({ ...newEventForm, allDay: e.target.checked })}
+                            className="accent-amber-500"
+                          />
+                          <span>Todo el día</span>
+                        </label>
+                        {!newEventForm.allDay && (
+                          <>
+                            <input
+                              type="time"
+                              value={newEventForm.startTime}
+                              onChange={(e) => setNewEventForm({ ...newEventForm, startTime: e.target.value })}
+                              className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                              title="Hora de inicio"
+                            />
+                            <input
+                              type="time"
+                              value={newEventForm.endTime}
+                              onChange={(e) => setNewEventForm({ ...newEventForm, endTime: e.target.value })}
+                              className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                              title="Hora de finalización"
+                            />
+                          </>
+                        )}
+                        <select
+                          value={newEventForm.recurrence}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, recurrence: e.target.value })}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold"
+                        >
+                          <option value="NO_REPETIR">No se repite</option>
+                          <option value="DIARIO">Todos los días</option>
+                          <option value="SEMANAL">Cada semana</option>
+                          <option value="MENSUAL">Cada mes</option>
+                          <option value="ANUAL">Anualmente</option>
+                          <option value="DIAS_LABORALES">Días laborables (Lun-Vie)</option>
+                        </select>
+                      </div>
+
+                      {/* 3. Ubicación, Ente y Enlace de Videoconferencia Google Meet */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <input
+                          type="text"
+                          required
+                          placeholder="📍 Añadir ubicación / Sala / Estudio"
+                          value={newEventForm.location}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, location: e.target.value })}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          required
+                          placeholder="🏛 Ente (ej. CENDIS / MPPC)"
                           value={newEventForm.ente}
                           onChange={(e) => setNewEventForm({ ...newEventForm, ente: e.target.value })}
                           className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
                         />
                         <input
                           type="text"
-                          required
-                          placeholder="Hora (ej. 10:00am)"
-                          value={newEventForm.startTime}
-                          onChange={(e) => setNewEventForm({ ...newEventForm, startTime: e.target.value })}
+                          placeholder="🎥 Enlace Google Meet"
+                          value={newEventForm.meetLink}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, meetLink: e.target.value })}
                           className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
                         />
                       </div>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Actividad"
-                        value={newEventForm.title}
-                        onChange={(e) => setNewEventForm({ ...newEventForm, title: e.target.value })}
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
-                      />
-                      <div className="grid grid-cols-2 gap-2">
-                        <input
-                          type="text"
-                          required
-                          placeholder="Lugar"
-                          value={newEventForm.location}
-                          onChange={(e) => setNewEventForm({ ...newEventForm, location: e.target.value })}
-                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
-                        />
+
+                      {/* 4. Responsable RRHH, Correo de Invitado, WhatsApp e Invitados Adicionales */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <select
                           value={newEventForm.responsable}
                           onChange={(e) => {
@@ -2731,23 +3450,164 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                               ...newEventForm,
                               responsable: e.target.value,
                               contacto: emp ? emp.telefono : newEventForm.contacto,
+                              emailInvitado:
+                                emp && emp.correo ? emp.correo : newEventForm.emailInvitado,
                             });
                           }}
                           className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold"
                         >
                           {employees.map((emp) => (
                             <option key={emp.id} value={`${emp.nombres} ${emp.apellidos}`}>
-                              {emp.nombres} {emp.apellidos}
+                              👤 Resp: {emp.nombres} {emp.apellidos}
                             </option>
                           ))}
                         </select>
+                        <input
+                          type="email"
+                          placeholder="✉ Correo Gmail para recordatorio"
+                          value={newEventForm.emailInvitado}
+                          onChange={(e) =>
+                            setNewEventForm({ ...newEventForm, emailInvitado: e.target.value })
+                          }
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          placeholder="📱 Teléfono WhatsApp (ej. 0424-1234567)"
+                          value={newEventForm.contacto}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, contacto: e.target.value })}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
                       </div>
+
+                      {/* 5. Descripción detallada de Google Calendar */}
+                      <div>
+                        <textarea
+                          rows={2}
+                          placeholder="📝 Añadir descripción detallada, agenda de la sesión, requerimientos técnicos o notas de Google Calendar..."
+                          value={newEventForm.description}
+                          onChange={(e) =>
+                            setNewEventForm({ ...newEventForm, description: e.target.value })
+                          }
+                          className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+
+                      {/* 6. Visibilidad, Disponibilidad y Color */}
+                      <div className="grid grid-cols-3 gap-2">
+                        <select
+                          value={newEventForm.visibility}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, visibility: e.target.value })}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        >
+                          <option value="PUBLICO">Visibilidad: Público</option>
+                          <option value="PRIVADO">Visibilidad: Privado</option>
+                          <option value="PREDETERMINADO">Visibilidad: Predeterminada</option>
+                        </select>
+                        <select
+                          value={newEventForm.availability}
+                          onChange={(e) =>
+                            setNewEventForm({ ...newEventForm, availability: e.target.value })
+                          }
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        >
+                          <option value="OCUPADO">Mostrar como: Ocupado</option>
+                          <option value="DISPONIBLE">Mostrar como: Disponible</option>
+                        </select>
+                        <select
+                          value={newEventForm.color}
+                          onChange={(e) => setNewEventForm({ ...newEventForm, color: e.target.value })}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          <option value="BLUE">🔵 Color: Azul Google</option>
+                          <option value="EMERALD">🟢 Color: Verde Esmeralda</option>
+                          <option value="AMBER">🟡 Color: Ámbar CENDIS</option>
+                          <option value="ROSE">🔴 Color: Vinotinto</option>
+                          <option value="VIOLET">🟣 Color: Violeta</option>
+                          <option value="CYAN">🩵 Color: Turquesa</option>
+                        </select>
+                      </div>
+
+                      {/* 7. Configuración de Recordatorios con Días u Horas de Anticipación */}
+                      <div className="p-3 rounded-xl bg-slate-900/90 border border-amber-500/50 space-y-2.5">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-[11px] font-black uppercase text-amber-400 flex items-center gap-1.5">
+                            <Bell className="w-3.5 h-3.5" />
+                            <span>Recordatorio Anticipado (Días u Horas antes)</span>
+                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[11px] text-slate-300 font-semibold">Notificar</span>
+                            <input
+                              type="number"
+                              min="1"
+                              max="365"
+                              value={newEventForm.reminderValue}
+                              onChange={(e) =>
+                                setNewEventForm({ ...newEventForm, reminderValue: e.target.value })
+                              }
+                              className="w-16 px-2 py-1 rounded border border-slate-600 text-xs font-black text-center"
+                            />
+                            <select
+                              value={newEventForm.reminderUnit}
+                              onChange={(e) =>
+                                setNewEventForm({ ...newEventForm, reminderUnit: e.target.value })
+                              }
+                              className="px-2 py-1 rounded border border-slate-600 text-xs font-bold"
+                            >
+                              <option value="HORAS">Horas antes</option>
+                              <option value="DIAS">Días antes</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-4 text-xs pt-1 border-t border-slate-800">
+                          <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-slate-200">
+                            <input
+                              type="checkbox"
+                              checked={newEventForm.notifyApp}
+                              onChange={(e) =>
+                                setNewEventForm({ ...newEventForm, notifyApp: e.target.checked })
+                              }
+                              className="accent-amber-500"
+                            />
+                            <span>🔔 Notificar por Aplicación</span>
+                          </label>
+                          <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-slate-200">
+                            <input
+                              type="checkbox"
+                              checked={newEventForm.notifyEmail}
+                              onChange={(e) =>
+                                setNewEventForm({ ...newEventForm, notifyEmail: e.target.checked })
+                              }
+                              className="accent-blue-500"
+                            />
+                            <span>✉ Enviar Correo Gmail</span>
+                          </label>
+                          <label className="flex items-center gap-1.5 cursor-pointer font-semibold text-slate-200">
+                            <input
+                              type="checkbox"
+                              checked={newEventForm.notifyWhatsapp}
+                              onChange={(e) =>
+                                setNewEventForm({
+                                  ...newEventForm,
+                                  notifyWhatsapp: e.target.checked,
+                                })
+                              }
+                              className="accent-emerald-500"
+                            />
+                            <span>💬 Enviar WhatsApp</span>
+                          </label>
+                        </div>
+                      </div>
+
                       <button
                         type="submit"
-                        className="w-full py-2.5 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full py-2.5 rounded-xl bg-blue-700 hover:bg-blue-600 text-white font-black text-xs shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <Bell className="w-4 h-4" />
-                        <span>Guardar y Enviar Aviso (App / Correo / WhatsApp)</span>
+                        <span>
+                          Guardar en Google Calendar CENDIS y Programar Recordatorio (App / Correo / WhatsApp)
+                        </span>
                       </button>
                     </form>
                   </div>
