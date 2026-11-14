@@ -226,16 +226,30 @@ const INITIAL_EMPLOYEES = [
     cedula: "V-15.432.111",
     cargo: "Presidente CENDIS",
     coordinacion: "Presidencia",
+    condicionLaboral: "Libre Nombramiento",
+    nivelAcademico: "Universitario",
+    profesion: "Músico y Productor Cultural",
+    estadoCivil: "Casado(a)",
+    genero: "Masculino",
+    tallas: "Camisa L / Pantalón 34 / Calzado 42",
     telefono: "0414-1234567",
+    telefonoAlterno: "0212-5551122",
     correo: "presidencia.cendis@gmail.com",
-    direccion: "Caracas, Av. Libertador",
+    direccion: "Caracas, Av. Libertador, Parroquia El Recreo",
     fechaNacimiento: "1980-05-12",
     fechaIngreso: "2022-01-15",
     tipoSangre: "O+",
-    emergencia1: "María Primera (0412-9876543)",
-    emergencia2: "José Primera (0416-5554433)",
+    emergencia1: "María Primera: 0412-9876543",
+    emergencia2: "José Primera: 0416-5554433",
     familiares: "Esposa y 2 Hijos",
+    familiaresLista: [
+      { id: "fam-1", parentesco: "Esposo(a)", nombreCompleto: "María Primera", cedula: "V-16.222.333", fechaNacimiento: "1982-08-14", edad: "44" },
+      { id: "fam-2", parentesco: "Hijo(a)", nombreCompleto: "Alejandro Primera", cedula: "V-30.111.222", fechaNacimiento: "2010-03-20", edad: "16" },
+      { id: "fam-3", parentesco: "Hijo(a)", nombreCompleto: "Oriana Primera", cedula: "Menor sin cédula", fechaNacimiento: "2016-11-05", edad: "10" },
+    ],
     tieneCargaFamiliar: "SI",
+    fotoCarnet: "",
+    observacionesLaborales: "Presidente de la Fundación Centro Nacional del Disco (CENDIS).",
     codigoBarra: "2024-CENDIS-000123",
   },
   {
@@ -245,16 +259,28 @@ const INITIAL_EMPLOYEES = [
     cedula: "V-18.999.888",
     cargo: "Directora Ejecutiva",
     coordinacion: "Dirección Ejecutiva",
+    condicionLaboral: "Fijo",
+    nivelAcademico: "Postgrado / Maestría",
+    profesion: "Licenciada en Administración Cultural",
+    estadoCivil: "Soltero(a)",
+    genero: "Femenino",
+    tallas: "Camisa M / Pantalón 30 / Calzado 38",
     telefono: "0424-9988776",
+    telefonoAlterno: "0212-4443322",
     correo: "",
-    direccion: "Caracas, El Paraíso",
+    direccion: "Caracas, Av. Páez, El Paraíso",
     fechaNacimiento: "1985-09-20",
     fechaIngreso: "2023-03-10",
     tipoSangre: "A+",
-    emergencia1: "Carlos Flores (0414-1112233)",
-    emergencia2: "N/A",
+    emergencia1: "Carlos Flores: 0414-1112233",
+    emergencia2: "Carmen Flores: 0412-4445566",
     familiares: "1 Hijo",
+    familiaresLista: [
+      { id: "fam-4", parentesco: "Hijo(a)", nombreCompleto: "Santiago Flores", cedula: "Menor sin cédula", fechaNacimiento: "2015-06-10", edad: "11" },
+    ],
     tieneCargaFamiliar: "SI",
+    fotoCarnet: "",
+    observacionesLaborales: "Coordinación administrativa e institucional de la Dirección Ejecutiva.",
     codigoBarra: "2024-CENDIS-000124",
   },
   {
@@ -264,16 +290,26 @@ const INITIAL_EMPLOYEES = [
     cedula: "V-20.164.307",
     cargo: "Coordinadora de Producción",
     coordinacion: "Producción Fonográfica",
+    condicionLaboral: "Fijo",
+    nivelAcademico: "Universitario",
+    profesion: "Ingeniera de Sonido y Producción Musical",
+    estadoCivil: "Soltero(a)",
+    genero: "Femenino",
+    tallas: "Camisa S / Pantalón 28 / Calzado 37",
     telefono: "0424-1643007",
+    telefonoAlterno: "",
     correo: "produccion.cendis@gmail.com",
-    direccion: "Caracas, Centro",
+    direccion: "Caracas, Parroquia Catedral, Centro",
     fechaNacimiento: "1990-11-04",
     fechaIngreso: "2024-02-01",
     tipoSangre: "B+",
-    emergencia1: "Luis Briceño (0412-3334455)",
-    emergencia2: "N/A",
+    emergencia1: "Luis Briceño: 0412-3334455",
+    emergencia2: "Rosa Briceño: 0416-7778899",
     familiares: "Sin carga familiar",
+    familiaresLista: [],
     tieneCargaFamiliar: "NO",
+    fotoCarnet: "",
+    observacionesLaborales: "Responsable de estudios de grabación, mezcla y masterización fonográfica.",
     codigoBarra: "2024-CENDIS-000125",
   },
   {
@@ -283,16 +319,29 @@ const INITIAL_EMPLOYEES = [
     cedula: "V-19.324.324",
     cargo: "Especialista Audiovisual",
     coordinacion: "Cultura Audiovisual",
+    condicionLaboral: "Contratado",
+    nivelAcademico: "Universitario",
+    profesion: "Licenciado en Artes Audiovisuales",
+    estadoCivil: "Casado(a)",
+    genero: "Masculino",
+    tallas: "Camisa L / Pantalón 32 / Calzado 41",
     telefono: "0426-3243246",
+    telefonoAlterno: "0412-3243246",
     correo: "",
-    direccion: "Los Valles del Tuy, Miranda",
+    direccion: "Los Valles del Tuy, Ocumare, Estado Miranda",
     fechaNacimiento: "1988-07-22",
     fechaIngreso: "2023-08-19",
     tipoSangre: "O+",
-    emergencia1: "Elena López (0426-1112233)",
-    emergencia2: "N/A",
+    emergencia1: "Elena López: 0426-1112233",
+    emergencia2: "Pedro López: 0414-8889900",
     familiares: "Esposa y 1 Hija",
+    familiaresLista: [
+      { id: "fam-5", parentesco: "Esposo(a)", nombreCompleto: "Elena de López", cedula: "V-20.555.444", fechaNacimiento: "1990-02-18", edad: "36" },
+      { id: "fam-6", parentesco: "Hijo(a)", nombreCompleto: "Valeria López", cedula: "Menor sin cédula", fechaNacimiento: "2018-09-12", edad: "8" },
+    ],
     tieneCargaFamiliar: "SI",
+    fotoCarnet: "",
+    observacionesLaborales: "Productor y realizador audiovisual comunitario del CENDIS.",
     codigoBarra: "2024-CENDIS-000126",
   },
 ];
@@ -520,6 +569,214 @@ function CendisGlyphLogo({ className = "w-32", showTopAcronym = false }) {
   );
 }
 
+// ============================================================================
+// COMPONENTES GRÁFICOS DEL CARNET OFICIAL CENDIS (ESCUDO, GLIFO DORADO Y CÓDIGO DE BARRAS ESCANEABLE)
+// ============================================================================
+function GoldenCoatOfArmsSVG({ className = "w-14 h-14" }) {
+  return (
+    <svg viewBox="0 0 120 120" className={className} fill="none">
+      {/* Ramas de olivo y palma doradas */}
+      <path
+        d="M32,90 C16,74 16,44 28,24 C22,46 24,70 38,86 Z"
+        fill="#d4b26f"
+      />
+      <path
+        d="M88,90 C104,74 104,44 92,24 C98,46 96,70 82,86 Z"
+        fill="#d4b26f"
+      />
+      {/* Cornucopias superiores */}
+      <path
+        d="M42,20 C48,10 72,10 78,20 C70,24 50,24 42,20 Z"
+        fill="#dfc082"
+        stroke="#8d6e32"
+        strokeWidth="1.2"
+      />
+      {/* Escudo central dividido en 3 cuarteles */}
+      <path
+        d="M35,26 L85,26 L85,62 C85,80 60,92 60,92 C60,92 35,80 35,62 Z"
+        fill="#0d254c"
+        stroke="#dfc082"
+        strokeWidth="3"
+      />
+      <line x1="60" y1="26" x2="60" y2="56" stroke="#dfc082" strokeWidth="2" />
+      <line x1="35" y1="56" x2="85" y2="56" stroke="#dfc082" strokeWidth="2" />
+      {/* Cuartel izquierdo: gavilla de trigo */}
+      <path d="M44,34 L51,49 M51,34 L44,49 M47.5,32 L47.5,50" stroke="#dfc082" strokeWidth="2.2" strokeLinecap="round" />
+      {/* Cuartel derecho: armas y pabellones */}
+      <path d="M68,34 L77,49 M77,34 L68,49" stroke="#dfc082" strokeWidth="2.2" strokeLinecap="round" />
+      {/* Cuartel inferior: caballo indómito blanco/dorado galopando hacia la izquierda */}
+      <path
+        d="M72,76 C68,69 62,67 55,68 L48,62 L44,65 L48,71 L43,78 L47,80 L53,74 L63,75 L67,82 L71,80 Z"
+        fill="#f5e1b5"
+      />
+      {/* Cinta tricolor/dorada inferior */}
+      <path
+        d="M24,96 Q60,86 96,96 L92,104 Q60,94 28,104 Z"
+        fill="#c9a55c"
+        stroke="#8d6e32"
+        strokeWidth="1"
+      />
+      <path
+        d="M36,105 Q60,99 84,105 L81,111 Q60,105 39,111 Z"
+        fill="#dfc082"
+      />
+    </svg>
+  );
+}
+
+function GoldenCendisGlyphSVG({ showTopTitle = true, compact = false }) {
+  return (
+    <div className="flex flex-col items-center select-none w-full">
+      {showTopTitle && (
+        <div
+          style={{ fontFamily: "'Trebuchet MS', Arial, sans-serif" }}
+          className={`${
+            compact ? "text-[13px]" : "text-[17px]"
+          } font-bold text-[#0b2545] tracking-[0.06em] leading-none mb-1`}
+        >
+          Centro Nacional
+        </div>
+      )}
+      {/* Glifo precolombino CENDIS en color dorado metálico fiel al carnet */}
+      <svg
+        viewBox="0 0 360 88"
+        className={compact ? "w-36 h-9" : "w-52 h-12"}
+        fill="#a88644"
+      >
+        {/* Barra curva izquierda */}
+        <path d="M12,8 C6,28 6,60 12,80 L22,80 C18,60 18,28 22,8 Z" />
+        {/* Bloque pequeño interno izquierdo */}
+        <rect x="27" y="26" width="12" height="34" rx="2" />
+        {/* Bloque principal izquierdo con triángulo calado */}
+        <path d="M29,8 L128,8 L128,16 L96,34 L128,46 L128,54 L76,54 L76,68 L94,68 L94,76 L29,76 L29,64 L54,64 L54,18 L29,18 Z" />
+        {/* Llave inferior izquierda */}
+        <path d="M96,58 L128,58 L128,80 L96,80 L96,71 L117,71 L117,66 L96,66 Z" />
+        {/* Estructura central escalonada */}
+        <rect x="156" y="8" width="28" height="24" rx="2" />
+        <path d="M135,14 L147,14 L147,36 L193,36 L193,8 L272,8 L272,80 L193,80 L193,58 L146,58 L146,80 L135,80 L135,48 L204,48 L204,69 L259,69 L259,19 L204,19 L204,45 L135,45 Z" />
+        {/* Espiral cuadrada concéntrica central-derecha */}
+        <path d="M212,26 L251,26 L251,62 L212,62 L212,53 L241,53 L241,35 L212,35 Z" />
+        <rect x="214" y="39" width="21" height="12" rx="1.5" />
+        {/* Figura zoomorfa/tambor derecha */}
+        <path d="M272,26 L292,26 L296,8 L328,8 L328,16 L306,16 L304,26 C322,28 334,34 334,46 C334,58 322,64 304,66 L306,72 L328,72 L328,80 L294,80 L292,64 L272,64 Z" />
+        {/* Barra curva derecha */}
+        <path d="M338,8 C344,28 344,60 338,80 L348,80 C354,60 354,28 348,8 Z" />
+      </svg>
+      <div
+        style={{ fontFamily: "'Trebuchet MS', Arial, sans-serif" }}
+        className={`${
+          compact ? "text-[12px] tracking-[0.3em]" : "text-[16px] tracking-[0.34em]"
+        } font-bold text-[#0b2545] leading-none mt-1 pl-2`}
+      >
+        del Disco
+      </div>
+    </div>
+  );
+}
+
+// Generador determinista de barras escaneables + patrón híbrido del carnet oficial
+function ScannableCarnetBarcode({ value = "2024-CENDIS-000123" }) {
+  const cleanCode = String(value || "2024-CENDIS-000123").trim().toUpperCase();
+
+  // Generamos bits deterministas a partir de cada carácter ASCII para que el lector y el patrón sean únicos por trabajador
+  const charCodes = Array.from(cleanCode).map((c, idx) => c.charCodeAt(0) + idx * 7);
+
+  // Columnas para el bloque central híbrido (estilo PDF417 / DataMatrix flanqueado por barras de inicio/parada como en la foto adjunta)
+  const matrixCols = 34;
+  const matrixRows = 7;
+
+  // Barras 1D Code-39 / Code-128 puras arriba/abajo para lectores láser 1D convencionales
+  const oneDBars = [];
+  let cursorX = 6;
+  // Quiet zone + Start pattern
+  [3, 1.5, 1.5, 3, 1.5, 1.5].forEach((w, i) => {
+    if (i % 2 === 0) oneDBars.push({ x: cursorX, w });
+    cursorX += w;
+  });
+  charCodes.forEach((code) => {
+    const b1 = (code % 3) + 1.2;
+    const s1 = ((code >> 1) % 2) + 1.1;
+    const b2 = ((code >> 2) % 3) + 1.2;
+    const s2 = ((code >> 3) % 2) + 1.1;
+    const b3 = ((code >> 4) % 2) + 1.2;
+    const s3 = 1.2;
+    oneDBars.push({ x: cursorX, w: b1 });
+    cursorX += b1 + s1;
+    oneDBars.push({ x: cursorX, w: b2 });
+    cursorX += b2 + s2;
+    oneDBars.push({ x: cursorX, w: b3 });
+    cursorX += b3 + s3;
+  });
+  // Stop pattern
+  [3, 1.5, 1.8, 1.5, 3].forEach((w, i) => {
+    if (i % 2 === 0) oneDBars.push({ x: cursorX, w });
+    cursorX += w;
+  });
+
+  return (
+    <div className="flex flex-col items-center select-none w-full">
+      {/* Patrón híbrido idéntico al reverso del carnet adjunto + barras 1D escaneables */}
+      <svg
+        viewBox="0 0 240 42"
+        className="w-52 h-10 bg-white px-1"
+        aria-label={`Código de barra ${cleanCode}`}
+      >
+        {/* Barras de guardia izquierdas (Start Guard Bars) */}
+        <rect x="8" y="2" width="6.5" height="38" fill="#000000" />
+        <rect x="17" y="2" width="2.2" height="38" fill="#000000" />
+        <rect x="21.5" y="2" width="1.6" height="38" fill="#000000" />
+        <rect x="25.5" y="2" width="2.4" height="38" fill="#000000" />
+
+        {/* Bloque central de datos codificados (4 sub-bloques con barras guía intermedias como la imagen de referencia) */}
+        {Array.from({ length: matrixCols }).map((_, colIdx) => {
+          const xPos = 31 + colIdx * 4.7;
+          // Cada 8 columnas insertamos una barra vertical de sincronización
+          if (colIdx % 8 === 0) {
+            return (
+              <g key={`sync-${colIdx}`}>
+                <rect x={xPos} y="2" width="2.2" height="38" fill="#000000" />
+                <rect x={xPos + 2.8} y="2" width="1.1" height="38" fill="#000000" />
+              </g>
+            );
+          }
+          const seed = charCodes[colIdx % charCodes.length] * (colIdx + 3);
+          return (
+            <g key={`col-${colIdx}`}>
+              {Array.from({ length: matrixRows }).map((__, rowIdx) => {
+                const bit = ((seed >> rowIdx) ^ (colIdx + rowIdx)) & 1;
+                if (!bit) return null;
+                return (
+                  <rect
+                    key={`cell-${colIdx}-${rowIdx}`}
+                    x={xPos}
+                    y={2 + rowIdx * 5.4}
+                    width="3.4"
+                    height="4.8"
+                    fill="#000000"
+                  />
+                );
+              })}
+            </g>
+          );
+        })}
+
+        {/* Barras de guardia derechas (Stop Guard Bars) */}
+        <rect x="194" y="2" width="6.8" height="38" fill="#000000" />
+        <rect x="204" y="2" width="2.4" height="38" fill="#000000" />
+        <rect x="209.5" y="2" width="1.5" height="38" fill="#000000" />
+        <rect x="214" y="2" width="2.4" height="38" fill="#000000" />
+        <rect x="220" y="2" width="1.5" height="38" fill="#000000" />
+      </svg>
+      <div
+        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
+        className="text-[11px] font-bold tracking-[0.04em] text-black leading-none mt-0.5"
+      >
+        {cleanCode}
+      </div>
+    </div>
+  );
+}
+
 function OfficialHeaderCintillo({ showRightLogo = true }) {
   return (
     <div
@@ -527,54 +784,21 @@ function OfficialHeaderCintillo({ showRightLogo = true }) {
         WebkitPrintColorAdjust: "exact",
         printColorAdjust: "exact",
       }}
-      className="w-full flex items-start justify-between pb-3 select-none bg-white"
+      className="official-header-cintillo w-full flex items-start justify-between pb-2 select-none bg-white shrink-0"
     >
-      <div className="flex items-center gap-3">
-        <div className="flex flex-col items-center">
-          <svg viewBox="0 0 120 75" className="w-14 h-9">
-            <path d="M5,14 Q35,4 60,14 T115,14 L115,31 Q85,41 60,31 T5,31 Z" fill="#f7d117" />
-            <path d="M5,31 Q35,21 60,31 T115,31 L115,48 Q85,58 60,48 T5,48 Z" fill="#1e3163" />
-            <path d="M5,48 Q35,38 60,48 T115,48 L115,65 Q85,75 60,65 T5,65 Z" fill="#b91c1c" />
-            <circle cx="42" cy="41" r="1.6" fill="#fff" />
-            <circle cx="47" cy="38" r="1.6" fill="#fff" />
-            <circle cx="53" cy="36" r="1.6" fill="#fff" />
-            <circle cx="59" cy="35" r="1.6" fill="#fff" />
-            <circle cx="65" cy="35" r="1.6" fill="#fff" />
-            <circle cx="71" cy="36" r="1.6" fill="#fff" />
-            <circle cx="77" cy="38" r="1.6" fill="#fff" />
-            <circle cx="82" cy="41" r="1.6" fill="#fff" />
-          </svg>
-          <span
-            style={{ fontFamily: "Arial, sans-serif", color: "#1e3163" }}
-            className="text-[5.8px] font-bold tracking-tight leading-none mt-0.5 uppercase"
-          >
-            REPÚBLICA BOLIVARIANA DE
-          </span>
-          <span
-            style={{ fontFamily: "Arial, sans-serif", color: "#1e3163" }}
-            className="text-[8.5px] font-black tracking-wider leading-none uppercase"
-          >
-            VENEZUELA
-          </span>
-        </div>
-        <div style={{ backgroundColor: "#1e3163" }} className="h-11 w-[1.5px]" />
-        <div className="flex flex-col justify-center">
-          <span
-            style={{ fontFamily: "Arial, sans-serif", color: "#52525b" }}
-            className="text-[11px] font-normal leading-tight"
-          >
-            Ministerio del Poder Popular para la
-          </span>
-          <span
-            style={{ fontFamily: "Arial, sans-serif", color: "#1e3163" }}
-            className="text-[26px] font-black tracking-tight leading-none uppercase"
-          >
-            CULTURA
-          </span>
-        </div>
-      </div>
+      <img
+        src="/cintillo-mppc.png"
+        alt="República Bolivariana de Venezuela - Ministerio del Poder Popular para la Cultura"
+        className="h-[52px] sm:h-[56px] w-auto object-contain block"
+      />
 
-      {showRightLogo && <CendisGlyphLogo className="w-24" showTopAcronym={true} />}
+      {showRightLogo && (
+        <img
+          src="/cintillo-cendis.jpg"
+          alt="CENDIS - Centro Nacional del Disco"
+          className="h-[56px] sm:h-[60px] w-auto object-contain block"
+        />
+      )}
     </div>
   );
 }
@@ -586,36 +810,13 @@ function OfficialFooterWave() {
         WebkitPrintColorAdjust: "exact",
         printColorAdjust: "exact",
       }}
-      className="w-full h-24 relative overflow-hidden select-none mt-auto shrink-0"
+      className="official-footer-wave w-full relative overflow-hidden select-none mt-auto shrink-0 bg-transparent pointer-events-none"
     >
-      <svg viewBox="0 0 800 115" preserveAspectRatio="none" className="w-full h-full block">
-        {/* Onda amarilla inferior izquierda idéntica al formato PDF */}
-        <path
-          d="M0,28 Q230,102 570,38 Q405,86 270,115 L0,115 Z"
-          fill="#fcc201"
-        />
-        {/* Onda azul marino derecha con 8 estrellas blancas */}
-        <path
-          d="M370,115 Q560,26 800,8 L800,115 Z"
-          fill="#1e2d5e"
-        />
-        {/* Onda roja carmesí inferior derecha */}
-        <path
-          d="M525,115 Q675,68 800,72 L800,115 Z"
-          fill="#9e1b24"
-        />
-        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
-          const x = 524 + i * 31;
-          const y = 98 - i * 6.3;
-          return (
-            <polygon
-              key={i}
-              points={`${x},${y - 7.5} ${x + 2.2},${y - 2.2} ${x + 7.5},${y - 2.2} ${x + 3.2},${y + 1.2} ${x + 4.8},${y + 6.5} ${x},${y + 3.2} ${x - 4.8},${y + 6.5} ${x - 3.2},${y + 1.2} ${x - 7.5},${y - 2.2} ${x - 2.2},${y - 2.2}`}
-              fill="#ffffff"
-            />
-          );
-        })}
-      </svg>
+      <img
+        src="/cintillo-onda-inferior.png"
+        alt="Cintillo Ondulado Tricolor Oficial MPPC - CENDIS"
+        className="w-full h-auto block object-cover"
+      />
     </div>
   );
 }
@@ -920,13 +1121,29 @@ export default function App() {
   const [selectedEmpForCV, setSelectedEmpForCV] = useState(null);
   const [selectedEmpIdToLink, setSelectedEmpIdToLink] = useState("");
   const [showLinkChangeSelector, setShowLinkChangeSelector] = useState(false);
+  const [hrModalOpen, setHrModalOpen] = useState(false);
+  const [editingEmpId, setEditingEmpId] = useState(null);
+  const [familyMemberDraft, setFamilyMemberDraft] = useState({
+    parentesco: "Hijo(a)",
+    nombreCompleto: "",
+    cedula: "",
+    fechaNacimiento: "",
+    edad: "",
+  });
   const [newEmpForm, setNewEmpForm] = useState({
     nombres: "",
     apellidos: "",
     cedula: "",
     cargo: "",
     coordinacion: "Producción Fonográfica",
+    condicionLaboral: "Fijo",
+    nivelAcademico: "Universitario",
+    profesion: "",
+    estadoCivil: "Soltero(a)",
+    genero: "Femenino",
+    tallas: "",
     telefono: "",
+    telefonoAlterno: "",
     correo: "",
     direccion: "",
     fechaNacimiento: "",
@@ -935,7 +1152,10 @@ export default function App() {
     emergencia1: "",
     emergencia2: "",
     familiares: "",
+    familiaresLista: [],
     tieneCargaFamiliar: "SI",
+    fotoCarnet: "",
+    observacionesLaborales: "",
     codigoBarra: "2024-CENDIS-000127",
   });
 
@@ -954,8 +1174,9 @@ export default function App() {
 
   // Filtros para el Reporte General de Personal
   const [hrFilterCoord, setHrFilterCoord] = useState("TODAS");
+  const [hrFilterCondicion, setHrFilterCondicion] = useState("TODAS");
   const [hrFilterCarga, setHrFilterCarga] = useState("TODOS");
-  const [hrFilterSangre] = useState("TODOS");
+  const [hrFilterSangre, setHrFilterSangre] = useState("TODOS");
   const [hrFilterSearch, setHrFilterSearch] = useState("");
   const [hrReportType, setHrReportType] = useState("NOMINA_COMPLETA");
 
@@ -2231,24 +2452,169 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     setScannerInput("");
   };
 
+  // Funciones de Gestión de Personal y Modal "Ingresar Personal"
+  const generateNextBarcode = () => {
+    const nextNum = String(123 + employees.length + Math.floor(Math.random() * 50)).padStart(6, "0");
+    return `2024-CENDIS-${nextNum}`;
+  };
+
+  const openNewEmployeeModal = (prefill = {}) => {
+    setEditingEmpId(null);
+    setFamilyMemberDraft({
+      parentesco: "Hijo(a)",
+      nombreCompleto: "",
+      cedula: "",
+      fechaNacimiento: "",
+      edad: "",
+    });
+    setNewEmpForm({
+      nombres: prefill.nombres || "",
+      apellidos: prefill.apellidos || "",
+      cedula: prefill.cedula || "",
+      cargo: prefill.cargo || "",
+      coordinacion: prefill.coordinacion || "Producción Fonográfica",
+      condicionLaboral: prefill.condicionLaboral || "Fijo",
+      nivelAcademico: prefill.nivelAcademico || "Universitario",
+      profesion: prefill.profesion || "",
+      estadoCivil: prefill.estadoCivil || "Soltero(a)",
+      genero: prefill.genero || "Femenino",
+      tallas: prefill.tallas || "",
+      telefono: prefill.telefono || "",
+      telefonoAlterno: prefill.telefonoAlterno || "",
+      correo: prefill.correo || "",
+      direccion: prefill.direccion || "",
+      fechaNacimiento: prefill.fechaNacimiento || "",
+      fechaIngreso: prefill.fechaIngreso || new Date().toISOString().slice(0, 10),
+      tipoSangre: prefill.tipoSangre || "O+",
+      emergencia1: prefill.emergencia1 || "",
+      emergencia2: prefill.emergencia2 || "",
+      familiares: prefill.familiares || "",
+      familiaresLista: Array.isArray(prefill.familiaresLista) ? prefill.familiaresLista : [],
+      tieneCargaFamiliar: prefill.tieneCargaFamiliar || "SI",
+      fotoCarnet: prefill.fotoCarnet || "",
+      observacionesLaborales: prefill.observacionesLaborales || "",
+      codigoBarra: prefill.codigoBarra || generateNextBarcode(),
+    });
+    setHrModalOpen(true);
+  };
+
+  const openEditEmployeeModal = (emp) => {
+    setEditingEmpId(emp.id);
+    setFamilyMemberDraft({
+      parentesco: "Hijo(a)",
+      nombreCompleto: "",
+      cedula: "",
+      fechaNacimiento: "",
+      edad: "",
+    });
+    setNewEmpForm({
+      nombres: emp.nombres || "",
+      apellidos: emp.apellidos || "",
+      cedula: emp.cedula || "",
+      cargo: emp.cargo || "",
+      coordinacion: emp.coordinacion || "Producción Fonográfica",
+      condicionLaboral: emp.condicionLaboral || "Fijo",
+      nivelAcademico: emp.nivelAcademico || "Universitario",
+      profesion: emp.profesion || "",
+      estadoCivil: emp.estadoCivil || "Soltero(a)",
+      genero: emp.genero || "Femenino",
+      tallas: emp.tallas || "",
+      telefono: emp.telefono || "",
+      telefonoAlterno: emp.telefonoAlterno || "",
+      correo: emp.correo || "",
+      direccion: emp.direccion || "",
+      fechaNacimiento: emp.fechaNacimiento || "",
+      fechaIngreso: emp.fechaIngreso || "2024-01-15",
+      tipoSangre: emp.tipoSangre || "O+",
+      emergencia1: emp.emergencia1 || "",
+      emergencia2: emp.emergencia2 || "",
+      familiares: emp.familiares || "",
+      familiaresLista: Array.isArray(emp.familiaresLista) ? emp.familiaresLista : [],
+      tieneCargaFamiliar: emp.tieneCargaFamiliar || "NO",
+      fotoCarnet: emp.fotoCarnet || "",
+      observacionesLaborales: emp.observacionesLaborales || "",
+      codigoBarra: emp.codigoBarra || generateNextBarcode(),
+    });
+    setHrModalOpen(true);
+  };
+
+  const handlePhotoCarnetUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setNewEmpForm((prev) => ({ ...prev, fotoCarnet: reader.result }));
+        showToast("Foto tipo carnet adjuntada correctamente.");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddFamilyMemberToDraft = () => {
+    if (!familyMemberDraft.nombreCompleto.trim()) {
+      showToast("Ingrese el nombre y apellido del familiar para agregarlo.", "error");
+      return;
+    }
+    const item = {
+      id: `fam-${Date.now()}`,
+      parentesco: familyMemberDraft.parentesco || "Familiar",
+      nombreCompleto: familyMemberDraft.nombreCompleto.trim(),
+      cedula: familyMemberDraft.cedula.trim() || "S/C",
+      fechaNacimiento: familyMemberDraft.fechaNacimiento || "",
+      edad: familyMemberDraft.edad.trim() || "",
+    };
+    const nextList = [...(newEmpForm.familiaresLista || []), item];
+    const autoSummary = nextList.map((f) => `${f.parentesco}: ${f.nombreCompleto}`).join(", ");
+    setNewEmpForm((prev) => ({
+      ...prev,
+      familiaresLista: nextList,
+      tieneCargaFamiliar: "SI",
+      familiares: autoSummary,
+    }));
+    setFamilyMemberDraft({
+      parentesco: "Hijo(a)",
+      nombreCompleto: "",
+      cedula: "",
+      fechaNacimiento: "",
+      edad: "",
+    });
+  };
+
+  const handleRemoveFamilyMemberFromDraft = (famId) => {
+    const nextList = (newEmpForm.familiaresLista || []).filter((f) => f.id !== famId);
+    const autoSummary = nextList.length
+      ? nextList.map((f) => `${f.parentesco}: ${f.nombreCompleto}`).join(", ")
+      : "Sin carga familiar";
+    setNewEmpForm((prev) => ({
+      ...prev,
+      familiaresLista: nextList,
+      tieneCargaFamiliar: nextList.length > 0 ? "SI" : "NO",
+      familiares: autoSummary,
+    }));
+  };
+
   // Filtrado de RRHH para el Reporte General
   const filteredEmployees = useMemo(() => {
     return employees.filter((emp) => {
       if (hrFilterCoord !== "TODAS" && emp.coordinacion !== hrFilterCoord) return false;
+      if (hrFilterCondicion !== "TODAS" && (emp.condicionLaboral || "Fijo") !== hrFilterCondicion) return false;
       if (hrFilterCarga !== "TODOS" && emp.tieneCargaFamiliar !== hrFilterCarga) return false;
       if (hrFilterSangre !== "TODOS" && emp.tipoSangre !== hrFilterSangre) return false;
       if (hrFilterSearch.trim()) {
         const q = hrFilterSearch.toLowerCase();
         const match =
-          emp.nombres.toLowerCase().includes(q) ||
-          emp.apellidos.toLowerCase().includes(q) ||
-          emp.cedula.toLowerCase().includes(q) ||
-          emp.cargo.toLowerCase().includes(q);
+          (emp.nombres || "").toLowerCase().includes(q) ||
+          (emp.apellidos || "").toLowerCase().includes(q) ||
+          (emp.cedula || "").toLowerCase().includes(q) ||
+          (emp.cargo || "").toLowerCase().includes(q) ||
+          (emp.direccion || "").toLowerCase().includes(q) ||
+          (emp.codigoBarra || "").toLowerCase().includes(q);
         if (!match) return false;
       }
       return true;
     });
-  }, [employees, hrFilterCoord, hrFilterCarga, hrFilterSangre, hrFilterSearch]);
+  }, [employees, hrFilterCoord, hrFilterCondicion, hrFilterCarga, hrFilterSangre, hrFilterSearch]);
 
   // Calendario Noviembre 2026
   const calendarDays = useMemo(() => {
@@ -2937,10 +3303,35 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           border-color: rgba(148, 163, 184, 0.18) !important;
         }
         .cendis-dark-workspace .bg-slate-50:not(#printable-area):not(#printable-area *),
-        .cendis-dark-workspace .bg-slate-100:not(#printable-area):not(#printable-area *) {
+        .cendis-dark-workspace .bg-slate-100:not(button):not(#printable-area):not(#printable-area *) {
           background-color: #080d19 !important;
           color: #e2e8f0 !important;
           border-color: rgba(148, 163, 184, 0.15) !important;
+        }
+        /* Navegabilidad en color Naranja Neón Transparente con letras blancas nítidas */
+        .cendis-dark-workspace button.bg-slate-100:not(#printable-area *),
+        .cendis-dark-workspace button.bg-white:not(#printable-area *),
+        .neon-orange-nav {
+          background: rgba(255, 95, 0, 0.22) !important;
+          border: 1px solid rgba(255, 115, 0, 0.85) !important;
+          color: #ffffff !important;
+          box-shadow: 0 0 12px rgba(255, 95, 0, 0.28) !important;
+          backdrop-filter: blur(8px);
+        }
+        .cendis-dark-workspace button.bg-slate-100:hover:not(#printable-area *),
+        .cendis-dark-workspace button.bg-white:hover:not(#printable-area *),
+        .neon-orange-nav:hover {
+          background: rgba(255, 95, 0, 0.38) !important;
+          border-color: #ff7b00 !important;
+          color: #ffffff !important;
+          box-shadow: 0 0 18px rgba(255, 102, 0, 0.55) !important;
+        }
+        .neon-orange-nav-active {
+          background: linear-gradient(135deg, rgba(255, 94, 0, 0.52) 0%, rgba(255, 123, 0, 0.34) 100%) !important;
+          border: 1.5px solid #ff7b00 !important;
+          color: #ffffff !important;
+          box-shadow: 0 0 20px rgba(255, 95, 0, 0.65), inset 0 0 10px rgba(255, 145, 0, 0.35) !important;
+          backdrop-filter: blur(8px);
         }
         .cendis-dark-workspace .text-slate-900:not(#printable-area *),
         .cendis-dark-workspace .text-slate-800:not(#printable-area *),
@@ -3039,7 +3430,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         @media print {
           @page {
             size: letter portrait;
-            margin: 0;
+            margin: 0mm;
+          }
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden !important;
+            background: #ffffff !important;
           }
           body * {
             visibility: hidden;
@@ -3049,16 +3448,36 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           }
           #printable-area {
             zoom: 1 !important;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100% !important;
-            max-width: 100% !important;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            max-width: 100vw !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 0 95px 0 !important;
             box-shadow: none !important;
             border: none !important;
+            border-radius: 0 !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            box-sizing: border-box !important;
+          }
+          #printable-area .official-footer-wave {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100vw !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            z-index: 9999 !important;
           }
         }
       `}</style>
@@ -3119,7 +3538,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           </div>
 
           <nav
-            className={`flex items-center gap-1 ${
+            className={`flex items-center gap-1.5 ${
               deviceViewport === "MOBILE"
                 ? "overflow-x-auto flex-nowrap pb-1"
                 : "flex-wrap"
@@ -3151,15 +3570,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     }
                     setActiveTab(tab.id);
                   }}
-                  className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 transition cursor-pointer shrink-0 ${
+                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0 ${
                     activeTab === tab.id
-                      ? "bg-[#f59e0b] text-slate-950 font-black shadow"
+                      ? "neon-orange-nav-active text-white font-black"
                       : allowed
-                      ? "text-slate-300 hover:bg-slate-800"
-                      : "text-slate-600 opacity-60"
+                      ? "neon-orange-nav text-white"
+                      : "bg-slate-900/50 border border-slate-800 text-slate-500 opacity-60"
                   }`}
                 >
-                  <IconT className="w-3.5 h-3.5" />
+                  <IconT className="w-3.5 h-3.5 text-[#ffb366]" />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -3699,117 +4118,121 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   fontSize: "12pt",
                   lineHeight: "1.5",
                 }}
-                className="w-full max-w-[790px] min-h-[1040px] bg-white shadow-xl border border-slate-200 flex flex-col justify-between relative text-slate-950"
+                className="w-full max-w-[790px] min-h-[1000px] bg-white shadow-xl border border-slate-200 flex flex-col justify-between relative text-slate-950"
               >
-                {/* Cintillo y contenido con márgenes oficiales de documento (2.5 cm laterales) */}
-                <div style={{ padding: "1.6cm 2.4cm 1cm 2.4cm" }}>
-                  {/* CINTILLO OFICIAL CONSERVADO */}
-                  <OfficialHeaderCintillo showRightLogo={true} />
+                <div>
+                  {/* Cintillo Superior en la posición exacta de formato.pdf */}
+                  <div style={{ padding: "0.7cm 1.4cm 0 1.3cm" }}>
+                    <OfficialHeaderCintillo showRightLogo={true} />
+                  </div>
 
-                  {/* AVISO DE DOCUMENTO ANULADO SI APLICA */}
-                  {activePreviewDoc.status === "ANULADO" && (
-                    <div className="my-4 p-3 border-2 border-red-700 bg-red-50 text-red-900 rounded-lg text-xs">
-                      <div className="font-black uppercase">
-                        DOCUMENTO ANULADO ({activePreviewDoc.correlativo})
+                  {/* Contenido del documento con márgenes oficiales (2.4 cm laterales) */}
+                  <div style={{ padding: "0.3cm 2.4cm 0.6cm 2.4cm" }}>
+                    {/* AVISO DE DOCUMENTO ANULADO SI APLICA */}
+                    {activePreviewDoc.status === "ANULADO" && (
+                      <div className="my-3 p-3 border-2 border-red-700 bg-red-50 text-red-900 rounded-lg text-xs">
+                        <div className="font-black uppercase">
+                          DOCUMENTO ANULADO ({activePreviewDoc.correlativo})
+                        </div>
+                        <div className="mt-1">
+                          <strong>Descripción / Motivo de anulación:</strong>{" "}
+                          {activePreviewDoc.motivoAnulacion}
+                        </div>
                       </div>
-                      <div className="mt-1">
-                        <strong>Descripción / Motivo de anulación:</strong>{" "}
-                        {activePreviewDoc.motivoAnulacion}
+                    )}
+
+                    {/* CORRELATIVO ALINEADO A LA DERECHA (EJ. FC-DG-MEM-2026-007) */}
+                    <div className="mt-4 text-right">
+                      <p
+                        style={{ fontSize: "12pt" }}
+                        className="font-bold tracking-normal text-slate-950"
+                      >
+                        {activePreviewDoc.correlativo}
+                      </p>
+                    </div>
+
+                    {/* TÍTULO CENTRADO (MEMORANDO / SOLICITUD / OFICIO) */}
+                    <div className="mt-3 mb-5 text-center">
+                      <h2
+                        style={{ fontSize: "13pt", letterSpacing: "0.04em" }}
+                        className="font-bold uppercase text-slate-950"
+                      >
+                        {activePreviewDoc.tipo === "MEMORANDUM"
+                          ? "MEMORANDO"
+                          : activePreviewDoc.tipo === "SOLICITUD"
+                          ? "SOLICITUD"
+                          : "OFICIO"}
+                      </h2>
+                    </div>
+
+                    {/* ENCABEZADO CON PARÁMETROS EXACTOS DEL DOCUMENTO (PARA, DIRECCIÓN, DE, CARGO, FECHA, ASUNTO) */}
+                    <div
+                      style={{ fontSize: "11.5pt", lineHeight: "1.42" }}
+                      className="border-t-2 border-b-2 border-slate-900 py-3 space-y-2.5 text-slate-950"
+                    >
+                      <div className="grid grid-cols-12 items-start">
+                        <span className="col-span-2 font-bold uppercase">PARA:</span>
+                        <div className="col-span-10">
+                          <div className="font-bold">{activePreviewDoc.para}</div>
+                          {activePreviewDoc.paraDireccion && (
+                            <div className="font-bold">
+                              {activePreviewDoc.paraDireccion.startsWith("Dirección:")
+                                ? activePreviewDoc.paraDireccion
+                                : `Dirección: ${activePreviewDoc.paraDireccion}`}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-12 items-start">
+                        <span className="col-span-2 font-bold uppercase">DE:</span>
+                        <div className="col-span-10">
+                          <div className="font-bold">{activePreviewDoc.de}</div>
+                          {activePreviewDoc.deCargo && (
+                            <div className="font-bold">{activePreviewDoc.deCargo}</div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-12 items-start">
+                        <span className="col-span-2 font-bold uppercase">FECHA:</span>
+                        <span className="col-span-10 font-bold">
+                          {formatFechaLargaOficial(activePreviewDoc.fecha)}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-12 items-start">
+                        <span className="col-span-2 font-bold uppercase">ASUNTO:</span>
+                        <span className="col-span-10 font-bold">{activePreviewDoc.asunto}</span>
                       </div>
                     </div>
-                  )}
 
-                  {/* CORRELATIVO ALINEADO A LA DERECHA (EJ. FC-DG-MEM-2026-007) */}
-                  <div className="mt-5 text-right">
-                    <p
-                      style={{ fontSize: "12pt" }}
-                      className="font-bold tracking-normal text-slate-950"
+                    {/* CUERPO DEL MEMORANDO / SOLICITUD (MISMA FUENTE, TAMAÑO 12PT Y SANGRÍA/JUSTIFICADO) */}
+                    <div
+                      style={{ fontSize: "12pt", lineHeight: "1.55" }}
+                      className="mt-6 text-justify whitespace-pre-line text-slate-950 min-h-[190px]"
                     >
-                      {activePreviewDoc.correlativo}
-                    </p>
-                  </div>
+                      {activePreviewDoc.concepto}
+                    </div>
 
-                  {/* TÍTULO CENTRADO (MEMORANDO / SOLICITUD / OFICIO) */}
-                  <div className="mt-4 mb-6 text-center">
-                    <h2
-                      style={{ fontSize: "13pt", letterSpacing: "0.04em" }}
-                      className="font-bold uppercase text-slate-950"
+                    {/* DESPEDIDA Y BLOQUE DE FIRMA CENTRADO */}
+                    <div
+                      style={{ fontSize: "12pt", lineHeight: "1.35" }}
+                      className="mt-6 text-center text-slate-950"
                     >
-                      {activePreviewDoc.tipo === "MEMORANDUM"
-                        ? "MEMORANDO"
-                        : activePreviewDoc.tipo === "SOLICITUD"
-                        ? "SOLICITUD"
-                        : "OFICIO"}
-                    </h2>
-                  </div>
-
-                  {/* ENCABEZADO CON PARÁMETROS EXACTOS DEL DOCUMENTO (PARA, DIRECCIÓN, DE, CARGO, FECHA, ASUNTO) */}
-                  <div
-                    style={{ fontSize: "11.5pt", lineHeight: "1.45" }}
-                    className="border-t-2 border-b-2 border-slate-900 py-3.5 space-y-3 text-slate-950"
-                  >
-                    <div className="grid grid-cols-12 items-start">
-                      <span className="col-span-2 font-bold uppercase">PARA:</span>
-                      <div className="col-span-10">
-                        <div className="font-bold">{activePreviewDoc.para}</div>
-                        {activePreviewDoc.paraDireccion && (
-                          <div className="font-bold">
-                            {activePreviewDoc.paraDireccion.startsWith("Dirección:")
-                              ? activePreviewDoc.paraDireccion
-                              : `Dirección: ${activePreviewDoc.paraDireccion}`}
-                          </div>
+                      <p className="mb-10">Atentamente,</p>
+                      <div className="mx-auto pt-1">
+                        <p className="font-bold uppercase">{activePreviewDoc.signerNombre}</p>
+                        {activePreviewDoc.signerCargo && (
+                          <p className="font-bold">{activePreviewDoc.signerCargo}</p>
+                        )}
+                        {activePreviewDoc.signerEnte && (
+                          <p className="font-bold">{activePreviewDoc.signerEnte}</p>
+                        )}
+                        {activePreviewDoc.signerMinisterio && (
+                          <p className="font-bold">{activePreviewDoc.signerMinisterio}</p>
                         )}
                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-12 items-start">
-                      <span className="col-span-2 font-bold uppercase">DE:</span>
-                      <div className="col-span-10">
-                        <div className="font-bold">{activePreviewDoc.de}</div>
-                        {activePreviewDoc.deCargo && (
-                          <div className="font-bold">{activePreviewDoc.deCargo}</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-12 items-start">
-                      <span className="col-span-2 font-bold uppercase">FECHA:</span>
-                      <span className="col-span-10 font-bold">
-                        {formatFechaLargaOficial(activePreviewDoc.fecha)}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-12 items-start">
-                      <span className="col-span-2 font-bold uppercase">ASUNTO:</span>
-                      <span className="col-span-10 font-bold">{activePreviewDoc.asunto}</span>
-                    </div>
-                  </div>
-
-                  {/* CUERPO DEL MEMORANDO / SOLICITUD (MISMA FUENTE, TAMAÑO 12PT Y SANGRÍA/JUSTIFICADO) */}
-                  <div
-                    style={{ fontSize: "12pt", lineHeight: "1.6" }}
-                    className="mt-7 text-justify whitespace-pre-line text-slate-950 min-h-[290px]"
-                  >
-                    {activePreviewDoc.concepto}
-                  </div>
-
-                  {/* DESPEDIDA Y BLOQUE DE FIRMA CENTRADO */}
-                  <div
-                    style={{ fontSize: "12pt", lineHeight: "1.35" }}
-                    className="mt-10 text-center text-slate-950"
-                  >
-                    <p className="mb-14">Atentamente,</p>
-                    <div className="mx-auto pt-2">
-                      <p className="font-bold uppercase">{activePreviewDoc.signerNombre}</p>
-                      {activePreviewDoc.signerCargo && (
-                        <p className="font-bold">{activePreviewDoc.signerCargo}</p>
-                      )}
-                      {activePreviewDoc.signerEnte && (
-                        <p className="font-bold">{activePreviewDoc.signerEnte}</p>
-                      )}
-                      {activePreviewDoc.signerMinisterio && (
-                        <p className="font-bold">{activePreviewDoc.signerMinisterio}</p>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -4897,53 +5320,133 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
            ==================================================================== */}
         {activeTab === "hr" && (
           <div className="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
+            {/* CABECERA CON NAVEGABILIDAD NARANJA NEÓN TRANSPARENTE Y BOTÓN "INGRESAR PERSONAL" */}
+            <div className="bg-white rounded-2xl shadow-lg border border-orange-500/30 p-5 flex flex-wrap items-center justify-between gap-4 print:hidden">
               <div>
-                <h2 className="text-base font-black uppercase text-slate-900">
-                  Módulo de Recursos Humanos, Carnetización y Reportes con Filtros
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#ff8c42] block">
+                  Gestión Integral del Talento Humano • SIACENDIS
+                </span>
+                <h2 className="text-base sm:text-lg font-black uppercase text-white mt-0.5">
+                  Módulo de Recursos Humanos, Hoja de Vida PDF y Carnetización Oficial
                 </h2>
-                <p className="text-xs text-slate-500">
-                  Los trabajadores ingresados aquí alimentan los módulos de Proyectos, Bienes Nacionales, Memos, Agenda y Asistencia.
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Registro completo de trabajadores, foto tipo carnet, carga familiar, perfil en PDF y carnet institucional con código de barra escaneable.
                 </p>
               </div>
-              <div className="flex gap-2">
+
+              <div className="flex flex-wrap items-center gap-2.5">
                 <button
-                  onClick={() => setHrSubTab("LISTA")}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer ${
-                    hrSubTab === "LISTA" ? "bg-[#8b1538] text-white" : "bg-slate-100 text-slate-700"
-                  }`}
+                  type="button"
+                  onClick={() => openNewEmployeeModal()}
+                  className="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wide flex items-center gap-2 cursor-pointer transition-all bg-[#ff5f00]/35 hover:bg-[#ff5f00]/55 text-white border-2 border-[#ff7b00] shadow-[0_0_20px_rgba(255,95,0,0.65)]"
                 >
-                  Expedientes y Carnets ({employees.length})
+                  <Users className="w-4 h-4 text-[#ffd29d]" />
+                  <span>+ Ingresar Personal</span>
                 </button>
+
                 <button
-                  onClick={() => setHrSubTab("REPORTE_FILTROS")}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer ${
-                    hrSubTab === "REPORTE_FILTROS" ? "bg-blue-900 text-white" : "bg-slate-100 text-slate-700"
+                  type="button"
+                  onClick={() => setHrSubTab("LISTA")}
+                  className={`px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
+                    hrSubTab === "LISTA" ? "neon-orange-nav-active font-black" : "neon-orange-nav"
                   }`}
                 >
-                  <Filter className="w-3.5 h-3.5" />
-                  <span>Reporte de Todo el Personal (con Filtros)</span>
+                  <QrCode className="w-3.5 h-3.5 text-[#ffb366]" />
+                  <span>Expedientes y Carnets ({employees.length})</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setHrSubTab("REPORTE_FILTROS")}
+                  className={`px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
+                    hrSubTab === "REPORTE_FILTROS" ? "neon-orange-nav-active font-black" : "neon-orange-nav"
+                  }`}
+                >
+                  <Filter className="w-3.5 h-3.5 text-[#ffb366]" />
+                  <span>Reporte Completo del Personal (Filtros)</span>
                 </button>
               </div>
             </div>
 
-            {/* AVISO DE VINCULACIÓN DE CUENTA GOOGLE / GMAIL CON DATOS PERSONALES DEL TRABAJADOR */}
+            {/* TARJETAS DE RESUMEN RÁPIDO DE RECURSOS HUMANOS */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 print:hidden">
+              <div className="rounded-2xl bg-[#0e1526] border border-[#ff6b00]/40 p-4 flex items-center justify-between shadow">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#ff9f5a] block">
+                    Total Nómina CENDIS
+                  </span>
+                  <div className="text-2xl font-black text-white mt-0.5">{employees.length}</div>
+                  <span className="text-[11px] text-slate-400">Trabajadores activos</span>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-[#ff5f00]/20 border border-[#ff7b00] flex items-center justify-center text-[#ff9f5a]">
+                  <Users className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-[#0e1526] border border-[#ff6b00]/40 p-4 flex items-center justify-between shadow">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#ff9f5a] block">
+                    Con Carga Familiar
+                  </span>
+                  <div className="text-2xl font-black text-white mt-0.5">
+                    {employees.filter((e) => e.tieneCargaFamiliar === "SI").length}
+                  </div>
+                  <span className="text-[11px] text-slate-400">Expedientes familiares</span>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-[#ff5f00]/20 border border-[#ff7b00] flex items-center justify-center text-[#ff9f5a]">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-[#0e1526] border border-[#ff6b00]/40 p-4 flex items-center justify-between shadow">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#ff9f5a] block">
+                    Carnets con Código Barra
+                  </span>
+                  <div className="text-2xl font-black text-white mt-0.5">{employees.length}</div>
+                  <span className="text-[11px] text-slate-400">Listos para lector óptico</span>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-[#ff5f00]/20 border border-[#ff7b00] flex items-center justify-center text-[#ff9f5a]">
+                  <QrCode className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-[#0e1526] border border-[#ff6b00]/40 p-4 flex items-center justify-between shadow">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#ff9f5a] block">
+                    Acción Rápida
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => openNewEmployeeModal()}
+                    className="mt-1 px-3 py-1.5 rounded-xl text-xs font-black neon-orange-nav-active cursor-pointer"
+                  >
+                    + Abrir Ventana Ingresar Personal
+                  </button>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-[#ff5f00]/20 border border-[#ff7b00] flex items-center justify-center text-[#ff9f5a]">
+                  <FileText className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+
+            {/* AVISO DE VINCULACIÓN DE CUENTA DE CORREO CON DATOS PERSONALES DEL TRABAJADOR */}
             {!currentUserLinkedEmployee || showLinkChangeSelector ? (
-              <div className="rounded-2xl bg-amber-950/85 border-2 border-amber-500/80 p-5 space-y-4 shadow-xl print:hidden">
+              <div className="rounded-2xl bg-amber-950/85 border-2 border-[#ff6b00]/80 p-5 space-y-4 shadow-xl print:hidden">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <span className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-lg shrink-0 shadow">
+                    <span className="w-10 h-10 rounded-xl bg-[#ff6b00] text-white font-black flex items-center justify-center text-lg shrink-0 shadow">
                       !
                     </span>
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
-                        Control de Identidad Google Workspace / Gmail • Recursos Humanos
+                      <span className="text-[10px] font-black uppercase tracking-wider text-[#ffb366] block">
+                        Control de Identidad • Recursos Humanos SIACENDIS
                       </span>
                       <h3 className="text-sm font-black uppercase text-white mt-0.5">
-                        Aviso: Vincule su correo ({currentUser.email || `${currentUser.username}@gmail.com`}) con los datos personales del trabajador
+                        Vincule su usuario ({currentUser.email || `${currentUser.username}@gmail.com`}) con su ficha de trabajador
                       </h3>
                       <p className="text-xs text-slate-200 mt-1">
-                        Para tener control completo de sus gestiones en SIACENDIS, asocie su correo de inicio de sesión con su expediente personal en la nómina de Recursos Humanos o registre su ficha abajo.
+                        Asocie su cuenta con un expediente existente o abra la ventana <strong>&ldquo;+ Ingresar Personal&rdquo;</strong> para registrar sus datos completos.
                       </p>
                     </div>
                   </div>
@@ -4951,7 +5454,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     <button
                       type="button"
                       onClick={() => setShowLinkChangeSelector(false)}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-200 text-xs font-bold cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg neon-orange-nav text-xs font-bold cursor-pointer"
                     >
                       Cancelar cambio
                     </button>
@@ -4981,7 +5484,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         }
                         handleLinkUserToEmployee(selectedEmpIdToLink);
                       }}
-                      className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs cursor-pointer shadow"
+                      className="px-4 py-2 rounded-xl neon-orange-nav-active font-black text-xs cursor-pointer"
                     >
                       Vincular con este Trabajador
                     </button>
@@ -4993,20 +5496,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       onClick={() => {
                         const userEmail = currentUser.email || `${currentUser.username}@gmail.com`;
                         const parts = (currentUser.fullName || "").trim().split(" ");
-                        setHrSubTab("LISTA");
-                        setNewEmpForm((prev) => ({
-                          ...prev,
+                        openNewEmployeeModal({
                           nombres: parts[0] || "",
                           apellidos: parts.slice(1).join(" ") || "",
                           correo: userEmail,
-                        }));
-                        showToast(
-                          `Correo ${userEmail} cargado en el formulario. Complete su Cédula, Cargo y Teléfono y presione "+ Ingresar Trabajador".`
-                        );
+                        });
                       }}
-                      className="w-full md:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer shadow"
+                      className="w-full md:w-auto px-4 py-2 rounded-xl neon-orange-nav font-bold text-xs cursor-pointer"
                     >
-                      + Cargar mi correo en formulario de nuevo trabajador
+                      + Ingresar Personal con mi correo actual
                     </button>
                   </div>
                 </div>
@@ -5017,10 +5515,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 block">
-                      Cuenta de Correo Vinculada con Recursos Humanos
+                      Expediente Vinculado con Recursos Humanos
                     </span>
                     <p className="text-xs text-slate-100">
-                      Correo Google:{" "}
+                      Correo:{" "}
                       <strong className="text-white">
                         {currentUser.email || `${currentUser.username}@gmail.com`}
                       </strong>{" "}
@@ -5038,7 +5536,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     setSelectedEmpIdToLink(currentUserLinkedEmployee.id);
                     setShowLinkChangeSelector(true);
                   }}
-                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-slate-600"
+                  className="px-3 py-1.5 rounded-xl neon-orange-nav font-bold text-xs cursor-pointer"
                 >
                   Cambiar vinculación
                 </button>
@@ -5047,322 +5545,422 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             {hrSubTab === "LISTA" ? (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const created = { id: `emp-${Date.now()}`, ...newEmpForm };
-                    setEmployees((prev) => [...prev, created]);
-                    addLog(`Ingresado trabajador en RRHH: ${created.nombres} ${created.apellidos}`);
+                {/* BARRA DE BÚSQUEDA RÁPIDA Y BOTÓN DE VENTANA EMERGENTE INGRESAR PERSONAL */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                  <div className="flex-1 min-w-[240px]">
+                    <input
+                      type="text"
+                      placeholder="🔍 Buscar trabajador por nombre, apellido, cédula, cargo, dirección o código de barra..."
+                      value={hrFilterSearch}
+                      onChange={(e) => setHrFilterSearch(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 text-xs"
+                    />
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => openNewEmployeeModal()}
+                      className="px-4 py-2.5 rounded-xl neon-orange-nav-active text-xs font-black uppercase tracking-wide flex items-center gap-2 cursor-pointer"
+                    >
+                      <Users className="w-4 h-4 text-[#ffd29d]" />
+                      <span>+ Ingresar Personal</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHrSubTab("REPORTE_FILTROS")}
+                      className="px-3.5 py-2.5 rounded-xl neon-orange-nav text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Printer className="w-3.5 h-3.5 text-[#ffb366]" />
+                      <span>Ver Reporte Completo PDF</span>
+                    </button>
+                  </div>
+                </div>
 
-                    const currentEmail = (currentUser?.email || "").trim().toLowerCase();
-                    if (
-                      currentEmail &&
-                      created.correo &&
-                      created.correo.trim().toLowerCase() === currentEmail
-                    ) {
-                      const updatedUser = {
-                        ...currentUser,
-                        fullName: `${created.nombres} ${created.apellidos}`,
-                        cargo: created.cargo,
-                        linkedEmployeeId: created.id,
-                      };
-                      setCurrentUser(updatedUser);
-                      setSessionCookie(updatedUser);
-                      setUsers((prev) =>
-                        prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
-                      );
-                      setShowLinkChangeSelector(false);
-                      showToast(
-                        `Trabajador ${created.nombres} ${created.apellidos} registrado y vinculado a su cuenta ${created.correo}.`
-                      );
-                    } else {
-                      showToast(`Trabajador ${created.nombres} ${created.apellidos} registrado e integrado.`);
-                    }
-
-                    setNewEmpForm({
-                      ...newEmpForm,
-                      nombres: "",
-                      apellidos: "",
-                      cedula: "",
-                      cargo: "",
-                      telefono: "",
-                      correo: "",
-                      direccion: "",
-                      codigoBarra: "2024-CENDIS-000" + Math.floor(130 + Math.random() * 800),
-                    });
-                  }}
-                  className="grid grid-cols-1 md:grid-cols-4 gap-3"
-                >
-                  <input
-                    type="text"
-                    required
-                    placeholder="Nombres"
-                    value={newEmpForm.nombres}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, nombres: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Apellidos"
-                    value={newEmpForm.apellidos}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, apellidos: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Cédula (ej. V-12.345.678)"
-                    value={newEmpForm.cedula}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, cedula: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Cargo"
-                    value={newEmpForm.cargo}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, cargo: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                  <select
-                    value={newEmpForm.coordinacion}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, coordinacion: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs font-semibold"
-                  >
-                    <option value="Presidencia">Presidencia</option>
-                    <option value="Dirección Ejecutiva">Dirección Ejecutiva</option>
-                    <option value="Producción Fonográfica">Producción Fonográfica</option>
-                    <option value="Cultura Audiovisual">Cultura Audiovisual</option>
-                    <option value="Administración y RRHH">Administración y RRHH</option>
-                    <option value="Tecnología y Sistemas">Tecnología y Sistemas</option>
-                  </select>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Teléfono"
-                    value={newEmpForm.telefono}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, telefono: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Correo Gmail (ej. trabajador@gmail.com)"
-                    value={newEmpForm.correo || ""}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, correo: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                  <select
-                    value={newEmpForm.tieneCargaFamiliar}
-                    onChange={(e) => setNewEmpForm({ ...newEmpForm, tieneCargaFamiliar: e.target.value })}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  >
-                    <option value="SI">Con Carga Familiar</option>
-                    <option value="NO">Sin Carga Familiar</option>
-                  </select>
-                  <input
-                    type="text"
-                    placeholder="Detalle Familiares / Emergencia"
-                    value={newEmpForm.familiares}
-                    onChange={(e) =>
-                      setNewEmpForm({ ...newEmpForm, familiares: e.target.value, emergencia1: e.target.value })
-                    }
-                    className="md:col-span-2 px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                  />
-                  <button
-                    type="submit"
-                    className="md:col-span-2 py-2.5 rounded-xl bg-[#8b1538] hover:bg-[#6e102c] text-white font-bold text-xs shadow cursor-pointer"
-                  >
-                    + Ingresar Trabajador al Padrón de Recursos Humanos CENDIS
-                  </button>
-                </form>
-
-                <div className="overflow-x-auto pt-3 border-t border-slate-200">
+                {/* TABLA DE PERSONAL REGISTRADO CON FOTO CARNET, DATOS LABORALES, FAMILIARES Y ACCIONES */}
+                <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-slate-100 text-slate-700 uppercase font-black">
+                      <tr className="bg-slate-900/90 text-[#ffb366] uppercase font-black border-b border-[#ff6b00]/40">
+                        <th className="p-3">Foto</th>
                         <th className="p-3">Cédula</th>
-                        <th className="p-3">Trabajador</th>
-                        <th className="p-3">Cargo</th>
-                        <th className="p-3">Coordinación</th>
-                        <th className="p-3">Correo Google Vinculado</th>
-                        <th className="p-3">Código Carnet</th>
-                        <th className="p-3">Acciones</th>
+                        <th className="p-3">Nombre Completo</th>
+                        <th className="p-3">Cargo / Coordinación</th>
+                        <th className="p-3">Teléfono / Dirección</th>
+                        <th className="p-3">Carga Familiar</th>
+                        <th className="p-3">Código de Barra</th>
+                        <th className="p-3">Acciones (Hoja de Vida / Carnet)</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200">
-                      {employees.map((emp) => {
-                        const isMyLinkedEmp = currentUserLinkedEmployee?.id === emp.id;
-                        return (
-                          <tr key={emp.id} className="hover:bg-slate-50">
-                            <td className="p-3 font-bold text-slate-900">{emp.cedula}</td>
-                            <td className="p-3 font-semibold">
-                              {emp.nombres} {emp.apellidos}
-                            </td>
-                            <td className="p-3">{emp.cargo}</td>
-                            <td className="p-3">{emp.coordinacion}</td>
-                            <td className="p-3">
-                              {emp.correo ? (
-                                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[10px]">
-                                  {emp.correo}
+                    <tbody className="divide-y divide-slate-800/80">
+                      {employees
+                        .filter((emp) => {
+                          if (!hrFilterSearch.trim()) return true;
+                          const q = hrFilterSearch.toLowerCase();
+                          return (
+                            (emp.nombres || "").toLowerCase().includes(q) ||
+                            (emp.apellidos || "").toLowerCase().includes(q) ||
+                            (emp.cedula || "").toLowerCase().includes(q) ||
+                            (emp.cargo || "").toLowerCase().includes(q) ||
+                            (emp.coordinacion || "").toLowerCase().includes(q) ||
+                            (emp.codigoBarra || "").toLowerCase().includes(q)
+                          );
+                        })
+                        .map((emp) => {
+                          const isMyLinkedEmp = currentUserLinkedEmployee?.id === emp.id;
+                          const famCount = Array.isArray(emp.familiaresLista)
+                            ? emp.familiaresLista.length
+                            : emp.tieneCargaFamiliar === "SI"
+                            ? 1
+                            : 0;
+                          return (
+                            <tr key={emp.id} className="hover:bg-slate-900/50 transition">
+                              <td className="p-3">
+                                <div className="w-11 h-13 rounded-lg border-2 border-[#c5a059] bg-slate-800 overflow-hidden flex items-center justify-center shrink-0">
+                                  {emp.fotoCarnet ? (
+                                    <img
+                                      src={emp.fotoCarnet}
+                                      alt={`${emp.nombres} ${emp.apellidos}`}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <span className="text-[11px] font-black text-[#ffb366]">
+                                      {(emp.nombres || "C").charAt(0)}
+                                      {(emp.apellidos || "D").charAt(0)}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3 font-black text-white whitespace-nowrap">{emp.cedula}</td>
+                              <td className="p-3">
+                                <div className="font-black text-white">
+                                  {emp.nombres} {emp.apellidos}
+                                </div>
+                                <div className="text-[10px] text-slate-400">
+                                  Sangre: <strong className="text-red-400">{emp.tipoSangre || "O+"}</strong> •{" "}
+                                  {emp.estadoCivil || "Soltero(a)"}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <div className="font-bold text-[#ffb366]">{emp.cargo}</div>
+                                <div className="text-[11px] text-slate-300">{emp.coordinacion}</div>
+                                <span className="inline-block mt-0.5 px-2 py-0.5 rounded bg-orange-950/80 border border-orange-500/40 text-[10px] font-bold text-orange-300">
+                                  {emp.condicionLaboral || "Fijo"}
                                 </span>
-                              ) : (
-                                <span className="text-slate-400 italic text-[11px]">Sin vincular</span>
-                              )}
-                            </td>
-                            <td className="p-3 font-mono text-[11px]">{emp.codigoBarra}</td>
-                            <td className="p-3 flex flex-wrap items-center gap-1.5">
-                              {!isMyLinkedEmp && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleLinkUserToEmployee(emp.id)}
-                                  className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold text-[10px] cursor-pointer"
-                                >
-                                  Vincular mi correo
-                                </button>
-                              )}
-                              <button
-                                onClick={() => setSelectedEmpForCard(emp)}
-                                className="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-900 font-bold text-[10px] flex items-center gap-1 cursor-pointer"
-                              >
-                                <QrCode className="w-3.5 h-3.5" />
-                                <span>Carnet</span>
-                              </button>
-                              <button
-                                onClick={() => setSelectedEmpForCV(emp)}
-                                className="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold text-[10px] flex items-center gap-1 cursor-pointer"
-                              >
-                                <FileText className="w-3.5 h-3.5" />
-                                <span>Hoja de Vida PDF</span>
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                              </td>
+                              <td className="p-3">
+                                <div className="font-semibold text-slate-200">{emp.telefono}</div>
+                                <div className="text-[10px] text-slate-400 max-w-[180px] truncate" title={emp.direccion}>
+                                  {emp.direccion || "Caracas"}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                {emp.tieneCargaFamiliar === "SI" ? (
+                                  <div>
+                                    <span className="px-2 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-500/50 text-emerald-300 font-bold text-[10px]">
+                                      Sí ({famCount} reg.)
+                                    </span>
+                                    <div className="text-[10px] text-slate-400 mt-0.5 max-w-[150px] truncate" title={emp.familiares}>
+                                      {emp.familiares}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <span className="text-slate-500 italic text-[11px]">Sin carga</span>
+                                )}
+                              </td>
+                              <td className="p-3 font-mono text-[11px] font-bold text-amber-300 whitespace-nowrap">
+                                {emp.codigoBarra}
+                              </td>
+                              <td className="p-3">
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedEmpForCard(emp)}
+                                    className="px-2.5 py-1.5 rounded-lg neon-orange-nav-active font-black text-[10px] flex items-center gap-1 cursor-pointer"
+                                    title="Generar Carnet Oficial CENDIS con Código de Barra Escaneable"
+                                  >
+                                    <QrCode className="w-3.5 h-3.5 text-[#ffd29d]" />
+                                    <span>Carnet Oficial</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedEmpForCV(emp)}
+                                    className="px-2.5 py-1.5 rounded-lg neon-orange-nav font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                                    title="Ver Perfil y Hoja de Vida Completa en PDF"
+                                  >
+                                    <FileText className="w-3.5 h-3.5 text-[#ffb366]" />
+                                    <span>Hoja de Vida PDF</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => openEditEmployeeModal(emp)}
+                                    className="px-2.5 py-1.5 rounded-lg neon-orange-nav font-bold text-[10px] cursor-pointer"
+                                    title="Editar datos personales, foto carnet o familiares"
+                                  >
+                                    Editar Ficha
+                                  </button>
+
+                                  {!isMyLinkedEmp && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleLinkUserToEmployee(emp.id)}
+                                      className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold text-[10px] cursor-pointer"
+                                    >
+                                      Vincular
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
               </div>
             ) : (
-              /* REPORTE GENERAL DE PERSONAL CON FILTROS */
+              /* REPORTE COMPLETO DEL PERSONAL CON DIFERENTES FILTROS */
               <div className="space-y-4">
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 grid grid-cols-1 md:grid-cols-5 gap-3 print:hidden">
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
-                      Tipo de Reporte
-                    </label>
-                    <select
-                      value={hrReportType}
-                      onChange={(e) => setHrReportType(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs font-bold"
-                    >
-                      <option value="NOMINA_COMPLETA">Nómina General Completa</option>
-                      <option value="CARGA_FAMILIAR">Reporte de Carga Familiar y Emergencias</option>
-                      <option value="CARNETIZACION">Padrón de Carnets y Códigos de Barra</option>
-                    </select>
+                <div className="bg-white rounded-2xl shadow-sm border border-orange-500/40 p-5 space-y-4 print:hidden">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#ff8c42] block">
+                        Filtros Dinámicos de Recursos Humanos
+                      </span>
+                      <h3 className="text-sm font-black uppercase text-white">
+                        Reporte Completo del Personal CENDIS ({filteredEmployees.length} registros filtrados)
+                      </h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHrFilterCoord("TODAS");
+                          setHrFilterCondicion("TODAS");
+                          setHrFilterCarga("TODOS");
+                          setHrFilterSangre("TODOS");
+                          setHrFilterSearch("");
+                          setHrReportType("NOMINA_COMPLETA");
+                        }}
+                        className="px-3 py-2 rounded-xl neon-orange-nav text-xs font-bold cursor-pointer"
+                      >
+                        Limpiar Filtros
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => window.print()}
+                        className="px-4 py-2 rounded-xl neon-orange-nav-active text-xs font-black flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Printer className="w-4 h-4 text-[#ffd29d]" />
+                        <span>Imprimir Reporte Completo PDF</span>
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
-                      Filtrar Coordinación
-                    </label>
-                    <select
-                      value={hrFilterCoord}
-                      onChange={(e) => setHrFilterCoord(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs font-bold"
-                    >
-                      <option value="TODAS">Todas las Coordinaciones</option>
-                      <option value="Presidencia">Presidencia</option>
-                      <option value="Dirección Ejecutiva">Dirección Ejecutiva</option>
-                      <option value="Producción Fonográfica">Producción Fonográfica</option>
-                      <option value="Cultura Audiovisual">Cultura Audiovisual</option>
-                      <option value="Administración y RRHH">Administración y RRHH</option>
-                      <option value="Tecnología y Sistemas">Tecnología y Sistemas</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
-                      Filtrar Carga Familiar
-                    </label>
-                    <select
-                      value={hrFilterCarga}
-                      onChange={(e) => setHrFilterCarga(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs font-bold"
-                    >
-                      <option value="TODOS">Todos</option>
-                      <option value="SI">Solo Con Carga Familiar</option>
-                      <option value="NO">Sin Carga Familiar</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
-                      Buscar por Nombre/Cédula
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Buscar..."
-                      value={hrFilterSearch}
-                      onChange={(e) => setHrFilterSearch(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-lg border border-slate-300 text-xs"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <button
-                      onClick={() => window.print()}
-                      className="w-full py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <Printer className="w-4 h-4" />
-                      <span>Imprimir Reporte PDF</span>
-                    </button>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-[#ffb366] mb-1">
+                        1. Modalidad de Reporte
+                      </label>
+                      <select
+                        value={hrReportType}
+                        onChange={(e) => setHrReportType(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg border border-slate-700 text-xs font-bold"
+                      >
+                        <option value="NOMINA_COMPLETA">Nómina Integral de Personal</option>
+                        <option value="CARGA_FAMILIAR">Carga Familiar y Contactos de Emergencia</option>
+                        <option value="CARNETIZACION">Padrón de Carnets y Códigos de Barra</option>
+                        <option value="FICHA_LABORAL">Condición Laboral, Profesión y Dirección</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-[#ffb366] mb-1">
+                        2. Coordinación
+                      </label>
+                      <select
+                        value={hrFilterCoord}
+                        onChange={(e) => setHrFilterCoord(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg border border-slate-700 text-xs font-bold"
+                      >
+                        <option value="TODAS">Todas las Coordinaciones</option>
+                        <option value="Presidencia">Presidencia</option>
+                        <option value="Dirección Ejecutiva">Dirección Ejecutiva</option>
+                        <option value="Producción Fonográfica">Producción Fonográfica</option>
+                        <option value="Cultura Audiovisual">Cultura Audiovisual</option>
+                        <option value="Administración y RRHH">Administración y RRHH</option>
+                        <option value="Tecnología y Sistemas">Tecnología y Sistemas</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-[#ffb366] mb-1">
+                        3. Condición Laboral
+                      </label>
+                      <select
+                        value={hrFilterCondicion}
+                        onChange={(e) => setHrFilterCondicion(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg border border-slate-700 text-xs font-bold"
+                      >
+                        <option value="TODAS">Todas las Condiciones</option>
+                        <option value="Fijo">Personal Fijo</option>
+                        <option value="Contratado">Personal Contratado</option>
+                        <option value="Libre Nombramiento">Libre Nombramiento</option>
+                        <option value="Comisión de Servicio">Comisión de Servicio</option>
+                        <option value="Honorarios Profesionales">Honorarios Profesionales</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-[#ffb366] mb-1">
+                        4. Carga Familiar
+                      </label>
+                      <select
+                        value={hrFilterCarga}
+                        onChange={(e) => setHrFilterCarga(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg border border-slate-700 text-xs font-bold"
+                      >
+                        <option value="TODOS">Todos</option>
+                        <option value="SI">Con Carga Familiar</option>
+                        <option value="NO">Sin Carga Familiar</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-[#ffb366] mb-1">
+                        5. Tipo de Sangre
+                      </label>
+                      <select
+                        value={hrFilterSangre}
+                        onChange={(e) => setHrFilterSangre(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg border border-slate-700 text-xs font-bold"
+                      >
+                        <option value="TODOS">Todos los Tipos</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-[#ffb366] mb-1">
+                        6. Búsqueda Libre
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Nombre, cédula, cargo..."
+                        value={hrFilterSearch}
+                        onChange={(e) => setHrFilterSearch(e.target.value)}
+                        className="w-full px-2.5 py-2 rounded-lg border border-slate-700 text-xs"
+                      />
+                    </div>
                   </div>
                 </div>
 
+                {/* HOJA IMPRIMIBLE EN PDF DEL REPORTE COMPLETO DEL PERSONAL */}
                 <div
                   id="printable-area"
-                  className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between"
+                  className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
                 >
                   <div className="p-10">
                     <OfficialHeaderCintillo showRightLogo={true} />
-                    <div className="mt-6 mb-4 text-center">
+                    <div className="mt-5 mb-4 text-center border-b-2 border-slate-900 pb-3">
                       <h2 className="text-base font-black uppercase text-slate-900">
-                        REPORTE GENERAL DE PERSONAL • RECURSOS HUMANOS CENDIS
+                        REPORTE GENERAL DE PERSONAL • COORDINACIÓN DE RECURSOS HUMANOS CENDIS
                       </h2>
-                      <p className="text-xs text-slate-600 font-semibold">
-                        Modalidad: {hrReportType} | Coordinación: {hrFilterCoord} | Total Filtrados:{" "}
-                        {filteredEmployees.length}
+                      <p className="text-[11px] text-slate-700 font-semibold mt-1">
+                        Modalidad: <strong>{hrReportType}</strong> | Coordinación: <strong>{hrFilterCoord}</strong> | Condición:{" "}
+                        <strong>{hrFilterCondicion}</strong> | Carga Familiar: <strong>{hrFilterCarga}</strong> | Sangre:{" "}
+                        <strong>{hrFilterSangre}</strong> | Total Trabajadores: <strong>{filteredEmployees.length}</strong>
                       </p>
                     </div>
 
-                    <table className="w-full border-collapse border border-slate-900 text-xs">
+                    <table className="w-full border-collapse border border-slate-900 text-[11px]">
                       <thead>
                         <tr className="bg-slate-200 text-slate-900 font-black uppercase">
+                          <th className="border border-slate-900 p-2 text-center">Foto</th>
                           <th className="border border-slate-900 p-2">Cédula</th>
-                          <th className="border border-slate-900 p-2">Nombres y Apellidos</th>
-                          <th className="border border-slate-900 p-2">Cargo</th>
-                          <th className="border border-slate-900 p-2">Coordinación</th>
+                          <th className="border border-slate-900 p-2">Nombre Completo</th>
+                          <th className="border border-slate-900 p-2">Cargo / Coordinación</th>
                           <th className="border border-slate-900 p-2">
                             {hrReportType === "CARGA_FAMILIAR"
-                              ? "Familiares / Emergencia"
+                              ? "Familiares y Contactos de Emergencia"
                               : hrReportType === "CARNETIZACION"
-                              ? "Código de Barra Carnet"
-                              : "Teléfono"}
+                              ? "Código de Barra Escaneable"
+                              : hrReportType === "FICHA_LABORAL"
+                              ? "Condición / Nivel / Dirección"
+                              : "Teléfono / Ingreso / Sangre"}
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredEmployees.map((emp) => (
                           <tr key={emp.id}>
-                            <td className="border border-slate-900 p-2 font-bold">{emp.cedula}</td>
-                            <td className="border border-slate-900 p-2">
-                              {emp.nombres} {emp.apellidos}
+                            <td className="border border-slate-900 p-1.5 text-center">
+                              {emp.fotoCarnet ? (
+                                <img
+                                  src={emp.fotoCarnet}
+                                  alt={emp.nombres}
+                                  className="w-9 h-11 object-cover mx-auto border border-slate-400"
+                                />
+                              ) : (
+                                <div className="w-9 h-11 bg-slate-200 border border-slate-400 mx-auto flex items-center justify-center text-[9px] font-bold text-slate-700">
+                                  FOTO
+                                </div>
+                              )}
                             </td>
-                            <td className="border border-slate-900 p-2">{emp.cargo}</td>
-                            <td className="border border-slate-900 p-2">{emp.coordinacion}</td>
+                            <td className="border border-slate-900 p-2 font-bold whitespace-nowrap">{emp.cedula}</td>
+                            <td className="border border-slate-900 p-2 font-semibold">
+                              <div>
+                                {emp.nombres} {emp.apellidos}
+                              </div>
+                              <div className="text-[10px] text-slate-600">{emp.correo || "Sin correo"}</div>
+                            </td>
                             <td className="border border-slate-900 p-2">
-                              {hrReportType === "CARGA_FAMILIAR"
-                                ? `${emp.familiares} (${emp.emergencia1})`
-                                : hrReportType === "CARNETIZACION"
-                                ? emp.codigoBarra
-                                : emp.telefono}
+                              <div className="font-bold">{emp.cargo}</div>
+                              <div className="text-[10px] text-slate-700">{emp.coordinacion}</div>
+                            </td>
+                            <td className="border border-slate-900 p-2">
+                              {hrReportType === "CARGA_FAMILIAR" ? (
+                                <div className="space-y-0.5">
+                                  <div>
+                                    <strong>Familiares:</strong> {emp.familiares || "Sin carga familiar"}
+                                  </div>
+                                  <div className="text-[10px]">
+                                    <strong>Emergencia 1:</strong> {emp.emergencia1 || "N/A"} |{" "}
+                                    <strong>Emergencia 2:</strong> {emp.emergencia2 || "N/A"}
+                                  </div>
+                                </div>
+                              ) : hrReportType === "CARNETIZACION" ? (
+                                <div className="flex flex-col items-center">
+                                  <ScannableCarnetBarcode value={emp.codigoBarra} />
+                                </div>
+                              ) : hrReportType === "FICHA_LABORAL" ? (
+                                <div>
+                                  <div>
+                                    <strong>{emp.condicionLaboral || "Fijo"}</strong> •{" "}
+                                    {emp.profesion || emp.nivelAcademico || "Universitario"}
+                                  </div>
+                                  <div className="text-[10px] text-slate-700">{emp.direccion}</div>
+                                </div>
+                              ) : (
+                                <div>
+                                  <div>
+                                    <strong>Tel:</strong> {emp.telefono} | <strong>Sangre:</strong>{" "}
+                                    {emp.tipoSangre || "O+"}
+                                  </div>
+                                  <div className="text-[10px] text-slate-700">
+                                    <strong>Ingreso:</strong> {emp.fechaIngreso || "2024-01-15"} |{" "}
+                                    <strong>Condición:</strong> {emp.condicionLaboral || "Fijo"}
+                                  </div>
+                                </div>
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -6737,25 +7335,705 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       </div>
 
       {/* ====================================================================
-          MODAL DE CARNET OFICIAL CENDIS (FRENTE Y REVERSO CON CINTILLO OFICIAL PDF)
+          VENTANA EMERGENTE (MODAL) "INGRESAR PERSONAL CENDIS" (TODOS LOS PARÁMETROS, FOTO CARNET Y AGREGAR FAMILIARES)
          ==================================================================== */}
-      {selectedEmpForCard && (
-        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[94vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b pb-3 print:hidden">
-              <h3 className="text-sm font-black uppercase">
-                Carnet Oficial CENDIS (Reporte PDF) • {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos}
-              </h3>
-              <div className="flex gap-2">
+      {hrModalOpen && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-y-auto print:hidden">
+          <div className="bg-[#0b1221] text-white rounded-2xl shadow-2xl max-w-5xl w-full border-2 border-[#ff6b00]/80 overflow-hidden max-h-[94vh] flex flex-col">
+            {/* Cabecera del Modal */}
+            <div className="px-6 py-4 bg-gradient-to-r from-[#161f33] via-[#1c1824] to-[#2b1408] border-b border-[#ff6b00]/50 flex items-center justify-between gap-3">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#ff9f5a] block">
+                  Padrón Oficial de Recursos Humanos • Fundación CENDIS
+                </span>
+                <h3 className="text-base font-black uppercase text-white">
+                  {editingEmpId
+                    ? `Editar Expediente Personal: ${newEmpForm.nombres} ${newEmpForm.apellidos}`
+                    : "Ingresar Personal CENDIS (Ficha Integral, Foto Carnet y Carga Familiar)"}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setHrModalOpen(false)}
+                className="px-3 py-1.5 rounded-xl bg-red-600/30 hover:bg-red-600/50 border border-red-500 text-white text-xs font-black cursor-pointer"
+              >
+                Cerrar ✕
+              </button>
+            </div>
+
+            {/* Cuerpo del Formulario */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const famSummary =
+                  newEmpForm.familiaresLista && newEmpForm.familiaresLista.length > 0
+                    ? newEmpForm.familiaresLista
+                        .map((f) => `${f.parentesco}: ${f.nombreCompleto}`)
+                        .join(", ")
+                    : newEmpForm.familiares || "Sin carga familiar";
+
+                const payload = {
+                  ...newEmpForm,
+                  familiares: famSummary,
+                  tieneCargaFamiliar:
+                    (newEmpForm.familiaresLista && newEmpForm.familiaresLista.length > 0) ||
+                    newEmpForm.tieneCargaFamiliar === "SI"
+                      ? "SI"
+                      : "NO",
+                };
+
+                if (editingEmpId) {
+                  const updatedEmp = { ...payload, id: editingEmpId };
+                  setEmployees((prev) =>
+                    prev.map((emp) => (emp.id === editingEmpId ? updatedEmp : emp))
+                  );
+                  addLog(
+                    `Actualizado expediente en RRHH: ${updatedEmp.nombres} ${updatedEmp.apellidos} (${updatedEmp.cedula})`
+                  );
+                  showToast(
+                    `Expediente de ${updatedEmp.nombres} ${updatedEmp.apellidos} actualizado correctamente.`
+                  );
+                } else {
+                  const created = { id: `emp-${Date.now()}`, ...payload };
+                  setEmployees((prev) => [...prev, created]);
+                  addLog(
+                    `Ingresado trabajador en RRHH: ${created.nombres} ${created.apellidos} (${created.cedula})`
+                  );
+
+                  const currentEmail = (currentUser?.email || "").trim().toLowerCase();
+                  if (
+                    currentEmail &&
+                    created.correo &&
+                    created.correo.trim().toLowerCase() === currentEmail
+                  ) {
+                    const updatedUser = {
+                      ...currentUser,
+                      fullName: `${created.nombres} ${created.apellidos}`,
+                      cargo: created.cargo,
+                      linkedEmployeeId: created.id,
+                    };
+                    setCurrentUser(updatedUser);
+                    setSessionCookie(updatedUser);
+                    setUsers((prev) =>
+                      prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+                    );
+                    setShowLinkChangeSelector(false);
+                    showToast(
+                      `Trabajador ${created.nombres} ${created.apellidos} registrado y vinculado a su cuenta.`
+                    );
+                  } else {
+                    showToast(
+                      `Trabajador ${created.nombres} ${created.apellidos} ingresado al sistema con carnet y hoja de vida PDF.`
+                    );
+                  }
+                }
+                setHrModalOpen(false);
+              }}
+              className="p-6 overflow-y-auto space-y-6 text-xs"
+            >
+              {/* SECCIÓN 1: FOTO TIPO CARNET ADJUNTA + DATOS PERSONALES DEL TRABAJADOR */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 bg-[#070b14] p-4 rounded-2xl border border-slate-800">
+                {/* Columna Foto Tipo Carnet */}
+                <div className="lg:col-span-3 flex flex-col items-center justify-center p-3 rounded-xl bg-[#0e1526] border border-[#c5a059]/60">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#ff9f5a] mb-2 text-center">
+                    Foto Tipo Carnet (Adjuntar)
+                  </span>
+                  <div className="w-32 h-40 rounded-lg border-[3px] border-[#c5a059] bg-[#e2e4e7] overflow-hidden flex items-center justify-center shadow-md mb-3">
+                    {newEmpForm.fotoCarnet ? (
+                      <img
+                        src={newEmpForm.fotoCarnet}
+                        alt="Vista previa Foto Carnet"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <svg viewBox="0 0 120 150" className="w-28 h-36 text-[#9ea3ab]" fill="currentColor">
+                        <circle cx="60" cy="52" r="26" />
+                        <path d="M12,145 C12,108 34,94 60,94 C86,94 108,108 108,145 Z" />
+                      </svg>
+                    )}
+                  </div>
+                  <label className="w-full py-2 px-3 rounded-xl text-center text-[11px] font-black cursor-pointer bg-[#ff5f00]/30 hover:bg-[#ff5f00]/50 border border-[#ff7b00] text-white transition">
+                    📷 Adjuntar Foto Carnet
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoCarnetUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  {newEmpForm.fotoCarnet && (
+                    <button
+                      type="button"
+                      onClick={() => setNewEmpForm({ ...newEmpForm, fotoCarnet: "" })}
+                      className="mt-1.5 text-[10px] text-red-400 hover:underline cursor-pointer"
+                    >
+                      Quitar fotografía
+                    </button>
+                  )}
+                </div>
+
+                {/* Columna Datos Personales */}
+                <div className="lg:col-span-9 space-y-3">
+                  <div className="border-b border-slate-800 pb-1.5 flex items-center justify-between">
+                    <span className="text-xs font-black uppercase text-[#ff9f5a]">
+                      1. Datos Personales de Identificación y Ubicación
+                    </span>
+                    <span className="text-[10px] text-slate-400">Campos obligatorios (*)</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">Nombres *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ej. Ali Alejandro"
+                        value={newEmpForm.nombres}
+                        onChange={(e) => setNewEmpForm({ ...newEmpForm, nombres: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">Apellidos *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ej. Primera"
+                        value={newEmpForm.apellidos}
+                        onChange={(e) => setNewEmpForm({ ...newEmpForm, apellidos: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                        Número de Cédula *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ej. V-15.432.111"
+                        value={newEmpForm.cedula}
+                        onChange={(e) => setNewEmpForm({ ...newEmpForm, cedula: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white font-bold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                        Fecha de Nacimiento
+                      </label>
+                      <input
+                        type="date"
+                        value={newEmpForm.fechaNacimiento}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, fechaNacimiento: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">Estado Civil</label>
+                      <select
+                        value={newEmpForm.estadoCivil}
+                        onChange={(e) => setNewEmpForm({ ...newEmpForm, estadoCivil: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      >
+                        <option value="Soltero(a)">Soltero(a)</option>
+                        <option value="Casado(a)">Casado(a)</option>
+                        <option value="Unión Estable de Hecho">Unión Estable de Hecho</option>
+                        <option value="Divorciado(a)">Divorciado(a)</option>
+                        <option value="Viudo(a)">Viudo(a)</option>
+                      </select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-300 mb-1">Género</label>
+                        <select
+                          value={newEmpForm.genero}
+                          onChange={(e) => setNewEmpForm({ ...newEmpForm, genero: e.target.value })}
+                          className="w-full px-2.5 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                        >
+                          <option value="Femenino">Femenino</option>
+                          <option value="Masculino">Masculino</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-300 mb-1">Sangre</label>
+                        <select
+                          value={newEmpForm.tipoSangre}
+                          onChange={(e) => setNewEmpForm({ ...newEmpForm, tipoSangre: e.target.value })}
+                          className="w-full px-2.5 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white font-bold"
+                        >
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                        Teléfono Principal *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="0414-1234567"
+                        value={newEmpForm.telefono}
+                        onChange={(e) => setNewEmpForm({ ...newEmpForm, telefono: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                        Teléfono Alterno / Habitación
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="0212-5551122"
+                        value={newEmpForm.telefonoAlterno || ""}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, telefonoAlterno: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                        Correo Electrónico
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="trabajador@gmail.com"
+                        value={newEmpForm.correo || ""}
+                        onChange={(e) => setNewEmpForm({ ...newEmpForm, correo: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-3">
+                      <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                        Dirección Completa de Habitación *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Estado, Municipio, Parroquia, Avenida / Calle, Edificio o Casa..."
+                        value={newEmpForm.direccion}
+                        onChange={(e) => setNewEmpForm({ ...newEmpForm, direccion: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SECCIÓN 2: TODO LO REFERENTE AL TRABAJADOR (CARGO, COORDINACIÓN, CONDICIÓN, PROFESIÓN, CÓDIGO DE BARRA) */}
+              <div className="bg-[#070b14] p-4 rounded-2xl border border-slate-800 space-y-3">
+                <div className="border-b border-slate-800 pb-1.5 flex items-center justify-between">
+                  <span className="text-xs font-black uppercase text-[#ff9f5a]">
+                    2. Datos Laborales, Académicos y Carnetización CENDIS
+                  </span>
+                  <span className="text-[10px] text-amber-300 font-bold">
+                    Código Carnet Escaneable: {newEmpForm.codigoBarra}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Cargo en el CENDIS *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ej. Especialista Audiovisual"
+                      value={newEmpForm.cargo}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, cargo: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Coordinación Adscrita *
+                    </label>
+                    <select
+                      value={newEmpForm.coordinacion}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, coordinacion: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white font-bold"
+                    >
+                      <option value="Presidencia">Presidencia</option>
+                      <option value="Dirección Ejecutiva">Dirección Ejecutiva</option>
+                      <option value="Producción Fonográfica">Producción Fonográfica</option>
+                      <option value="Cultura Audiovisual">Cultura Audiovisual</option>
+                      <option value="Administración y RRHH">Administración y RRHH</option>
+                      <option value="Tecnología y Sistemas">Tecnología y Sistemas</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Condición Laboral
+                    </label>
+                    <select
+                      value={newEmpForm.condicionLaboral}
+                      onChange={(e) =>
+                        setNewEmpForm({ ...newEmpForm, condicionLaboral: e.target.value })
+                      }
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    >
+                      <option value="Fijo">Fijo</option>
+                      <option value="Contratado">Contratado</option>
+                      <option value="Libre Nombramiento">Libre Nombramiento</option>
+                      <option value="Comisión de Servicio">Comisión de Servicio</option>
+                      <option value="Honorarios Profesionales">Honorarios Profesionales</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Fecha de Ingreso al CENDIS
+                    </label>
+                    <input
+                      type="date"
+                      value={newEmpForm.fechaIngreso}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, fechaIngreso: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Nivel Académico
+                    </label>
+                    <select
+                      value={newEmpForm.nivelAcademico}
+                      onChange={(e) =>
+                        setNewEmpForm({ ...newEmpForm, nivelAcademico: e.target.value })
+                      }
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    >
+                      <option value="Bachiller">Bachiller</option>
+                      <option value="Técnico Medio">Técnico Medio</option>
+                      <option value="TSU">Técnico Superior Universitario (TSU)</option>
+                      <option value="Universitario">Universitario (Licenciado / Ingeniero)</option>
+                      <option value="Postgrado / Maestría">Postgrado / Maestría / Doctorado</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Profesión u Oficio
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej. Productor Musical / Administrador"
+                      value={newEmpForm.profesion || ""}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, profesion: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Tallas (Camisa / Pantalón / Calzado)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej. Camisa M / Pantalón 32 / Calzado 40"
+                      value={newEmpForm.tallas || ""}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, tallas: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Código de Barra del Carnet *
+                    </label>
+                    <div className="flex gap-1.5">
+                      <input
+                        type="text"
+                        required
+                        value={newEmpForm.codigoBarra}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, codigoBarra: e.target.value })
+                        }
+                        className="flex-1 px-2.5 py-2 rounded-lg bg-[#0d1322] border border-amber-500/60 text-amber-300 font-mono font-bold"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setNewEmpForm({ ...newEmpForm, codigoBarra: generateNextBarcode() })
+                        }
+                        className="px-2.5 py-2 rounded-lg neon-orange-nav text-[10px] font-black cursor-pointer"
+                        title="Generar nuevo código de barra"
+                      >
+                        🔄
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="sm:col-span-4">
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Funciones / Observaciones Laborales del Trabajador
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Resumen de responsabilidades, experiencia o funciones dentro de la institución..."
+                      value={newEmpForm.observacionesLaborales || ""}
+                      onChange={(e) =>
+                        setNewEmpForm({ ...newEmpForm, observacionesLaborales: e.target.value })
+                      }
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* SECCIÓN 3: AGREGAR FAMILIARES (CARGA FAMILIAR DINÁMICA) Y CONTACTOS DE EMERGENCIA */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                {/* Sub-sección Agregar Familiares */}
+                <div className="lg:col-span-7 bg-[#070b14] p-4 rounded-2xl border border-slate-800 space-y-3">
+                  <div className="border-b border-slate-800 pb-1.5 flex items-center justify-between">
+                    <span className="text-xs font-black uppercase text-[#ff9f5a]">
+                      3. Agregar Familiares (Carga Familiar del Trabajador)
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-400">
+                      {(newEmpForm.familiaresLista || []).length} familiar(es) registrado(s)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                    <select
+                      value={familyMemberDraft.parentesco}
+                      onChange={(e) =>
+                        setFamilyMemberDraft({ ...familyMemberDraft, parentesco: e.target.value })
+                      }
+                      className="px-2.5 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    >
+                      <option value="Hijo(a)">Hijo(a)</option>
+                      <option value="Esposo(a)">Esposo(a)</option>
+                      <option value="Madre">Madre</option>
+                      <option value="Padre">Padre</option>
+                      <option value="Hermano(a)">Hermano(a)</option>
+                      <option value="Abuelo(a)">Abuelo(a)</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Nombre y Apellido"
+                      value={familyMemberDraft.nombreCompleto}
+                      onChange={(e) =>
+                        setFamilyMemberDraft({
+                          ...familyMemberDraft,
+                          nombreCompleto: e.target.value,
+                        })
+                      }
+                      className="sm:col-span-2 px-2.5 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Cédula o Menor"
+                      value={familyMemberDraft.cedula}
+                      onChange={(e) =>
+                        setFamilyMemberDraft({ ...familyMemberDraft, cedula: e.target.value })
+                      }
+                      className="px-2.5 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                    <div className="flex gap-1">
+                      <input
+                        type="text"
+                        placeholder="Edad"
+                        value={familyMemberDraft.edad}
+                        onChange={(e) =>
+                          setFamilyMemberDraft({ ...familyMemberDraft, edad: e.target.value })
+                        }
+                        className="w-14 px-2 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddFamilyMemberToDraft}
+                        className="flex-1 px-2.5 py-2 rounded-lg neon-orange-nav-active font-black text-[11px] cursor-pointer whitespace-nowrap"
+                      >
+                        + Agregar
+                      </button>
+                    </div>
+                  </div>
+
+                  {(newEmpForm.familiaresLista || []).length > 0 ? (
+                    <div className="overflow-x-auto rounded-xl border border-slate-800">
+                      <table className="w-full text-left text-[11px]">
+                        <thead>
+                          <tr className="bg-slate-900 text-[#ffb366] uppercase">
+                            <th className="p-2">Parentesco</th>
+                            <th className="p-2">Nombre y Apellido</th>
+                            <th className="p-2">Cédula</th>
+                            <th className="p-2">Edad</th>
+                            <th className="p-2 text-right">Quitar</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800">
+                          {newEmpForm.familiaresLista.map((fam) => (
+                            <tr key={fam.id}>
+                              <td className="p-2 font-bold text-amber-300">{fam.parentesco}</td>
+                              <td className="p-2 text-white">{fam.nombreCompleto}</td>
+                              <td className="p-2 text-slate-300">{fam.cedula}</td>
+                              <td className="p-2 text-slate-300">{fam.edad || "-"}</td>
+                              <td className="p-2 text-right">
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveFamilyMemberFromDraft(fam.id)}
+                                  className="px-2 py-0.5 rounded bg-red-900/50 text-red-300 hover:bg-red-800 text-[10px] font-bold cursor-pointer"
+                                >
+                                  ✕
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-slate-400 italic">
+                      Use los campos de arriba y presione <strong>&ldquo;+ Agregar&rdquo;</strong> para incluir hijos, cónyuge, padres u otros familiares a la hoja de vida.
+                    </p>
+                  )}
+                </div>
+
+                {/* Sub-sección Contactos de Emergencia (aparecen en el Reverso del Carnet y Hoja de Vida) */}
+                <div className="lg:col-span-5 bg-[#070b14] p-4 rounded-2xl border border-slate-800 space-y-3">
+                  <div className="border-b border-slate-800 pb-1.5">
+                    <span className="text-xs font-black uppercase text-[#ff9f5a]">
+                      4. Contactos de Emergencia (Para el Carnet Oficial)
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Contacto de Emergencia 1: Nombre y Teléfono *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ej. María Primera: 0412-9876543"
+                      value={newEmpForm.emergencia1}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, emergencia1: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Contacto de Emergencia 2: Nombre y Teléfono
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej. José Primera: 0416-5554433"
+                      value={newEmpForm.emergencia2}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, emergencia2: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-300 mb-1">
+                      Resumen Carga Familiar
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej. Esposa y 2 Hijos"
+                      value={newEmpForm.familiares}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, familiares: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Botones Inferiores del Modal */}
+              <div className="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-slate-800">
                 <button
-                  onClick={() => window.print()}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer"
+                  type="button"
+                  onClick={() => setHrModalOpen(false)}
+                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer"
                 >
-                  Imprimir Carnet PDF
+                  Cancelar
                 </button>
                 <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl neon-orange-nav-active font-black text-xs uppercase tracking-wider cursor-pointer"
+                >
+                  {editingEmpId
+                    ? "💾 Guardar Cambios del Trabajador"
+                    : "✓ Registrar Trabajador, Generar Hoja de Vida y Carnet"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ====================================================================
+          MODAL DE CARNET OFICIAL CENDIS (FORMATO EXACTO A LAS 2 IMÁGENES ADJUNTAS + CÓDIGO DE BARRA ESCANEABLE)
+         ==================================================================== */}
+      {selectedEmpForCard && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#0e1526] text-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[95vh] overflow-y-auto border-2 border-[#ff6b00]/70">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 print:hidden">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#ff9f5a] block">
+                  Formato Institucional MPPC / CENDIS con Código de Barra Escaneable
+                </span>
+                <h3 className="text-sm font-black uppercase text-white">
+                  Carnet Oficial CENDIS • {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos} ({selectedEmpForCard.cedula})
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const now = new Date();
+                    const fechaStr = now.toISOString().slice(0, 10);
+                    const horaStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                    const rec = {
+                      id: `att-${Date.now()}`,
+                      cedula: selectedEmpForCard.cedula,
+                      nombre: `${selectedEmpForCard.nombres} ${selectedEmpForCard.apellidos}`,
+                      fecha: fechaStr,
+                      hora: horaStr,
+                      estatus: `Escaneo Lector Óptico (${selectedEmpForCard.codigoBarra})`,
+                    };
+                    setAttendanceRecords((prev) => [rec, ...prev]);
+                    addLog(
+                      `Código de barra ${selectedEmpForCard.codigoBarra} escaneado para ${selectedEmpForCard.nombres} ${selectedEmpForCard.apellidos}`
+                    );
+                    showToast(
+                      `✓ Lector de Código de Barra: Escaneado ${selectedEmpForCard.codigoBarra} (${selectedEmpForCard.nombres} ${selectedEmpForCard.apellidos}) y registrado en Asistencia.`
+                    );
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl neon-orange-nav text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-[#ffb366]" />
+                  <span>Probar Escaneo de Código de Barra</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="px-4 py-1.5 rounded-xl neon-orange-nav-active text-white text-xs font-black flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#ffd29d]" />
+                  <span>Imprimir Carnet en PDF</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setSelectedEmpForCard(null)}
-                  className="px-3 py-1.5 rounded-lg bg-red-100 text-red-800 text-xs font-bold cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-red-600/30 hover:bg-red-600/50 border border-red-500 text-white text-xs font-bold cursor-pointer"
                 >
                   Cerrar ✕
                 </button>
@@ -6766,68 +8044,266 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               id="printable-area"
               className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white border border-slate-200 rounded-xl flex flex-col justify-between text-slate-950"
             >
-              <div className="p-10 space-y-6">
+              <div className="p-8 sm:p-10 space-y-6">
                 <OfficialHeaderCintillo showRightLogo={true} />
-                <div className="text-center">
-                  <h2 className="text-base font-black uppercase text-slate-900">
-                    FICHA DE EMISIÓN DE CARNET INSTITUCIONAL • FUNDACIÓN CENDIS
+                <div className="text-center border-b border-slate-300 pb-2">
+                  <h2 className="text-sm font-black uppercase text-slate-900">
+                    EMISIÓN DE CARNET INSTITUCIONAL CON CÓDIGO DE BARRA ESCANEABLE • FUNDACIÓN CENDIS
                   </h2>
-                  <p className="text-xs text-slate-600 font-semibold">
-                    Trabajador: {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos} ({selectedEmpForCard.cedula})
+                  <p className="text-[11px] text-slate-600 font-semibold">
+                    Portador: {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos} • C.I.:{" "}
+                    {selectedEmpForCard.cedula} • Código Lector Óptico: {selectedEmpForCard.codigoBarra}
                   </p>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-8 py-4">
-                  {/* FRENTE DEL CARNET */}
-                  <div className="w-[300px] h-[470px] bg-white rounded-2xl shadow-xl border-4 border-amber-500 flex flex-col justify-between overflow-hidden">
-                    <div className="bg-[#111c38] text-white p-3 text-center">
-                      <div className="text-[10px] font-black uppercase tracking-widest">
+                {/* CONTENEDOR DE FRENTE Y REVERSO DEL CARNET (IDÉNTICO A LAS 2 FOTOS ADJUNTAS) */}
+                <div className="flex flex-wrap justify-center items-start gap-8 py-4">
+                  {/* ==========================================================
+                      FRENTE DEL CARNET (IDÉNTICO A LA IMAGEN 2 ADJUNTA)
+                     ========================================================== */}
+                  <div
+                    style={{
+                      fontFamily: "'Arial Narrow', Arial, Helvetica, sans-serif",
+                      boxShadow: "0 14px 28px rgba(0,0,0,0.22)",
+                    }}
+                    className="w-[325px] h-[515px] bg-[#fbfbfa] rounded-[18px] border-[4.5px] border-[#c5a059] flex flex-col justify-between overflow-hidden relative select-none"
+                  >
+                    {/* Cabecera Azul Marino con Escudo Dorado y Ministerio del Poder Popular para la Cultura */}
+                    <div className="bg-[#0b2545] pt-3.5 pb-2.5 px-4 flex flex-col items-center text-center border-b-[3px] border-[#c5a059]">
+                      <GoldenCoatOfArmsSVG className="w-16 h-16 mb-1" />
+                      <div className="text-[12.5px] font-black uppercase tracking-[0.04em] text-[#d8b875] leading-tight">
                         MINISTERIO DEL PODER POPULAR
                       </div>
-                      <div className="text-[11px] font-black uppercase text-amber-300">PARA LA CULTURA</div>
+                      <div className="text-[12.5px] font-black uppercase tracking-[0.04em] text-[#d8b875] leading-tight">
+                        PARA LA CULTURA
+                      </div>
                     </div>
-                    <div className="p-4 flex flex-col items-center">
-                      <CendisGlyphLogo className="w-28 mb-3" />
-                      <div className="w-full text-left space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-500 block">NOMBRE Y APELLIDO:</span>
-                          <span className="font-black">
-                            {selectedEmpForCard.nombres} {selectedEmpForCard.apellidos}
-                          </span>
+
+                    {/* Cuerpo Blanco del Frente */}
+                    <div className="flex-1 px-4 pt-3 pb-2 flex flex-col justify-between bg-[#fbfbfa]">
+                      {/* Logo Dorado Centro Nacional del Disco */}
+                      <div className="w-full flex justify-center">
+                        <GoldenCendisGlyphSVG showTopTitle={true} compact={false} />
+                      </div>
+
+                      {/* Mitad inferior dividida en 2 columnas: Datos a la izquierda, Foto Carnet con marco dorado a la derecha */}
+                      <div className="grid grid-cols-12 gap-2.5 items-end my-auto pt-2">
+                        <div className="col-span-7 text-left space-y-1.5 leading-tight">
+                          <div>
+                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                              NOMBRE:
+                            </span>
+                            <span className="text-[13.5px] font-black uppercase text-[#0b2545] block break-words">
+                              {selectedEmpForCard.nombres}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                              APELLIDO:
+                            </span>
+                            <span className="text-[13.5px] font-black uppercase text-[#0b2545] block break-words">
+                              {selectedEmpForCard.apellidos}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-[10.5px] font-bold uppercase text-[#9e7f3f] block">
+                              NÚMERO DE CÉDULA:
+                            </span>
+                            <span className="text-[13.5px] font-black uppercase text-[#0b2545] block">
+                              {selectedEmpForCard.cedula}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                              CARGO:
+                            </span>
+                            <span className="text-[12.5px] font-black uppercase text-[#0b2545] block leading-tight">
+                              {selectedEmpForCard.cargo}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-[11px] font-bold uppercase text-[#9e7f3f] block">
+                              COORDINACIÓN:
+                            </span>
+                            <span className="text-[12.5px] font-black uppercase text-[#0b2545] block leading-tight">
+                              {selectedEmpForCard.coordinacion}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-500 block">CÉDULA:</span>
-                          <span className="font-black">{selectedEmpForCard.cedula}</span>
-                        </div>
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-500 block">CARGO:</span>
-                          <span className="font-black">{selectedEmpForCard.cargo}</span>
-                        </div>
-                        <div>
-                          <span className="text-[9px] font-bold text-slate-500 block">COORDINACIÓN:</span>
-                          <span className="font-black">{selectedEmpForCard.coordinacion}</span>
+
+                        {/* Recuadro de Fotografía Tipo Carnet con Borde Dorado */}
+                        <div className="col-span-5 flex justify-end">
+                          <div className="w-[116px] h-[148px] border-[3px] border-[#b6924c] bg-[#e2e4e7] overflow-hidden flex items-end justify-center shadow-inner">
+                            {selectedEmpForCard.fotoCarnet ? (
+                              <img
+                                src={selectedEmpForCard.fotoCarnet}
+                                alt={`${selectedEmpForCard.nombres} ${selectedEmpForCard.apellidos}`}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <svg
+                                viewBox="0 0 120 150"
+                                className="w-full h-full text-[#a3a8b0]"
+                                fill="currentColor"
+                              >
+                                <circle cx="60" cy="54" r="27" />
+                                <path d="M8,150 C8,110 32,95 60,95 C88,95 112,110 112,150 Z" />
+                              </svg>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="h-5 bg-[#111c38]" />
+
+                    {/* Franja Inferior Azul Marino con Borde Superior Dorado */}
+                    <div className="h-4 bg-[#0b2545] border-t-[2.5px] border-[#c5a059]" />
                   </div>
 
-                  {/* REVERSO DEL CARNET */}
-                  <div className="w-[300px] h-[470px] bg-white rounded-2xl shadow-xl border-4 border-amber-500 flex flex-col justify-between p-4 text-[10px]">
-                    <div className="text-center">
-                      <CendisGlyphLogo className="w-24 mx-auto" />
-                      <div className="font-black mt-1">CENDIS - Centro Nacional del Disco</div>
+                  {/* ==========================================================
+                      REVERSO DEL CARNET (IDÉNTICO A LA IMAGEN 1 ADJUNTA)
+                     ========================================================== */}
+                  <div
+                    style={{
+                      fontFamily: "'Arial Narrow', Arial, Helvetica, sans-serif",
+                      boxShadow: "0 14px 28px rgba(0,0,0,0.22)",
+                    }}
+                    className="w-[325px] h-[515px] bg-[#fbfbfa] rounded-[18px] border-[4.5px] border-[#c5a059] flex flex-col justify-between overflow-hidden relative select-none"
+                  >
+                    {/* Franja Superior Azul Marino con Borde Inferior Dorado */}
+                    <div className="h-7 bg-[#0b2545] border-b-[2.5px] border-[#c5a059]" />
+
+                    {/* Contenido Central del Reverso */}
+                    <div className="flex-1 px-4 py-2 flex flex-col justify-between bg-[#fbfbfa] text-slate-950">
+                      {/* Glifo Dorado + del Disco + CENDIS - Centro Nacional del Disco */}
+                      <div className="text-center">
+                        <GoldenCendisGlyphSVG showTopTitle={false} compact={true} />
+                        <div className="text-[13px] font-bold text-[#0b2545] tracking-tight mt-0.5">
+                          CENDIS - Centro Nacional del Disco
+                        </div>
+                      </div>
+
+                      {/* FIRMAS AUTORIZADAS */}
+                      <div className="space-y-1.5">
+                        <div className="text-[11px] font-bold uppercase text-[#9e7f3f] tracking-wide">
+                          FIRMAS AUTORIZADAS
+                        </div>
+
+                        {/* Fila Firma 1: DIRECTOR/A GENERAL */}
+                        <div>
+                          <div className="grid grid-cols-12 gap-1.5 items-center">
+                            <div
+                              style={{
+                                backgroundImage:
+                                  "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
+                              }}
+                              className="col-span-8 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center px-2"
+                            >
+                              <svg viewBox="0 0 180 36" className="w-32 h-7">
+                                <path
+                                  d="M14,26 C8,12 36,6 52,16 C38,24 24,28 18,28 C34,26 62,12 76,8 C68,18 62,26 66,26 C74,26 84,16 92,18 C96,20 98,25 108,22 C118,19 138,21 166,20"
+                                  fill="none"
+                                  stroke="#111827"
+                                  strokeWidth="1.6"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </div>
+                            <div
+                              style={{
+                                backgroundImage:
+                                  "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
+                              }}
+                              className="col-span-4 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center text-[10.5px] font-bold text-slate-900"
+                            >
+                              20 SEP 2024
+                            </div>
+                          </div>
+                          <div className="text-[10.5px] font-bold uppercase text-slate-900 mt-0.5">
+                            DIRECTOR/A GENERAL
+                          </div>
+                        </div>
+
+                        {/* Fila Firma 2: COORDINADOR/A DE RRHH */}
+                        <div>
+                          <div className="grid grid-cols-12 gap-1.5 items-center">
+                            <div
+                              style={{
+                                backgroundImage:
+                                  "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
+                              }}
+                              className="col-span-8 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center px-2"
+                            >
+                              <svg viewBox="0 0 180 36" className="w-32 h-7">
+                                <path
+                                  d="M22,28 C38,14 48,8 52,18 C54,24 44,26 58,22 C72,18 82,22 92,22 C104,22 118,8 124,10 C128,12 114,28 118,28 C126,28 142,14 156,22"
+                                  fill="none"
+                                  stroke="#111827"
+                                  strokeWidth="1.6"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </div>
+                            <div
+                              style={{
+                                backgroundImage:
+                                  "repeating-linear-gradient(45deg, #e5e7eb 0px, #e5e7eb 1px, #f3f4f6 1px, #f3f4f6 4px)",
+                              }}
+                              className="col-span-4 h-8 border-b-[1.5px] border-slate-800 flex items-center justify-center text-[10.5px] font-bold text-slate-900"
+                            >
+                              20 SEP 2024
+                            </div>
+                          </div>
+                          <div className="text-[10.5px] font-bold uppercase text-slate-900 mt-0.5">
+                            COORDINADOR/A DE RRHH
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* POLÍTICA DE USO Y CONFIDENCIALIDAD */}
+                      <div className="text-center px-0.5">
+                        <div className="text-[10.5px] font-bold uppercase text-[#9e7f3f] tracking-tight">
+                          POLÍTICA DE USO Y CONFIDENCIALIDAD
+                        </div>
+                        <p className="text-[8.6px] text-slate-900 leading-[1.18] text-justify mt-0.5 font-medium">
+                          Este carnet es personal e intransferible. Identifica al portador como personal autorizado del CENDIS. Su uso indebido está sujeto a sanciones. En caso de extravío, por favor reportarlo inmediatamente a la Coordinación de Recursos Humanos o a las oficinas del Ministerio. No para uso financiero. [Ley Orgánica de la Administración Pública, Art. 112].
+                        </p>
+                      </div>
+
+                      {/* INFORMACIÓN DE EMERGENCIA */}
+                      <div>
+                        <div className="text-[10.5px] font-bold uppercase text-[#9e7f3f] text-center">
+                          INFORMACIÓN DE EMERGENCIA
+                        </div>
+                        <div className="text-[11px] font-bold text-slate-950 leading-tight mt-0.5">
+                          <div className="truncate">
+                            {selectedEmpForCard.emergencia1 || "CONTACTO 1: 0414-1234567"}
+                          </div>
+                          <div className="truncate">
+                            {selectedEmpForCard.emergencia2 && selectedEmpForCard.emergencia2 !== "N/A"
+                              ? selectedEmpForCard.emergencia2
+                              : `TELÉFONO TRABAJADOR: ${selectedEmpForCard.telefono || "0412-0000000"}`}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CÓDIGO DE BARRA ESCANEABLE POR LECTOR ÓPTICO */}
+                      <div className="pt-0.5">
+                        <ScannableCarnetBarcode value={selectedEmpForCard.codigoBarra} />
+                      </div>
                     </div>
-                    <div className="text-[9px] text-slate-600 leading-tight">
-                      Este carnet es personal e intransferible. Identifica al portador como trabajador activo de la Fundación CENDIS.
-                    </div>
-                    <div className="bg-slate-50 p-2 rounded border border-slate-200">
-                      <div className="font-bold uppercase text-[9px]">Emergencia:</div>
-                      <div>{selectedEmpForCard.emergencia1}</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="font-mono tracking-widest text-base font-black">||| | |||| || ||| ||</div>
-                      <div className="font-mono text-[9px] font-bold">{selectedEmpForCard.codigoBarra}</div>
+
+                    {/* Pie Azul Marino del Reverso con www.cendis.gob.ve y Ministerio */}
+                    <div className="bg-[#0b2545] border-t-[2.5px] border-[#c5a059] py-1.5 px-3 text-center">
+                      <div className="text-[11.5px] font-bold text-white leading-none">
+                        www.cendis.gob.ve
+                      </div>
+                      <div className="text-[8.5px] font-bold uppercase text-[#d8b875] tracking-wider mt-0.5 leading-none">
+                        MINISTERIO DEL PODER POPULAR PARA LA CULTURA
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -6839,73 +8315,305 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       )}
 
       {/* ====================================================================
-          MODAL DE HOJA DE VIDA / PERFIL EN PDF (CON CINTILLO OFICIAL COMPLETO)
+          MODAL DE HOJA DE VIDA / PERFIL EN PDF (REPORTE TIPO CURRÍCULUM CON CINTILLO OFICIAL)
          ==================================================================== */}
       {selectedEmpForCV && (
-        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[94vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b pb-3 print:hidden">
-              <h3 className="text-sm font-black uppercase">
-                Hoja de Vida en PDF • {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}
-              </h3>
-              <div className="flex gap-2">
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#0e1526] text-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[95vh] overflow-y-auto border-2 border-[#ff6b00]/70">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 print:hidden">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#ff9f5a] block">
+                  Perfil Institucional y Síntesis Curricular en PDF
+                </span>
+                <h3 className="text-sm font-black uppercase text-white">
+                  Hoja de Vida en PDF • {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos} ({selectedEmpForCV.cedula})
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
                 <button
-                  onClick={() => window.print()}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer"
+                  type="button"
+                  onClick={() => {
+                    const emp = selectedEmpForCV;
+                    setSelectedEmpForCV(null);
+                    openEditEmployeeModal(emp);
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl neon-orange-nav text-xs font-bold cursor-pointer"
                 >
-                  Imprimir PDF
+                  ✏️ Editar Datos / Familiares
                 </button>
                 <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="px-4 py-1.5 rounded-xl neon-orange-nav-active text-white text-xs font-black flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#ffd29d]" />
+                  <span>Imprimir Hoja de Vida PDF</span>
+                </button>
+                <button
+                  type="button"
                   onClick={() => setSelectedEmpForCV(null)}
-                  className="px-3 py-1.5 rounded-lg bg-red-100 text-red-800 text-xs font-bold cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-red-600/30 hover:bg-red-600/50 border border-red-500 text-white text-xs font-bold cursor-pointer"
                 >
                   Cerrar ✕
                 </button>
               </div>
             </div>
+
             <div
               id="printable-area"
               className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white border border-slate-200 rounded-xl flex flex-col justify-between text-xs text-slate-950"
             >
-              <div className="p-10 space-y-6">
+              <div className="p-10 space-y-5">
                 <OfficialHeaderCintillo showRightLogo={true} />
-                <div className="text-center border-b-2 border-slate-900 pb-3">
-                  <h2 className="text-base font-black uppercase text-slate-900">
-                    EXPEDIENTE Y HOJA DE VIDA INSTITUCIONAL • RECURSOS HUMANOS
+
+                {/* Título del Perfil / Hoja de Vida */}
+                <div className="text-center border-b-2 border-[#0b2545] pb-2.5">
+                  <h2 className="text-base font-black uppercase text-[#0b2545] tracking-wide">
+                    PERFIL INSTITUCIONAL Y HOJA DE VIDA DEL TRABAJADOR • RECURSOS HUMANOS
                   </h2>
-                  <p className="text-xs text-slate-600 font-semibold mt-0.5">
-                    Fundación Centro Nacional del Disco (CENDIS) — Código: {selectedEmpForCV.codigoBarra}
+                  <p className="text-[11px] text-slate-700 font-semibold">
+                    Fundación Centro Nacional del Disco (CENDIS) — Expediente N° {selectedEmpForCV.codigoBarra}
                   </p>
                 </div>
-                <div className="grid grid-cols-2 gap-4 p-5 rounded-xl border border-slate-300 bg-slate-50 text-xs">
-                  <div>
-                    <strong>Nombres y Apellidos:</strong> {selectedEmpForCV.nombres}{" "}
-                    {selectedEmpForCV.apellidos}
+
+                {/* Encabezado del Perfil con Foto Carnet a la Derecha y Resumen Principal */}
+                <div className="grid grid-cols-12 gap-4 items-center bg-slate-50 p-4 rounded-xl border border-slate-300">
+                  <div className="col-span-9 space-y-1.5">
+                    <div className="text-lg font-black uppercase text-[#0b2545]">
+                      {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}
+                    </div>
+                    <div className="text-xs font-bold text-[#8b1538] uppercase">
+                      {selectedEmpForCV.cargo} — {selectedEmpForCV.coordinacion}
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1 text-[11px]">
+                      <div>
+                        <strong>Cédula de Identidad:</strong> {selectedEmpForCV.cedula}
+                      </div>
+                      <div>
+                        <strong>Fecha de Nacimiento:</strong>{" "}
+                        {selectedEmpForCV.fechaNacimiento || "No registrada"}
+                      </div>
+                      <div>
+                        <strong>Estado Civil / Género:</strong>{" "}
+                        {selectedEmpForCV.estadoCivil || "Soltero(a)"} /{" "}
+                        {selectedEmpForCV.genero || "No especificado"}
+                      </div>
+                      <div>
+                        <strong>Grupo Sanguíneo:</strong>{" "}
+                        <span className="font-black text-red-700">
+                          {selectedEmpForCV.tipoSangre || "O+"}
+                        </span>
+                      </div>
+                      <div>
+                        <strong>Teléfono Principal:</strong> {selectedEmpForCV.telefono}
+                      </div>
+                      <div>
+                        <strong>Teléfono Alterno:</strong>{" "}
+                        {selectedEmpForCV.telefonoAlterno || "No registrado"}
+                      </div>
+                      <div className="col-span-2">
+                        <strong>Correo Electrónico:</strong>{" "}
+                        {selectedEmpForCV.correo || "No registrado"}
+                      </div>
+                      <div className="col-span-2">
+                        <strong>Dirección de Habitación:</strong>{" "}
+                        {selectedEmpForCV.direccion || "Caracas, Venezuela"}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <strong>Cédula de Identidad:</strong> {selectedEmpForCV.cedula}
+
+                  {/* Foto Tipo Carnet en la Hoja de Vida */}
+                  <div className="col-span-3 flex flex-col items-center">
+                    <div className="w-28 h-36 rounded-lg border-[3px] border-[#c5a059] bg-[#e2e4e7] overflow-hidden flex items-center justify-center shadow">
+                      {selectedEmpForCV.fotoCarnet ? (
+                        <img
+                          src={selectedEmpForCV.fotoCarnet}
+                          alt={`${selectedEmpForCV.nombres} ${selectedEmpForCV.apellidos}`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <svg
+                          viewBox="0 0 120 150"
+                          className="w-24 h-32 text-[#9ea3ab]"
+                          fill="currentColor"
+                        >
+                          <circle cx="60" cy="52" r="26" />
+                          <path d="M12,145 C12,108 34,94 60,94 C86,94 108,108 108,145 Z" />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="text-[9px] font-bold uppercase text-slate-600 mt-1">
+                      Foto Tipo Carnet
+                    </span>
                   </div>
-                  <div>
-                    <strong>Cargo Institucional:</strong> {selectedEmpForCV.cargo}
+                </div>
+
+                {/* Sección II: Información Laboral y Académica en el CENDIS */}
+                <div className="border border-slate-300 rounded-xl overflow-hidden">
+                  <div className="bg-[#0b2545] text-white px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider">
+                    II. Datos Laborales, Académicos y Dotación en el CENDIS
                   </div>
-                  <div>
-                    <strong>Coordinación Adscrita:</strong> {selectedEmpForCV.coordinacion}
+                  <div className="p-3.5 grid grid-cols-2 sm:grid-cols-3 gap-3 text-[11px] bg-white">
+                    <div>
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Cargo Institucional:
+                      </span>
+                      <span className="font-black text-slate-900">{selectedEmpForCV.cargo}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Coordinación de Adscripción:
+                      </span>
+                      <span className="font-bold text-slate-900">{selectedEmpForCV.coordinacion}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Condición Laboral:
+                      </span>
+                      <span className="font-bold text-slate-900">
+                        {selectedEmpForCV.condicionLaboral || "Personal Fijo"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Fecha de Ingreso:
+                      </span>
+                      <span className="font-bold text-slate-900">
+                        {selectedEmpForCV.fechaIngreso || "2024-01-15"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Nivel Académico:
+                      </span>
+                      <span className="font-bold text-slate-900">
+                        {selectedEmpForCV.nivelAcademico || "Universitario"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Profesión u Oficio:
+                      </span>
+                      <span className="font-bold text-slate-900">
+                        {selectedEmpForCV.profesion || selectedEmpForCV.cargo}
+                      </span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Tallas de Dotación:
+                      </span>
+                      <span className="font-semibold text-slate-900">
+                        {selectedEmpForCV.tallas || "Estándar institucional"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                        Código de Carnet:
+                      </span>
+                      <span className="font-mono font-bold text-slate-900">
+                        {selectedEmpForCV.codigoBarra}
+                      </span>
+                    </div>
+                    {selectedEmpForCV.observacionesLaborales && (
+                      <div className="col-span-3 pt-1 border-t border-slate-200">
+                        <span className="text-slate-500 font-bold block text-[9.5px] uppercase">
+                          Funciones y Síntesis Laboral:
+                        </span>
+                        <span className="text-slate-800">
+                          {selectedEmpForCV.observacionesLaborales}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <strong>Teléfono de Contacto:</strong> {selectedEmpForCV.telefono}
+                </div>
+
+                {/* Sección III: Carga Familiar Registrada */}
+                <div className="border border-slate-300 rounded-xl overflow-hidden">
+                  <div className="bg-[#0b2545] text-white px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider flex justify-between">
+                    <span>III. Carga Familiar del Trabajador</span>
+                    <span>
+                      Tiene Carga Familiar: {selectedEmpForCV.tieneCargaFamiliar === "SI" ? "SÍ" : "NO"}
+                    </span>
                   </div>
-                  <div>
-                    <strong>Correo Electrónico:</strong> {selectedEmpForCV.correo || "No registrado"}
+                  <div className="p-3.5 bg-white">
+                    {Array.isArray(selectedEmpForCV.familiaresLista) &&
+                    selectedEmpForCV.familiaresLista.length > 0 ? (
+                      <table className="w-full border-collapse border border-slate-400 text-[11px]">
+                        <thead>
+                          <tr className="bg-slate-100 text-slate-900 font-black uppercase">
+                            <th className="border border-slate-400 p-1.5 text-left">Parentesco</th>
+                            <th className="border border-slate-400 p-1.5 text-left">
+                              Nombre y Apellido
+                            </th>
+                            <th className="border border-slate-400 p-1.5 text-left">
+                              Cédula / Condición
+                            </th>
+                            <th className="border border-slate-400 p-1.5 text-left">Edad</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {selectedEmpForCV.familiaresLista.map((fam, idx) => (
+                            <tr key={fam.id || idx}>
+                              <td className="border border-slate-400 p-1.5 font-bold">
+                                {fam.parentesco}
+                              </td>
+                              <td className="border border-slate-400 p-1.5">
+                                {fam.nombreCompleto}
+                              </td>
+                              <td className="border border-slate-400 p-1.5">{fam.cedula}</td>
+                              <td className="border border-slate-400 p-1.5">
+                                {fam.edad ? `${fam.edad} años` : "-"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <p className="text-[11px] text-slate-700">
+                        <strong>Resumen Familiar:</strong>{" "}
+                        {selectedEmpForCV.familiares || "Sin carga familiar registrada en el expediente."}
+                      </p>
+                    )}
                   </div>
-                  <div>
-                    <strong>Fecha de Ingreso:</strong> {selectedEmpForCV.fechaIngreso || "2024-01-15"}
+                </div>
+
+                {/* Sección IV: Contactos en Caso de Emergencia y Código de Barra */}
+                <div className="grid grid-cols-12 gap-4 items-center border border-slate-300 rounded-xl p-3.5 bg-slate-50">
+                  <div className="col-span-7 space-y-1 text-[11px]">
+                    <div className="font-black uppercase text-[#0b2545] text-xs mb-1">
+                      IV. Contactos en Caso de Emergencia
+                    </div>
+                    <div>
+                      <strong>Contacto Principal (1):</strong>{" "}
+                      {selectedEmpForCV.emergencia1 || "No especificado"}
+                    </div>
+                    <div>
+                      <strong>Contacto Secundario (2):</strong>{" "}
+                      {selectedEmpForCV.emergencia2 || "No especificado"}
+                    </div>
                   </div>
-                  <div>
-                    <strong>Tipo de Sangre:</strong> {selectedEmpForCV.tipoSangre || "O+"}
+                  <div className="col-span-5 flex flex-col items-center border-l border-slate-300 pl-3">
+                    <ScannableCarnetBarcode value={selectedEmpForCV.codigoBarra} />
                   </div>
-                  <div className="col-span-2">
-                    <strong>Carga Familiar / Contacto de Emergencia:</strong>{" "}
-                    {selectedEmpForCV.familiares || "Sin carga familiar registrada"}
+                </div>
+
+                {/* Firmas de Validación de la Hoja de Vida */}
+                <div className="grid grid-cols-2 gap-12 pt-6 text-center text-[11px]">
+                  <div className="border-t border-slate-900 pt-1.5">
+                    <div className="font-black uppercase text-slate-900">
+                      {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}
+                    </div>
+                    <div className="text-[10px] text-slate-600">
+                      Firma del Trabajador(a) • C.I. {selectedEmpForCV.cedula}
+                    </div>
+                  </div>
+                  <div className="border-t border-slate-900 pt-1.5">
+                    <div className="font-black uppercase text-slate-900">
+                      COORDINACIÓN DE RECURSOS HUMANOS
+                    </div>
+                    <div className="text-[10px] text-slate-600">
+                      Fundación Centro Nacional del Disco (CENDIS)
+                    </div>
                   </div>
                 </div>
               </div>
