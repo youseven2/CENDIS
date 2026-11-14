@@ -1536,14 +1536,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
                   </div>
 
-                  {/* Barra inferior con código y botón amarillo "Entrar →" */}
+                  {/* Barra inferior con código */}
                   <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
                     <span className="font-mono text-xs font-bold text-slate-400 tracking-wider">
                       {mod.footerCode}
-                    </span>
-                    <span className="px-5 py-2.5 rounded-2xl bg-[#f59e0b] group-hover:bg-[#fbbf24] text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md transition">
-                      <span>Entrar</span>
-                      <span>→</span>
                     </span>
                   </div>
                 </div>
