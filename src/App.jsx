@@ -1379,19 +1379,15 @@ export default function App() {
     estadoSalida: "OPERATIVO / BUEN ESTADO",
   });
 
-  const [para, setPara] = useState("LCDO. JESÚS GARCÍA");
-  const [paraDireccion, setParaDireccion] = useState(
-    "GENERAL DE ADMINISTRACIÓN DEL MINISTERIO DEL PODER POPULAR PARA LA CULTURA"
-  );
+  const [para, setPara] = useState("");
+  const [paraDireccion, setParaDireccion] = useState("");
   const [de, setDe] = useState("LCDO. MORRIS LÓPEZ");
   const [deCargo, setDeCargo] = useState(
     "DIRECTOR GENERAL DE LA FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)"
   );
-  const [fecha, setFecha] = useState("2026-11-13");
-  const [asunto, setAsunto] = useState("SOLICITUD DE TRANSPORTE");
-  const [concepto, setConcepto] = useState(
-    "TENGO EL AGRADO DE DIRIGIRME A USTED EN LA OPORTUNIDAD DE SALUDARLE CORDIALMENTE Y, A SU VEZ, SOLICITARLE TRANSPORTE PARA EL PERSONAL DE AUDIOVISUALES CONFORMADO POR 9 PERSONAS Y EQUIPO TÉCNICO, QUIENES SE TRASLADAN EL DÍA DE MAÑANA 13/11/2026 AL CRISTO REY, PARROQUIA 23 DE ENERO A LAS 12:30PM – 9:00PM.\n\nAGRADECIENDO DE ANTEMANO SU RECEPTIVIDAD, MÁXIMA COLABORACIÓN Y CONSTANTE APOYO INTERINSTITUCIONAL PARA LA REALIZACIÓN CON ÉXITO DE ESTE EVENTO, QUEDO DE USTED."
-  );
+  const [fecha, setFecha] = useState("");
+  const [asunto, setAsunto] = useState("");
+  const [concepto, setConcepto] = useState("");
 
   const [signerNombre, setSignerNombre] = useState("LCDO. MORRIS LÓPEZ");
   const [signerCargo, setSignerCargo] = useState("DIRECTOR GENERAL");
@@ -3664,8 +3660,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   if (currentScreen === "LOGIN") {
     return (
       <div
-        onInputCapture={handleGlobalUppercaseInput}
-        onChangeCapture={handleGlobalUppercaseInput}
         className={`min-h-screen max-h-screen overflow-y-auto ${
           themeMode === "LIGHT"
             ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
@@ -3934,8 +3928,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
     return (
       <div
-        onInputCapture={handleGlobalUppercaseInput}
-        onChangeCapture={handleGlobalUppercaseInput}
         className={`min-h-screen ${
           themeMode === "LIGHT"
             ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
@@ -4144,8 +4136,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   // ==========================================================================
   return (
     <div
-      onInputCapture={handleGlobalUppercaseInput}
-      onChangeCapture={handleGlobalUppercaseInput}
       className={`min-h-screen ${
         themeMode === "LIGHT"
           ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
@@ -4653,7 +4643,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
-                      FECHA ({formatFechaLargaOficial(fecha)}):
+                      FECHA {fecha ? `(${formatFechaLargaOficial(fecha)})` : ""}:
                     </label>
                     <input
                       type="date"
@@ -4666,9 +4656,28 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
-                      ASUNTO:
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-bold uppercase text-slate-600">
+                        ASUNTO:
+                      </label>
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          if (!e.target.value) return;
+                          setSelectedDocId(null);
+                          setAsunto(e.target.value);
+                        }}
+                        className="px-1.5 py-0.5 rounded border border-slate-300 text-[10px]"
+                      >
+                        <option value="">Opciones rápidas...</option>
+                        <option value="SOLICITUD DE TRANSPORTE">Solicitud de transporte</option>
+                        <option value="AUTORIZACIÓN DE SALIDA DE EQUIPOS Y BIENES NACIONALES">Salida de equipos</option>
+                        <option value="SOLICITUD DE MATERIALES E INSUMOS">Solicitud de materiales</option>
+                        <option value="CONVOCATORIA A REUNIÓN INSTITUCIONAL">Convocatoria a reunión</option>
+                        <option value="REMISIÓN DE INFORME DE GESTIÓN">Remisión de informe</option>
+                        <option value="PERMISO / COMISIÓN DE SERVICIO">Comisión de servicio</option>
+                      </select>
+                    </div>
                     <input
                       type="text"
                       value={asunto}
@@ -4676,25 +4685,43 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         setSelectedDocId(null);
                         setAsunto(e.target.value);
                       }}
-                      placeholder="Ej. Solicitud de transporte"
+                      placeholder="Escriba el asunto del documento"
                       className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-semibold"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
                     <label className="block text-[11px] font-bold uppercase text-slate-600">
                       CONTENIDO / CUERPO DEL DOCUMENTO:
                     </label>
-                    <span className="text-[10px] font-semibold text-emerald-500">
-                      Respeta mayúsculas y minúsculas originales
-                    </span>
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        if (!e.target.value) return;
+                        setSelectedDocId(null);
+                        setConcepto(e.target.value);
+                      }}
+                      className="px-2 py-0.5 rounded border border-slate-300 text-[10px]"
+                    >
+                      <option value="">Plantilla rápida (opcional)...</option>
+                      <option value="Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y, a su vez, solicitarle ">
+                        Saludo y solicitud formal
+                      </option>
+                      <option value="Por medio de la presente me dirijo a usted con la finalidad de remitirle ">
+                        Remisión formal
+                      </option>
+                      <option value="Se autoriza la salida de los equipos y bienes nacionales detallados a continuación para el cumplimiento de actividades institucionales.">
+                        Texto base Orden de Salida
+                      </option>
+                    </select>
                   </div>
                   <textarea
                     rows={5}
                     data-no-uppercase="true"
                     value={concepto}
+                    placeholder="Escriba aquí el contenido del documento..."
                     onChange={(e) => {
                       setSelectedDocId(null);
                       setConcepto(e.target.value);
@@ -4768,7 +4795,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div>
                         <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
-                          Responsable que Retira (RRHH)
+                          Responsable que Retira
                         </label>
                         <select
                           onChange={(e) => {
@@ -8501,7 +8528,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           <th className="border border-slate-900 p-2.5">Fecha</th>
                           <th className="border border-slate-900 p-2.5">Hora Entrada</th>
                           <th className="border border-slate-900 p-2.5">Estatus</th>
-                          <th className="border border-slate-900 p-2.5 print:hidden">Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -8521,31 +8547,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                               }`}
                             >
                               {att.estatus}
-                            </td>
-                            <td className="border border-slate-900 p-2 print:hidden">
-                              <div className="flex flex-wrap items-center gap-1">
-                                {att.status !== "ANULADO" && att.estatus !== "ANULADO" && (
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleUniversalAnnul("attendance", att.id, `Asistencia de ${att.nombre}`)
-                                    }
-                                    className="px-2 py-1 rounded bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold cursor-pointer"
-                                  >
-                                    🚫 Anular
-                                  </button>
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleUniversalDelete("attendance", att.id, `Asistencia de ${att.nombre}`)
-                                  }
-                                  className="px-2 py-1 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                  <span>Eliminar</span>
-                                </button>
-                              </div>
                             </td>
                           </tr>
                         ))}
