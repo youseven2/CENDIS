@@ -1385,7 +1385,14 @@ export default function App() {
   const [deCargo, setDeCargo] = useState(
     "DIRECTOR GENERAL DE LA FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)"
   );
-  const [fecha, setFecha] = useState("");
+  const getTodayIsoDate = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+      d.getDate()
+    ).padStart(2, "0")}`;
+  };
+  const memoDateInputRef = React.useRef(null);
+  const [fecha, setFecha] = useState(() => getTodayIsoDate());
   const [asunto, setAsunto] = useState("");
   const [concepto, setConcepto] = useState("");
 
@@ -4642,18 +4649,54 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 {/* FECHA Y ASUNTO */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
-                      FECHA {fecha ? `(${formatFechaLargaOficial(fecha)})` : ""}:
-                    </label>
-                    <input
-                      type="date"
-                      value={fecha}
-                      onChange={(e) => {
-                        setSelectedDocId(null);
-                        setFecha(e.target.value);
-                      }}
-                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
-                    />
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-bold uppercase text-slate-600">
+                        FECHA {fecha ? `(${formatFechaLargaOficial(fecha)})` : ""}:
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedDocId(null);
+                          setFecha(getTodayIsoDate());
+                        }}
+                        className="px-1.5 py-0.5 rounded bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-500 text-[10px] font-bold cursor-pointer"
+                        title="Colocar fecha actual del día"
+                      >
+                        Hoy
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        ref={memoDateInputRef}
+                        type="date"
+                        value={fecha}
+                        onChange={(e) => {
+                          setSelectedDocId(null);
+                          setFecha(e.target.value);
+                        }}
+                        style={{ colorScheme: themeMode === "LIGHT" ? "light" : "dark" }}
+                        className="flex-1 px-3 py-2 rounded-lg border border-slate-300 text-xs cursor-pointer"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const el = memoDateInputRef.current;
+                          if (!el) return;
+                          el.focus();
+                          if (typeof el.showPicker === "function") {
+                            try {
+                              el.showPicker();
+                            } catch {
+                              // Fallback si el navegador bloquea showPicker
+                            }
+                          }
+                        }}
+                        className="px-2.5 py-2 rounded-lg bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-bold flex items-center gap-1 cursor-pointer shrink-0"
+                        title="Abrir calendario para seleccionar fecha"
+                      >
+                        <CalendarIcon className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
