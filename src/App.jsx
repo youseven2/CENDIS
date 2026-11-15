@@ -144,6 +144,7 @@ const DEFAULT_PERMISSIONS_BY_ROLE = {
     entrar_attendance: true,
     entrar_proyectos: true,
     entrar_bienes: true,
+    entrar_novedades: true,
     entrar_config: true,
     ingresar: true,
     modificar: true,
@@ -159,6 +160,7 @@ const DEFAULT_PERMISSIONS_BY_ROLE = {
     entrar_attendance: true,
     entrar_proyectos: true,
     entrar_bienes: true,
+    entrar_novedades: true,
     entrar_config: false,
     ingresar: true,
     modificar: true,
@@ -1370,6 +1372,64 @@ export default function App() {
     loadStoredJson("cendis_new_notices_v1", INITIAL_NEW_NOTICES)
   );
   const [newNoticesModalOpen, setNewNoticesModalOpen] = useState(false);
+
+  // Estado del Módulo Novedades (vinculado gráficamente al Canal Informativo)
+  const [novedadesList, setNovedadesListState] = useState(() =>
+    loadStoredJson("cendis_novedades_v1", [])
+  );
+  const setNovedadesList = (updater) => {
+    setNovedadesListState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson("cendis_novedades_v1", next);
+      return next;
+    });
+  };
+  const NOVEDAD_PRESETS = [
+    {
+      id: "CUSTOM",
+      label: "Redacción Libre (Personalizada)",
+      categoria: "COMUNICADO OFICIAL",
+      titulo: "",
+      mensaje: "",
+    },
+    {
+      id: "REUNION",
+      label: "Reunión General de Personal CENDIS",
+      categoria: "AVISO GENERAL",
+      titulo: "CONVOCATORIA A REUNIÓN GENERAL DE TRABAJADORES",
+      mensaje: "Se convoca a todo el personal administrativo, técnico y obrero de la Fundación CENDIS a participar en la reunión general institucional.",
+    },
+    {
+      id: "JORNADA",
+      label: "Jornada Especial / Operativo Institucional",
+      categoria: "EVENTO ESPECIAL",
+      titulo: "JORNADA ESPECIAL DE ATENCIÓN AL PERSONAL CENDIS",
+      mensaje: "Informamos a todos los trabajadores del CENDIS sobre la realización de nuestra jornada especial en las instalaciones de la sede principal.",
+    },
+    {
+      id: "RRHH",
+      label: "Comunicado de Talento Humano (RRHH)",
+      categoria: "TALENTO HUMANO",
+      titulo: "INFORMACIÓN IMPORTANTE DE RECURSOS HUMANOS",
+      mensaje: "La Coordinación de Recursos Humanos informa a todo el personal activo sobre los lineamientos y trámites administrativos vigentes.",
+    },
+    {
+      id: "MANTENIMIENTO",
+      label: "Aviso de Mantenimiento / Sistemas",
+      categoria: "NORMATIVA",
+      titulo: "AVISO DE MANTENIMIENTO PROGRAMADO",
+      mensaje: "Se notifica a todas las coordinaciones que se estará realizando mantenimiento preventivo en las áreas e infraestructura de la institución.",
+    },
+  ];
+  const [novedadForm, setNovedadForm] = useState({
+    preset: "CUSTOM",
+    categoria: "COMUNICADO OFICIAL",
+    titulo: "",
+    mensaje: "",
+    mediaDataUrl: "",
+    mediaType: "",
+    mediaName: "",
+  });
   const registerNewNotice = (module, title, detail) => {
     const entry = {
       id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -1823,6 +1883,7 @@ export default function App() {
     orgCargos,
     printedLabelsLog,
     systemNewNotices,
+    novedadesList,
   };
 
   const applyRemoteState = (remote, currentSnap) => {
@@ -1903,6 +1964,16 @@ export default function App() {
       if (JSON.stringify(mergedNotices) !== JSON.stringify(currentSnap.systemNewNotices || [])) {
         setSystemNewNotices(mergedNotices);
         saveStoredJson("cendis_new_notices_v1", mergedNotices);
+      }
+    }
+    if (Array.isArray(remote.novedadesList)) {
+      const mergedNovedades = mergeSyncArrays(
+        currentSnap.novedadesList || [],
+        remote.novedadesList,
+        deletedSet
+      );
+      if (JSON.stringify(mergedNovedades) !== JSON.stringify(currentSnap.novedadesList || [])) {
+        setNovedadesList(mergedNovedades);
       }
     }
     if (Array.isArray(remote.users)) {
@@ -2236,6 +2307,7 @@ export default function App() {
     attendance: "entrar_attendance",
     stats: "entrar_stats",
     org: "entrar_org",
+    novedades: "entrar_novedades",
     config: "entrar_config",
   };
 
@@ -3945,12 +4017,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             </div>
             <div className="rounded-2xl bg-[#0e1526] border border-amber-500/50 p-4 shadow-lg">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase text-amber-300">Novedades Sistema</span>
+                <span className="text-[10px] font-black uppercase text-amber-300">Novedades CENDIS</span>
                 <Sparkles className="w-4 h-4 text-amber-400" />
               </div>
-              <p className="text-2xl font-black text-white mt-1">{systemNewNotices.length}</p>
+              <p className="text-2xl font-black text-white mt-1">{novedadesList.length + systemNewNotices.length}</p>
               <p className="text-[10px] text-amber-300 font-bold mt-0.5">
-                {unseenNewCount} actualizaciones NEW
+                {novedadesList.length} comunicados • {unseenNewCount} NEW
               </p>
             </div>
           </div>
@@ -4086,8 +4158,45 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </div>
               </div>
 
-              <div className="space-y-2.5 max-h-[430px] overflow-y-auto pr-1">
-                {systemNewNotices.slice(0, 12).map((notice) => (
+              <div className="space-y-3 max-h-[430px] overflow-y-auto pr-1">
+                {novedadesList.map((nov) => (
+                  <div
+                    key={nov.id}
+                    className="rounded-xl bg-[#070b14] border border-amber-400/60 p-3 space-y-2 shadow-md"
+                  >
+                    <div className="flex items-center justify-between gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black uppercase">
+                        NEW • {nov.categoria || "COMUNICADO"}
+                      </span>
+                      <span className="text-[9.5px] text-slate-400 font-mono">{nov.fecha}</span>
+                    </div>
+                    <p className="text-xs font-black text-white leading-snug uppercase">{nov.titulo}</p>
+                    {nov.mensaje && (
+                      <p className="text-[11px] text-slate-300 leading-snug whitespace-pre-line">{nov.mensaje}</p>
+                    )}
+                    {nov.mediaDataUrl && (
+                      <div className="pt-1">
+                        {nov.mediaType === "PDF" || nov.mediaDataUrl.startsWith("data:application/pdf") ? (
+                          <iframe
+                            src={nov.mediaDataUrl}
+                            title={nov.mediaName || nov.titulo}
+                            className="w-full h-48 rounded-lg border border-slate-700 bg-white"
+                          />
+                        ) : (
+                          <img
+                            src={nov.mediaDataUrl}
+                            alt={nov.mediaName || nov.titulo}
+                            className="w-full max-h-56 object-contain rounded-lg border border-slate-700 bg-black/40"
+                          />
+                        )}
+                      </div>
+                    )}
+                    {nov.autor && (
+                      <p className="text-[9.5px] text-slate-400">Publicado por: {nov.autor}</p>
+                    )}
+                  </div>
+                ))}
+                {systemNewNotices.slice(0, 10).map((notice) => (
                   <div
                     key={notice.id}
                     className="rounded-xl bg-[#070b14] border border-amber-500/30 p-3"
@@ -4376,6 +4485,22 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         footerCode: "ESTRUCTURA MPPC",
         icon: GitBranch,
         cornerBadge: "6",
+        cornerBg: "bg-amber-400 text-slate-950",
+      },
+      {
+        id: "novedades",
+        theme: "WARM",
+        badgeText: "NEW",
+        subtitle: "CANAL INFORMATIVO Y COMUNICADOS",
+        title: "NOVEDADES CENDIS",
+        desc: "Publicación de comunicados predeterminados y material gráfico (PDF, JPG, PNG) visible directamente en el Canal Informativo del CENDIS.",
+        pills: [
+          { symbol: "📰", text: `${novedadesList.length} Publicaciones`, color: "text-amber-400" },
+          { symbol: "🖼", text: "PDF / JPG / PNG Visual", color: "text-emerald-400" },
+        ],
+        footerCode: "INTRANET-CENDIS",
+        icon: Newspaper,
+        cornerBadge: "★",
         cornerBg: "bg-amber-400 text-slate-950",
       },
       {
@@ -4997,6 +5122,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               { id: "attendance", label: "Asistencia", icon: UserCheck },
               { id: "stats", label: "Estadística", icon: BarChart3 },
               { id: "org", label: "Organigrama", icon: GitBranch },
+              { id: "novedades", label: "Novedades", icon: Newspaper },
               { id: "config", label: "Configuración", icon: Settings },
             ].map((tab) => {
               const IconT = tab.icon;
@@ -9824,6 +9950,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               { key: "entrar_attendance", label: "Control de Asistencia", code: "ASIST" },
               { key: "entrar_stats", label: "Estadística General", code: "STATS" },
               { key: "entrar_org", label: "Organigrama CENDIS", code: "ORG" },
+              { key: "entrar_novedades", label: "Novedades (Canal Informativo)", code: "NOV" },
               { key: "entrar_config", label: "Configuración", code: "CONFIG" },
             ];
 
@@ -10448,6 +10575,305 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
             );
           })()}
+
+        {/* ====================================================================
+            MÓDULO 10: NOVEDADES Y COMUNICADOS (VINCULADO AL CANAL INFORMATIVO)
+           ==================================================================== */}
+        {activeTab === "novedades" && (
+          <div className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+            <div className="bg-[#0e1526] text-white rounded-2xl p-5 border border-amber-500/40 shadow-lg flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 className="text-base md:text-lg font-black uppercase flex items-center gap-2">
+                  <Newspaper className="w-5 h-5 text-amber-400" />
+                  <span>Módulo de Novedades • Canal Informativo del CENDIS</span>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black">
+                    NEW
+                  </span>
+                </h2>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Publique comunicados predeterminados o adjunte archivos PDF, JPG o PNG para visualizarlos gráficamente en el Canal Informativo.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCurrentScreen("INTRANET")}
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black flex items-center gap-2 cursor-pointer shadow"
+              >
+                <Eye className="w-4 h-4" />
+                <span>Ver en Canal Informativo</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Formulario para predeterminar o redactar novedad */}
+              <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <h3 className="text-sm font-black uppercase text-slate-900 border-b border-slate-200 pb-2">
+                  Publicar / Predeterminar Novedad al Personal
+                </h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!canPerformAction("ingresar")) {
+                      showToast("Su usuario no tiene permiso para ingresar novedades.", "error");
+                      return;
+                    }
+                    if (!novedadForm.titulo.trim()) return;
+                    const created = {
+                      id: `nov-${Date.now()}`,
+                      categoria: novedadForm.categoria || "COMUNICADO OFICIAL",
+                      titulo: novedadForm.titulo.trim(),
+                      mensaje: novedadForm.mensaje.trim(),
+                      mediaDataUrl: novedadForm.mediaDataUrl || "",
+                      mediaType: novedadForm.mediaType || "",
+                      mediaName: novedadForm.mediaName || "",
+                      fecha: new Date().toISOString().slice(0, 10),
+                      autor: currentUser?.fullName || "Administración CENDIS",
+                      updatedAt: Date.now(),
+                    };
+                    setNovedadesList((prev) => [created, ...prev]);
+                    setTimeout(() => syncWithCloudServer(), 60);
+                    addLog(`Publicada novedad en Canal Informativo: ${created.titulo}`, currentUser, "novedades");
+                    showToast(`Novedad "${created.titulo}" publicada en el Canal Informativo del CENDIS.`);
+                    setNovedadForm({
+                      preset: "CUSTOM",
+                      categoria: "COMUNICADO OFICIAL",
+                      titulo: "",
+                      mensaje: "",
+                      mediaDataUrl: "",
+                      mediaType: "",
+                      mediaName: "",
+                    });
+                  }}
+                  className="space-y-3 text-xs"
+                >
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Plantilla Predeterminada (Opcional)
+                    </label>
+                    <select
+                      value={novedadForm.preset}
+                      onChange={(e) => {
+                        const presetObj = NOVEDAD_PRESETS.find((p) => p.id === e.target.value);
+                        if (presetObj) {
+                          setNovedadForm((prev) => ({
+                            ...prev,
+                            preset: presetObj.id,
+                            categoria: presetObj.categoria,
+                            titulo: presetObj.titulo || prev.titulo,
+                            mensaje: presetObj.mensaje || prev.mensaje,
+                          }));
+                        }
+                      }}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                    >
+                      {NOVEDAD_PRESETS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Categoría del Aviso
+                    </label>
+                    <select
+                      value={novedadForm.categoria}
+                      onChange={(e) => setNovedadForm({ ...novedadForm, categoria: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                    >
+                      <option value="COMUNICADO OFICIAL">COMUNICADO OFICIAL</option>
+                      <option value="AVISO GENERAL">AVISO GENERAL</option>
+                      <option value="EVENTO ESPECIAL">EVENTO ESPECIAL</option>
+                      <option value="TALENTO HUMANO">TALENTO HUMANO</option>
+                      <option value="NORMATIVA">NORMATIVA</option>
+                      <option value="FELICITACIÓN">FELICITACIÓN</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Título de la Novedad *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ej. Jornada de Salud / Reunión General CENDIS"
+                      value={novedadForm.titulo}
+                      onChange={(e) => setNovedadForm({ ...novedadForm, titulo: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Información para todos los trabajadores del CENDIS
+                    </label>
+                    <textarea
+                      rows={4}
+                      data-no-uppercase="true"
+                      placeholder="Escriba aquí el comunicado o información dirigida al personal del CENDIS..."
+                      value={novedadForm.mensaje}
+                      onChange={(e) => setNovedadForm({ ...novedadForm, mensaje: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Adjuntar Archivo Gráfico (PDF, JPG o PNG)
+                    </label>
+                    <input
+                      type="file"
+                      accept=".pdf,image/jpeg,image/png,.jpg,.jpeg,.png"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        if (file.size > 4 * 1024 * 1024) {
+                          showToast("El archivo supera el límite recomendado de 4 MB.", "error");
+                          return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const dataUrl = String(reader.result || "");
+                          const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+                          setNovedadForm((prev) => ({
+                            ...prev,
+                            mediaDataUrl: dataUrl,
+                            mediaType: isPdf ? "PDF" : "IMAGE",
+                            mediaName: file.name,
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                      className="w-full text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-amber-500 file:text-slate-950 file:font-black cursor-pointer"
+                    />
+                    {novedadForm.mediaDataUrl && (
+                      <div className="mt-2 p-2 rounded-xl border border-slate-300 space-y-2">
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="font-bold text-emerald-600">
+                            Vista previa gráfica: {novedadForm.mediaName}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setNovedadForm((prev) => ({
+                                ...prev,
+                                mediaDataUrl: "",
+                                mediaType: "",
+                                mediaName: "",
+                              }))
+                            }
+                            className="text-red-500 font-bold cursor-pointer"
+                          >
+                            Quitar archivo
+                          </button>
+                        </div>
+                        {novedadForm.mediaType === "PDF" ? (
+                          <iframe
+                            src={novedadForm.mediaDataUrl}
+                            title={novedadForm.mediaName}
+                            className="w-full h-44 rounded-lg border border-slate-300 bg-white"
+                          />
+                        ) : (
+                          <img
+                            src={novedadForm.mediaDataUrl}
+                            alt={novedadForm.mediaName}
+                            className="w-full max-h-44 object-contain rounded-lg border border-slate-300"
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase shadow cursor-pointer"
+                  >
+                    + Publicar Novedad en Canal Informativo
+                  </button>
+                </form>
+              </div>
+
+              {/* Cartelera gráfica de novedades publicadas */}
+              <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <h3 className="text-sm font-black uppercase text-slate-900">
+                    Novedades Publicadas ({novedadesList.length})
+                  </h3>
+                  <span className="text-[11px] font-bold text-emerald-600">
+                    Sincronizadas con el Canal Informativo
+                  </span>
+                </div>
+
+                {novedadesList.length === 0 ? (
+                  <p className="text-xs text-slate-500 italic py-10 text-center">
+                    No hay novedades publicadas aún. Use el formulario para crear comunicados o subir archivos PDF, JPG o PNG.
+                  </p>
+                ) : (
+                  <div className="space-y-4 max-h-[650px] overflow-y-auto pr-1">
+                    {novedadesList.map((nov) => (
+                      <div
+                        key={nov.id}
+                        className="rounded-2xl border border-slate-200 p-4 space-y-2.5 shadow-sm"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="px-2 py-0.5 rounded bg-amber-400 text-slate-950 text-[9.5px] font-black uppercase">
+                                NEW • {nov.categoria}
+                              </span>
+                              <span className="text-[10px] text-slate-400 font-mono">{nov.fecha}</span>
+                            </div>
+                            <h4 className="text-sm font-black text-slate-900 uppercase">{nov.titulo}</h4>
+                          </div>
+                          {canPerformAction("eliminar") && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                trackDeletedIds([nov.id]);
+                                setNovedadesList((prev) => prev.filter((x) => x.id !== nov.id));
+                                setTimeout(() => syncWithCloudServer(), 60);
+                                addLog(`Eliminada novedad: ${nov.titulo}`, currentUser, "novedades");
+                                showToast(`Novedad "${nov.titulo}" eliminada.`);
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer shrink-0"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Eliminar</span>
+                            </button>
+                          )}
+                        </div>
+                        {nov.mensaje && (
+                          <p className="text-xs text-slate-700 whitespace-pre-line">{nov.mensaje}</p>
+                        )}
+                        {nov.mediaDataUrl && (
+                          <div>
+                            {nov.mediaType === "PDF" || nov.mediaDataUrl.startsWith("data:application/pdf") ? (
+                              <iframe
+                                src={nov.mediaDataUrl}
+                                title={nov.mediaName || nov.titulo}
+                                className="w-full h-64 rounded-xl border border-slate-300 bg-white"
+                              />
+                            ) : (
+                              <img
+                                src={nov.mediaDataUrl}
+                                alt={nov.mediaName || nov.titulo}
+                                className="w-full max-h-72 object-contain rounded-xl border border-slate-300 bg-black/20"
+                              />
+                            )}
+                          </div>
+                        )}
+                        <p className="text-[10px] text-slate-400">Publicado por: {nov.autor}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ====================================================================
