@@ -3848,6 +3848,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           isThisMonth: mm === currentMonthMm,
         };
       })
+      .filter((emp) => emp.isThisMonth)
       .sort((a, b) => (a.isToday === b.isToday ? a.mmdd.localeCompare(b.mmdd) : a.isToday ? -1 : 1));
 
     const monthNamesEs = [
@@ -3916,11 +3917,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
             <div className="rounded-2xl bg-[#0e1526] border border-blue-500/40 p-4 shadow-lg">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase text-blue-300">Eventos y Tareas (Agenda)</span>
+                <span className="text-[10px] font-black uppercase text-blue-300">Eventos (Agenda)</span>
                 <CalendarIcon className="w-4 h-4 text-blue-400" />
               </div>
               <p className="text-2xl font-black text-white mt-1">{activeIntranetEvents.length}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Actividades programadas</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Eventos programados</p>
             </div>
             <div className="rounded-2xl bg-[#0e1526] border border-rose-500/40 p-4 shadow-lg">
               <div className="flex items-center justify-between">
@@ -3955,16 +3956,16 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            {/* Columna 1: Eventos y Tareas de la Agenda */}
+            {/* Columna 1: Eventos de la Agenda */}
             <section className="lg:col-span-5 rounded-2xl bg-[#0c1322] border border-slate-800 p-5 shadow-xl flex flex-col">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
                 <div>
                   <h2 className="text-sm font-black uppercase text-white flex items-center gap-2">
                     <CalendarIcon className="w-4 h-4 text-blue-400" />
-                    <span>Eventos y Tareas de la Agenda</span>
+                    <span>Eventos</span>
                   </h2>
                   <p className="text-[11px] text-slate-400">
-                    Actividades institucionales sincronizadas en tiempo real
+                    Eventos predeterminados del módulo Agenda sincronizados en tiempo real
                   </p>
                 </div>
                 <span className="px-2.5 py-1 rounded-full bg-blue-950/80 border border-blue-500/40 text-blue-300 text-[10px] font-black">
@@ -3973,84 +3974,59 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
 
               <div className="space-y-3 max-h-[430px] overflow-y-auto pr-1">
-                {activeIntranetEvents.length === 0 && projects.length === 0 ? (
+                {activeIntranetEvents.length === 0 ? (
                   <p className="text-xs text-slate-400 italic py-6 text-center">
-                    No hay eventos ni tareas registrados en este momento.
+                    No hay eventos registrados en la Agenda en este momento.
                   </p>
                 ) : (
-                  <>
-                    {activeIntranetEvents.map((ev) => (
-                      <div
-                        key={ev.id}
-                        className="rounded-xl bg-[#070b14] border border-slate-800/90 hover:border-blue-500/50 p-3.5 transition"
-                      >
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-black">
-                            📅 {ev.date} • {ev.allDay ? "TODO EL DÍA" : `${ev.startTime || "08:00"}${ev.endTime ? ` - ${ev.endTime}` : ""}`}
-                          </span>
-                          <span className="text-[9.5px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                            {ev.status || "PROGRAMADO"}
-                          </span>
-                        </div>
-                        <h3 className="text-xs font-black text-white uppercase leading-snug">{ev.title}</h3>
-                        {ev.description && (
-                          <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{ev.description}</p>
-                        )}
-                        <div className="flex flex-wrap items-center gap-3 mt-2 text-[10px] text-slate-300">
-                          <span>📍 {ev.location || "Sede CENDIS"}</span>
-                          <span>👤 {ev.responsable || "CENDIS"}</span>
-                        </div>
+                  activeIntranetEvents.map((ev) => (
+                    <div
+                      key={ev.id}
+                      className="rounded-xl bg-[#070b14] border border-slate-800/90 hover:border-blue-500/50 p-3.5 transition"
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-black">
+                          📅 {ev.date} • {ev.allDay ? "TODO EL DÍA" : `${ev.startTime || "08:00"}${ev.endTime ? ` - ${ev.endTime}` : ""}`}
+                        </span>
+                        <span className="text-[9.5px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                          {ev.status || "PROGRAMADO"}
+                        </span>
                       </div>
-                    ))}
-                    {projects.slice(0, 6).map((proj) => (
-                      <div
-                        key={proj.id}
-                        className="rounded-xl bg-[#070b14] border border-amber-500/30 p-3 transition"
-                      >
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-black">
-                            📋 TAREA / PROYECTO • Entrega: {proj.fechaEntrega || "Por definir"}
-                          </span>
-                          <span className="text-[9.5px] font-black text-emerald-300">
-                            {proj.porcentaje || 0}%
-                          </span>
-                        </div>
-                        <h3 className="text-xs font-black text-white uppercase leading-snug">{proj.nombre}</h3>
-                        {proj.tarea && (
-                          <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-2">{proj.tarea}</p>
-                        )}
-                        <div className="flex flex-wrap items-center gap-3 mt-1.5 text-[10px] text-slate-300">
-                          <span>🏢 {proj.coordinacion || "CENDIS"}</span>
-                          <span>👤 {proj.responsable || "CENDIS"}</span>
-                        </div>
+                      <h3 className="text-xs font-black text-white uppercase leading-snug">{ev.title}</h3>
+                      {ev.description && (
+                        <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{ev.description}</p>
+                      )}
+                      <div className="flex flex-wrap items-center gap-3 mt-2 text-[10px] text-slate-300">
+                        <span>📍 {ev.location || "Sede CENDIS"}</span>
+                        <span>👤 {ev.responsable || "CENDIS"}</span>
                       </div>
-                    ))}
-                  </>
+                    </div>
+                  ))
                 )}
               </div>
             </section>
 
-            {/* Columna 2: Cumpleaños del Personal */}
+            {/* Columna 2: Cumpleaños del Personal (Mes en curso) */}
             <section className="lg:col-span-4 rounded-2xl bg-[#0c1322] border border-slate-800 p-5 shadow-xl flex flex-col">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
                 <div>
                   <h2 className="text-sm font-black uppercase text-white flex items-center gap-2">
                     <Cake className="w-4 h-4 text-rose-400" />
-                    <span>Cumpleaños del Personal</span>
+                    <span>Cumpleaños de {currentMonthLabel}</span>
                   </h2>
                   <p className="text-[11px] text-slate-400">
-                    Vinculados automáticamente desde Recursos Humanos
+                    Cumpleaños del mes en curso (Recursos Humanos)
                   </p>
                 </div>
                 <span className="px-2.5 py-1 rounded-full bg-rose-950/80 border border-rose-500/40 text-rose-300 text-[10px] font-black">
-                  🎂 RRHH
+                  🎂 {birthdayEmployees.length} ESTE MES
                 </span>
               </div>
 
               <div className="space-y-2.5 max-h-[430px] overflow-y-auto pr-1">
                 {birthdayEmployees.length === 0 ? (
                   <p className="text-xs text-slate-400 italic py-6 text-center">
-                    No hay fechas de nacimiento registradas en RRHH aún.
+                    No hay cumpleaños registrados para el mes de {currentMonthLabel}.
                   </p>
                 ) : (
                   birthdayEmployees.map((emp) => (
