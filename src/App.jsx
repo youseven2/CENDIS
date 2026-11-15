@@ -158,8 +158,8 @@ const DEFAULT_PERMISSIONS_BY_ROLE = {
     entrar_config: false,
     ingresar: true,
     modificar: true,
-    anular: false,
-    eliminar: false,
+    anular: true,
+    eliminar: true,
   },
 };
 
@@ -180,11 +180,11 @@ const DEFAULT_USERS = [
   {
     id: 2,
     username: "presidencia",
-    email: "presidencia.cendis@gmail.com",
+    email: "morris.lopez.cendis@gmail.com",
     password: "Cendis2026*",
     passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
-    fullName: "Presidencia CENDIS",
-    cargo: "Presidente de la Fundación CENDIS",
+    fullName: "Lcdo. Morris López",
+    cargo: "Director General de la Fundación CENDIS",
     role: "ADMIN",
     active: true,
     linkedEmployeeId: "emp-1",
@@ -221,35 +221,34 @@ const DEFAULT_USERS = [
 const INITIAL_EMPLOYEES = [
   {
     id: "emp-1",
-    nombres: "Ali Alejandro",
-    apellidos: "Primera",
-    cedula: "V-15.432.111",
-    cargo: "Presidente CENDIS",
-    coordinacion: "Presidencia",
+    nombres: "Morris",
+    apellidos: "López",
+    cedula: "V-19.324.324",
+    cargo: "Director General",
+    coordinacion: "Dirección General",
     condicionLaboral: "Libre Nombramiento",
     nivelAcademico: "Universitario",
-    profesion: "Músico y Productor Cultural",
+    profesion: "Licenciado en Artes Audiovisuales",
     estadoCivil: "Casado(a)",
     genero: "Masculino",
-    tallas: "Camisa L / Pantalón 34 / Calzado 42",
-    telefono: "0414-1234567",
-    telefonoAlterno: "0212-5551122",
-    correo: "presidencia.cendis@gmail.com",
-    direccion: "Caracas, Av. Libertador, Parroquia El Recreo",
-    fechaNacimiento: "1980-05-12",
+    tallas: "Camisa L / Pantalón 32 / Calzado 41",
+    telefono: "0426-3243246",
+    telefonoAlterno: "0412-3243246",
+    correo: "morris.lopez.cendis@gmail.com",
+    direccion: "Los Valles del Tuy, Ocumare, Estado Miranda",
+    fechaNacimiento: "1988-07-22",
     fechaIngreso: "2022-01-15",
     tipoSangre: "O+",
-    emergencia1: "María Primera: 0412-9876543",
-    emergencia2: "José Primera: 0416-5554433",
-    familiares: "Esposa y 2 Hijos",
+    emergencia1: "Elena López: 0426-1112233",
+    emergencia2: "Pedro López: 0414-8889900",
+    familiares: "Esposa y 1 Hija",
     familiaresLista: [
-      { id: "fam-1", parentesco: "Esposo(a)", nombreCompleto: "María Primera", cedula: "V-16.222.333", fechaNacimiento: "1982-08-14", edad: "44" },
-      { id: "fam-2", parentesco: "Hijo(a)", nombreCompleto: "Alejandro Primera", cedula: "V-30.111.222", fechaNacimiento: "2010-03-20", edad: "16" },
-      { id: "fam-3", parentesco: "Hijo(a)", nombreCompleto: "Oriana Primera", cedula: "Menor sin cédula", fechaNacimiento: "2016-11-05", edad: "10" },
+      { id: "fam-1", parentesco: "Esposo(a)", nombreCompleto: "Elena de López", cedula: "V-20.555.444", fechaNacimiento: "1990-02-18", edad: "36" },
+      { id: "fam-2", parentesco: "Hijo(a)", nombreCompleto: "Valeria López", cedula: "Menor sin cédula", fechaNacimiento: "2018-09-12", edad: "8" },
     ],
     tieneCargaFamiliar: "SI",
     fotoCarnet: "",
-    observacionesLaborales: "Presidente de la Fundación Centro Nacional del Disco (CENDIS).",
+    observacionesLaborales: "Director General de la Fundación Centro Nacional del Disco (CENDIS) - MPPC.",
     codigoBarra: "2024-CENDIS-000123",
   },
   {
@@ -314,32 +313,29 @@ const INITIAL_EMPLOYEES = [
   },
   {
     id: "emp-4",
-    nombres: "Morris",
-    apellidos: "López",
-    cedula: "V-19.324.324",
+    nombres: "Carlos",
+    apellidos: "Mendoza",
+    cedula: "V-21.450.812",
     cargo: "Especialista Audiovisual",
     coordinacion: "Cultura Audiovisual",
     condicionLaboral: "Contratado",
     nivelAcademico: "Universitario",
     profesion: "Licenciado en Artes Audiovisuales",
-    estadoCivil: "Casado(a)",
+    estadoCivil: "Soltero(a)",
     genero: "Masculino",
-    tallas: "Camisa L / Pantalón 32 / Calzado 41",
-    telefono: "0426-3243246",
-    telefonoAlterno: "0412-3243246",
+    tallas: "Camisa M / Pantalón 32 / Calzado 41",
+    telefono: "0414-8823411",
+    telefonoAlterno: "0212-6621190",
     correo: "",
-    direccion: "Los Valles del Tuy, Ocumare, Estado Miranda",
-    fechaNacimiento: "1988-07-22",
-    fechaIngreso: "2023-08-19",
+    direccion: "Caracas, Parroquia San Agustín",
+    fechaNacimiento: "1992-04-14",
+    fechaIngreso: "2024-05-10",
     tipoSangre: "O+",
-    emergencia1: "Elena López: 0426-1112233",
-    emergencia2: "Pedro López: 0414-8889900",
-    familiares: "Esposa y 1 Hija",
-    familiaresLista: [
-      { id: "fam-5", parentesco: "Esposo(a)", nombreCompleto: "Elena de López", cedula: "V-20.555.444", fechaNacimiento: "1990-02-18", edad: "36" },
-      { id: "fam-6", parentesco: "Hijo(a)", nombreCompleto: "Valeria López", cedula: "Menor sin cédula", fechaNacimiento: "2018-09-12", edad: "8" },
-    ],
-    tieneCargaFamiliar: "SI",
+    emergencia1: "Luisa Mendoza: 0414-3321100",
+    emergencia2: "Jorge Mendoza: 0412-9901122",
+    familiares: "Sin carga familiar",
+    familiaresLista: [],
+    tieneCargaFamiliar: "NO",
     fotoCarnet: "",
     observacionesLaborales: "Productor y realizador audiovisual comunitario del CENDIS.",
     codigoBarra: "2024-CENDIS-000126",
@@ -536,7 +532,7 @@ const INITIAL_BIENES = [
     serial: "C02X9918M2",
     codigoBN: "BN-CENDIS-001047",
     ubicacion: "Sala de Masterización",
-    custodio: "Ali Alejandro Primera",
+    custodio: "Morris López",
     estado: "OPERATIVO",
   },
 ];
@@ -781,13 +777,106 @@ function getPasswordExpirationInfo(userObj) {
   };
 }
 
+const STORAGE_DELETED_IDS_KEY = "cendis_deleted_ids_v21";
+const STORAGE_DOCS_KEY = "cendis_documents_v21";
+const STORAGE_PROJECTS_KEY = "cendis_projects_v21";
+const STORAGE_BIENES_KEY = "cendis_bienes_v21";
+const STORAGE_BIENES_CAT_KEY = "cendis_bienes_cat_v21";
+const STORAGE_ATTENDANCE_KEY = "cendis_attendance_v21";
+const STORAGE_CHAT_KEY = "cendis_chat_v21";
+
+function sanitizeUsersDirectorGeneral(list) {
+  if (!Array.isArray(list) || list.length === 0) return DEFAULT_USERS;
+  return list.map((u) => {
+    const basePerms =
+      u.role === "ADMIN"
+        ? { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN }
+        : {
+            ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR,
+            ...(u.permissions || {}),
+            anular: true,
+            eliminar: true,
+          };
+    if (
+      u.id === 2 ||
+      u.username === "presidencia" ||
+      (u.fullName && u.fullName.toLowerCase().includes("ali alejandro"))
+    ) {
+      return {
+        ...u,
+        email: "morris.lopez.cendis@gmail.com",
+        fullName: "Lcdo. Morris López",
+        cargo: "Director General de la Fundación CENDIS",
+        linkedEmployeeId: "emp-1",
+        permissions: basePerms,
+      };
+    }
+    return { ...u, permissions: basePerms };
+  });
+}
+
+function sanitizeEmployeesDirectorGeneral(list) {
+  if (!Array.isArray(list) || list.length === 0) return INITIAL_EMPLOYEES;
+  let updated = list.map((emp) => {
+    const fullLower = `${emp.nombres || ""} ${emp.apellidos || ""}`.toLowerCase();
+    if (emp.id === "emp-1" || fullLower.includes("ali alejandro") || fullLower.includes("primera")) {
+      return {
+        ...INITIAL_EMPLOYEES[0],
+        fotoCarnet: emp.fotoCarnet || "",
+      };
+    }
+    return emp;
+  });
+  // Si emp-4 también era Morris López duplicado de versión anterior, convertirlo en Carlos Mendoza
+  const morrisCount = updated.filter(
+    (e) => `${e.nombres || ""} ${e.apellidos || ""}`.toLowerCase().includes("morris")
+  ).length;
+  if (morrisCount > 1) {
+    let seenFirstMorris = false;
+    updated = updated.map((e) => {
+      const isMorris = `${e.nombres || ""} ${e.apellidos || ""}`.toLowerCase().includes("morris");
+      if (isMorris) {
+        if (!seenFirstMorris) {
+          seenFirstMorris = true;
+          return { ...INITIAL_EMPLOYEES[0], fotoCarnet: e.fotoCarnet || "" };
+        }
+        return INITIAL_EMPLOYEES[3];
+      }
+      return e;
+    });
+  }
+  return updated;
+}
+
+function loadStoredDeletedIds() {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_DELETED_IDS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveStoredDeletedIds(list) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_DELETED_IDS_KEY, JSON.stringify(list));
+  } catch {
+    // ignore storage errors
+  }
+}
+
 function loadStoredUsers() {
   if (typeof window === "undefined") return DEFAULT_USERS;
   try {
     const raw = window.localStorage.getItem(STORAGE_USERS_KEY);
     if (!raw) return DEFAULT_USERS;
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_USERS;
+    const list = Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_USERS;
+    return sanitizeUsersDirectorGeneral(list);
   } catch {
     return DEFAULT_USERS;
   }
@@ -808,7 +897,8 @@ function loadStoredEmployees() {
     const raw = window.localStorage.getItem(STORAGE_EMPLOYEES_KEY);
     if (!raw) return INITIAL_EMPLOYEES;
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_EMPLOYEES;
+    const list = Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_EMPLOYEES;
+    return sanitizeEmployeesDirectorGeneral(list);
   } catch {
     return INITIAL_EMPLOYEES;
   }
@@ -822,6 +912,122 @@ function saveStoredEmployees(list) {
     // ignore storage errors
   }
 }
+
+function loadStoredJson(key, fallback) {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveStoredJson(key, value) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+const INITIAL_DOCUMENTS_LIST = [
+  {
+    id: "doc-1",
+    correlativo: "FC-DG-MEM-2026-007",
+    tipo: "MEMORANDUM",
+    para: "Lcdo. Jesús García",
+    paraDireccion: "General de Administración del Ministerio del Poder Popular para la Cultura",
+    de: "Lcdo. Morris López",
+    deCargo: "Director General de la Fundación Centro Nacional del Disco (CENDIS)",
+    fecha: "2026-11-13",
+    asunto: "Solicitud de transporte",
+    concepto:
+      "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y, a su vez, solicitarle transporte para el personal de audiovisuales conformado por 9 personas y equipo técnico, quienes se trasladan el día de mañana 13/11/2026 al Cristo Rey, parroquia 23 de enero a las 12:30pm – 9:00pm.\n\nAgradeciendo de antemano su receptividad, máxima colaboración y constante apoyo interinstitucional para la realización con éxito de este evento, quedo de usted.",
+    signerNombre: "Lcdo. MORRIS LÓPEZ",
+    signerCargo: "Director General",
+    signerEnte: "Fundación Centro Nacional del Disco (CENDIS)",
+    signerMinisterio: "Ministerio del Poder Popular para la Cultura",
+    status: "PENDIENTE_APROBACION",
+    creadoPor: "produccion",
+    creadoEn: "2026-11-13 09:15",
+    aprobadoPor: null,
+    fechaAprobacion: null,
+    motivoAnulacion: "",
+    anuladoPor: null,
+    fechaAnulacion: null,
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "doc-2",
+    correlativo: "FC-DG-MEM-2026-006",
+    tipo: "MEMORANDUM",
+    para: "Anaileth Briceño",
+    paraDireccion: "Coordinación de Producción Fonográfica del CENDIS",
+    de: "Lcdo. Morris López",
+    deCargo: "Director General de la Fundación Centro Nacional del Disco (CENDIS)",
+    fecha: "2026-11-10",
+    asunto: "Lineamientos de cierre administrativo mensual",
+    concepto:
+      "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y remitir los lineamientos correspondientes a la relación mensual de actividades operativas y técnicas.\n\nAgradeciendo de antemano su receptividad y colaboración, quedo de usted.",
+    signerNombre: "Lcdo. MORRIS LÓPEZ",
+    signerCargo: "Director General",
+    signerEnte: "Fundación Centro Nacional del Disco (CENDIS)",
+    signerMinisterio: "Ministerio del Poder Popular para la Cultura",
+    status: "APROBADO",
+    creadoPor: "admin",
+    creadoEn: "2026-11-10 10:00",
+    aprobadoPor: "Administrador General CENDIS",
+    fechaAprobacion: "2026-11-10 10:30",
+    motivoAnulacion: "",
+    anuladoPor: null,
+    fechaAnulacion: null,
+    updatedAt: 1794600000000,
+  },
+];
+
+const INITIAL_ATTENDANCE_LIST = [
+  {
+    id: "att-1",
+    cedula: "V-19.324.324",
+    nombre: "Morris López",
+    fecha: "2026-11-13",
+    hora: "08:02 AM",
+    estatus: "A Tiempo",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "att-2",
+    cedula: "V-18.999.888",
+    nombre: "Julimar Flores",
+    fecha: "2026-11-13",
+    hora: "08:11 AM",
+    estatus: "A Tiempo",
+    updatedAt: 1794600000000,
+  },
+];
+
+const INITIAL_CHAT_LIST = [
+  {
+    id: 1,
+    sender: "Morris López (Director General)",
+    recipient: "TODOS",
+    text: "Bienvenidos al Chat Interno del SIACENDIS. Recuerden cargar el avance semanal de proyectos y actividades en la Agenda en tiempo real.",
+    time: "08:45 AM",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: 2,
+    sender: "Anaileth Briceño",
+    recipient: "TODOS",
+    text: "Recibido Director General, ya el archivo maestro lleva 100% de avance.",
+    time: "08:50 AM",
+    updatedAt: 1794600000000,
+  },
+];
 
 function setSessionCookie(userObj) {
   if (typeof document === "undefined" || !userObj) return;
@@ -873,14 +1079,56 @@ function clearSessionCookie() {
   document.cookie = `${SESSION_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/; SameSite=Lax`;
 }
 
+// Unión determinista de colecciones cliente + servidor respetando IDs eliminados (tombstones)
+function mergeSyncArrays(localArr, remoteArr, deletedSet) {
+  const map = new Map();
+  if (Array.isArray(remoteArr)) {
+    for (const item of remoteArr) {
+      if (!item || item.id === undefined || item.id === null) continue;
+      const key = String(item.id);
+      if (deletedSet.has(key)) continue;
+      map.set(key, item);
+    }
+  }
+  if (Array.isArray(localArr)) {
+    for (const item of localArr) {
+      if (!item || item.id === undefined || item.id === null) continue;
+      const key = String(item.id);
+      if (deletedSet.has(key)) continue;
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, item);
+      } else {
+        const localTs = Number(item.updatedAt || 0);
+        const remoteTs = Number(existing.updatedAt || 0);
+        if (localTs > remoteTs) {
+          map.set(key, item);
+        }
+      }
+    }
+  }
+  return Array.from(map.values());
+}
+
 // ============================================================================
 // COMPONENTE PRINCIPAL APP
 // ============================================================================
 export default function App() {
+  const [deletedIds, setDeletedIdsState] = useState(() => loadStoredDeletedIds());
+  const setDeletedIds = (updater) => {
+    setDeletedIdsState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      const clean = Array.from(new Set((next || []).map(String)));
+      saveStoredDeletedIds(clean);
+      return clean;
+    });
+  };
+
   const [users, setUsersState] = useState(() => loadStoredUsers());
   const setUsers = (updater) => {
     setUsersState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = sanitizeUsersDirectorGeneral(nextRaw);
       saveStoredUsers(next);
       return next;
     });
@@ -911,7 +1159,7 @@ export default function App() {
   // Conmutador de vista (DESKTOP | TABLET | MOBILE)
   const [deviceViewport, setDeviceViewport] = useState("DESKTOP");
 
-  // Conmutador global de Modo Oscuro / Modo Claro en todo el sistema
+  // Conmutador global de Modo Oscuro / Modo Claro (Blanco) en todo el sistema
   const [themeMode, setThemeMode] = useState(() => {
     if (typeof window === "undefined") return "DARK";
     try {
@@ -954,9 +1202,9 @@ export default function App() {
   const [paraDireccion, setParaDireccion] = useState(
     "General de Administración del Ministerio del Poder Popular para la Cultura"
   );
-  const [de, setDe] = useState("Morris López");
+  const [de, setDe] = useState("Lcdo. Morris López");
   const [deCargo, setDeCargo] = useState(
-    "Director Ejecutivo de la Fundación Centro Nacional del Disco (CENDIS)"
+    "Director General de la Fundación Centro Nacional del Disco (CENDIS)"
   );
   const [fecha, setFecha] = useState("2026-11-13");
   const [asunto, setAsunto] = useState("Solicitud de transporte");
@@ -974,58 +1222,16 @@ export default function App() {
     "Designado según Gaceta Oficial de la República Bolivariana de Venezuela N° 42.125"
   );
 
-  const [documents, setDocuments] = useState([
-    {
-      id: "doc-1",
-      correlativo: "FC-DG-MEM-2026-007",
-      tipo: "MEMORANDUM",
-      para: "Lcdo. Jesús García",
-      paraDireccion: "General de Administración del Ministerio del Poder Popular para la Cultura",
-      de: "Morris López",
-      deCargo: "Director Ejecutivo de la Fundación Centro Nacional del Disco (CENDIS)",
-      fecha: "2026-11-13",
-      asunto: "Solicitud de transporte",
-      concepto:
-        "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y, a su vez, solicitarle transporte para el personal de audiovisuales conformado por 9 personas y equipo técnico, quienes se trasladan el día de mañana 13/11/2026 al Cristo Rey, parroquia 23 de enero a las 12:30pm – 9:00pm.\n\nAgradeciendo de antemano su receptividad, máxima colaboración y constante apoyo interinstitucional para la realización con éxito de este evento, quedo de usted.",
-      signerNombre: "Lcdo. MORRIS LÓPEZ",
-      signerCargo: "Director General",
-      signerEnte: "Fundación Centro Nacional del Disco (CENDIS)",
-      signerMinisterio: "Ministerio del Poder Popular para la Cultura",
-      status: "PENDIENTE_APROBACION",
-      creadoPor: "produccion",
-      creadoEn: "2026-11-13 09:15",
-      aprobadoPor: null,
-      fechaAprobacion: null,
-      motivoAnulacion: "",
-      anuladoPor: null,
-      fechaAnulacion: null,
-    },
-    {
-      id: "doc-2",
-      correlativo: "FC-DG-MEM-2026-006",
-      tipo: "MEMORANDUM",
-      para: "Anaileth Briceño",
-      paraDireccion: "Coordinación de Producción Fonográfica del CENDIS",
-      de: "Morris López",
-      deCargo: "Director Ejecutivo de la Fundación Centro Nacional del Disco (CENDIS)",
-      fecha: "2026-11-10",
-      asunto: "Lineamientos de cierre administrativo mensual",
-      concepto:
-        "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y remitir los lineamientos correspondientes a la relación mensual de actividades operativas y técnicas.\n\nAgradeciendo de antemano su receptividad y colaboración, quedo de usted.",
-      signerNombre: "Lcdo. MORRIS LÓPEZ",
-      signerCargo: "Director General",
-      signerEnte: "Fundación Centro Nacional del Disco (CENDIS)",
-      signerMinisterio: "Ministerio del Poder Popular para la Cultura",
-      status: "APROBADO",
-      creadoPor: "admin",
-      creadoEn: "2026-11-10 10:00",
-      aprobadoPor: "Administrador General CENDIS",
-      fechaAprobacion: "2026-11-10 10:30",
-      motivoAnulacion: "",
-      anuladoPor: null,
-      fechaAnulacion: null,
-    },
-  ]);
+  const [documents, setDocumentsState] = useState(() =>
+    loadStoredJson(STORAGE_DOCS_KEY, INITIAL_DOCUMENTS_LIST)
+  );
+  const setDocuments = (updater) => {
+    setDocumentsState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson(STORAGE_DOCS_KEY, next);
+      return next;
+    });
+  };
 
   const [selectedDocId, setSelectedDocId] = useState(null); // null = vista en vivo del editor | id = documento seleccionado
   const [reviewModalDocId, setReviewModalDocId] = useState(null);
@@ -1133,14 +1339,14 @@ export default function App() {
   const [hrFilterSearch, setHrFilterSearch] = useState("");
   const [hrReportType, setHrReportType] = useState("NOMINA_COMPLETA");
 
-  // Estado de Agenda (Google Calendar Completo con Recordatorios App / Correo / WhatsApp)
+  // Estado de Agenda (Google Calendar Completo con Recordatorios App / Correo / WhatsApp y Sincronización en Tiempo Real)
   const [agendaEvents, setAgendaEventsState] = useState(() => {
     if (typeof window === "undefined") return INITIAL_AGENDA_EVENTS;
     try {
       const raw = window.localStorage.getItem("cendis_agenda_v1");
       if (!raw) return INITIAL_AGENDA_EVENTS;
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_AGENDA_EVENTS;
+      return Array.isArray(parsed) ? parsed : INITIAL_AGENDA_EVENTS;
     } catch {
       return INITIAL_AGENDA_EVENTS;
     }
@@ -1193,24 +1399,16 @@ export default function App() {
   });
 
   // Estado de Asistencia
-  const [attendanceRecords, setAttendanceRecords] = useState([
-    {
-      id: "att-1",
-      cedula: "V-15.432.111",
-      nombre: "Ali Alejandro Primera",
-      fecha: "2026-11-13",
-      hora: "08:02 AM",
-      estatus: "A Tiempo",
-    },
-    {
-      id: "att-2",
-      cedula: "V-18.999.888",
-      nombre: "Julimar Flores",
-      fecha: "2026-11-13",
-      hora: "08:11 AM",
-      estatus: "A Tiempo",
-    },
-  ]);
+  const [attendanceRecords, setAttendanceRecordsState] = useState(() =>
+    loadStoredJson(STORAGE_ATTENDANCE_KEY, INITIAL_ATTENDANCE_LIST)
+  );
+  const setAttendanceRecords = (updater) => {
+    setAttendanceRecordsState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson(STORAGE_ATTENDANCE_KEY, next);
+      return next;
+    });
+  };
   const [scannerInput, setScannerInput] = useState("");
   const [scannerAlert, setScannerAlert] = useState(null);
 
@@ -1218,7 +1416,16 @@ export default function App() {
   const [orgViewMode, setOrgViewMode] = useState("DIAGRAM"); // DIAGRAM | TEXT
 
   // Estado de Proyectos y Tareas
-  const [projects, setProjects] = useState(INITIAL_PROJECTS);
+  const [projects, setProjectsState] = useState(() =>
+    loadStoredJson(STORAGE_PROJECTS_KEY, INITIAL_PROJECTS)
+  );
+  const setProjects = (updater) => {
+    setProjectsState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson(STORAGE_PROJECTS_KEY, next);
+      return next;
+    });
+  };
   const [projectsViewMode, setProjectsViewMode] = useState("BOARD"); // BOARD | PDF_REPORT
   const [newProjectForm, setNewProjectForm] = useState({
     nombre: "",
@@ -1231,16 +1438,35 @@ export default function App() {
   });
 
   // Estado de Bienes Nacionales
-  const [bienesCatalog, setBienesCatalog] = useState([
-    "Consola de Mezcla Digital",
-    "Micrófono de Condensador Estudio",
-    "Computadora Estación de Trabajo",
-    "Monitor de Audio Activo",
-    "Interfaz de Audio Profesional",
-    "Escritorio Ejecutivo",
-    "Silla Ergonómica",
-  ]);
-  const [bienesList, setBienesList] = useState(INITIAL_BIENES);
+  const [bienesCatalog, setBienesCatalogState] = useState(() =>
+    loadStoredJson(STORAGE_BIENES_CAT_KEY, [
+      "Consola de Mezcla Digital",
+      "Micrófono de Condensador Estudio",
+      "Computadora Estación de Trabajo",
+      "Monitor de Audio Activo",
+      "Interfaz de Audio Profesional",
+      "Escritorio Ejecutivo",
+      "Silla Ergonómica",
+    ])
+  );
+  const setBienesCatalog = (updater) => {
+    setBienesCatalogState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson(STORAGE_BIENES_CAT_KEY, next);
+      return next;
+    });
+  };
+
+  const [bienesList, setBienesListState] = useState(() =>
+    loadStoredJson(STORAGE_BIENES_KEY, INITIAL_BIENES)
+  );
+  const setBienesList = (updater) => {
+    setBienesListState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson(STORAGE_BIENES_KEY, next);
+      return next;
+    });
+  };
   const [bienesViewMode, setBienesViewMode] = useState("FORM"); // FORM | PDF
   const [newBienForm, setNewBienForm] = useState({
     articulo: "Consola de Mezcla Digital",
@@ -1257,22 +1483,310 @@ export default function App() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatRecipient, setChatRecipient] = useState("TODOS");
   const [chatInput, setChatInput] = useState("");
-  const [chatMessages, setChatMessages] = useState([
-    {
-      id: 1,
-      sender: "Ali Alejandro Primera",
-      recipient: "TODOS",
-      text: "Bienvenidos al Chat Interno del SIACENDIS. Recuerden cargar el avance semanal de proyectos.",
-      time: "08:45 AM",
-    },
-    {
-      id: 2,
-      sender: "Anaileth Briceño",
-      recipient: "TODOS",
-      text: "Recibido Presidente, ya el archivo maestro lleva 100% de avance.",
-      time: "08:50 AM",
-    },
+  const [chatMessages, setChatMessagesState] = useState(() =>
+    loadStoredJson(STORAGE_CHAT_KEY, INITIAL_CHAT_LIST)
+  );
+  const setChatMessages = (updater) => {
+    setChatMessagesState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson(STORAGE_CHAT_KEY, next);
+      return next;
+    });
+  };
+
+  // ============================================================================
+  // SINCRONIZACIÓN EN TIEMPO REAL MULTIDISPOSITIVO Y MULTIUSUARIO (/api/sync + BroadcastChannel)
+  // ============================================================================
+  const [syncStatus, setSyncStatus] = useState("SINCRONIZADO");
+  const [lastSyncTime, setLastSyncTime] = useState(() =>
+    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+  );
+
+  const syncPayloadRef = React.useRef({});
+  syncPayloadRef.current = {
+    deletedIds,
+    agendaEvents,
+    documents,
+    employees,
+    projects,
+    bienesList,
+    bienesCatalog,
+    attendanceRecords,
+    users,
+    chatMessages,
+  };
+
+  const syncWithCloudServer = async (overridePartial = {}) => {
+    if (typeof window === "undefined") return;
+    try {
+      setSyncStatus("SINCRONIZANDO");
+      const currentSnap = {
+        ...syncPayloadRef.current,
+        ...overridePartial,
+      };
+      const response = await fetch("/api/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(currentSnap),
+      });
+      if (!response.ok) {
+        setSyncStatus("LOCAL");
+        return;
+      }
+      const remote = await response.json();
+      if (!remote || typeof remote !== "object") return;
+
+      const mergedDeletedList = Array.from(
+        new Set([
+          ...(currentSnap.deletedIds || []).map(String),
+          ...(Array.isArray(remote.deletedIds) ? remote.deletedIds.map(String) : []),
+        ])
+      );
+      const deletedSet = new Set(mergedDeletedList);
+
+      if (mergedDeletedList.length !== (currentSnap.deletedIds || []).length) {
+        setDeletedIds(mergedDeletedList);
+      }
+
+      if (Array.isArray(remote.agendaEvents)) {
+        const mergedAgenda = mergeSyncArrays(
+          currentSnap.agendaEvents,
+          remote.agendaEvents,
+          deletedSet
+        );
+        if (JSON.stringify(mergedAgenda) !== JSON.stringify(currentSnap.agendaEvents)) {
+          setAgendaEvents(mergedAgenda);
+        }
+      }
+      if (Array.isArray(remote.documents)) {
+        const mergedDocs = mergeSyncArrays(currentSnap.documents, remote.documents, deletedSet);
+        if (JSON.stringify(mergedDocs) !== JSON.stringify(currentSnap.documents)) {
+          setDocuments(mergedDocs);
+        }
+      }
+      if (Array.isArray(remote.employees)) {
+        const mergedEmps = sanitizeEmployeesDirectorGeneral(
+          mergeSyncArrays(currentSnap.employees, remote.employees, deletedSet)
+        );
+        if (JSON.stringify(mergedEmps) !== JSON.stringify(currentSnap.employees)) {
+          setEmployees(mergedEmps);
+        }
+      }
+      if (Array.isArray(remote.projects)) {
+        const mergedProjs = mergeSyncArrays(currentSnap.projects, remote.projects, deletedSet);
+        if (JSON.stringify(mergedProjs) !== JSON.stringify(currentSnap.projects)) {
+          setProjects(mergedProjs);
+        }
+      }
+      if (Array.isArray(remote.bienesList)) {
+        const mergedBienes = mergeSyncArrays(currentSnap.bienesList, remote.bienesList, deletedSet);
+        if (JSON.stringify(mergedBienes) !== JSON.stringify(currentSnap.bienesList)) {
+          setBienesList(mergedBienes);
+        }
+      }
+      if (Array.isArray(remote.attendanceRecords)) {
+        const mergedAtt = mergeSyncArrays(
+          currentSnap.attendanceRecords,
+          remote.attendanceRecords,
+          deletedSet
+        );
+        if (JSON.stringify(mergedAtt) !== JSON.stringify(currentSnap.attendanceRecords)) {
+          setAttendanceRecords(mergedAtt);
+        }
+      }
+      if (Array.isArray(remote.users)) {
+        const mergedUsers = sanitizeUsersDirectorGeneral(
+          mergeSyncArrays(currentSnap.users, remote.users, deletedSet)
+        );
+        if (JSON.stringify(mergedUsers) !== JSON.stringify(currentSnap.users)) {
+          setUsers(mergedUsers);
+        }
+      }
+      if (Array.isArray(remote.chatMessages)) {
+        const mergedChat = mergeSyncArrays(
+          currentSnap.chatMessages,
+          remote.chatMessages,
+          deletedSet
+        );
+        if (JSON.stringify(mergedChat) !== JSON.stringify(currentSnap.chatMessages)) {
+          setChatMessages(mergedChat);
+        }
+      }
+      setSyncStatus("SINCRONIZADO");
+      setLastSyncTime(
+        new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+      );
+    } catch {
+      setSyncStatus("LOCAL");
+    }
+  };
+
+  // Ciclo continuo de sincronización en tiempo real cada 2.5 segundos + al enfocar ventana + entre pestañas
+  useEffect(() => {
+    syncWithCloudServer();
+    const intervalId = setInterval(() => {
+      syncWithCloudServer();
+    }, 2500);
+    const onFocus = () => syncWithCloudServer();
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("storage", onFocus);
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("storage", onFocus);
+    };
+  }, []);
+
+  // Empujar cambios inmediatamente cuando se crea, modifica, anula o elimina en cualquier módulo
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      syncWithCloudServer();
+    }, 180);
+    return () => clearTimeout(timer);
+  }, [
+    deletedIds,
+    agendaEvents,
+    documents,
+    employees,
+    projects,
+    bienesList,
+    attendanceRecords,
+    users,
+    chatMessages,
   ]);
+
+  // ============================================================================
+  // FUNCIONES UNIVERSALES DE ELIMINAR Y ANULAR EN TODOS LOS MÓDULOS
+  // ============================================================================
+  const handleUniversalDelete = (collectionKey, itemId, label = "Registro") => {
+    const idStr = String(itemId);
+    const nextDeleted = Array.from(new Set([...deletedIds, idStr]));
+    setDeletedIds(nextDeleted);
+
+    if (collectionKey === "documents") {
+      const next = documents.filter((x) => String(x.id) !== idStr);
+      setDocuments(next);
+      if (String(selectedDocId) === idStr) setSelectedDocId(null);
+      if (String(reviewModalDocId) === idStr) setReviewModalDocId(null);
+      syncWithCloudServer({ deletedIds: nextDeleted, documents: next });
+    } else if (collectionKey === "agendaEvents") {
+      const next = agendaEvents.filter((x) => String(x.id) !== idStr);
+      setAgendaEvents(next);
+      if (selectedEventDetail && String(selectedEventDetail.id) === idStr) {
+        setSelectedEventDetail(null);
+      }
+      syncWithCloudServer({ deletedIds: nextDeleted, agendaEvents: next });
+    } else if (collectionKey === "employees") {
+      const next = employees.filter((x) => String(x.id) !== idStr);
+      setEmployees(next);
+      if (selectedEmpForCard && String(selectedEmpForCard.id) === idStr) setSelectedEmpForCard(null);
+      if (selectedEmpForCV && String(selectedEmpForCV.id) === idStr) setSelectedEmpForCV(null);
+      if (editingEmpId && String(editingEmpId) === idStr) setHrModalOpen(false);
+      syncWithCloudServer({ deletedIds: nextDeleted, employees: next });
+    } else if (collectionKey === "projects") {
+      const next = projects.filter((x) => String(x.id) !== idStr);
+      setProjects(next);
+      syncWithCloudServer({ deletedIds: nextDeleted, projects: next });
+    } else if (collectionKey === "bienesList") {
+      const next = bienesList.filter((x) => String(x.id) !== idStr);
+      setBienesList(next);
+      syncWithCloudServer({ deletedIds: nextDeleted, bienesList: next });
+    } else if (collectionKey === "attendanceRecords") {
+      const next = attendanceRecords.filter((x) => String(x.id) !== idStr);
+      setAttendanceRecords(next);
+      syncWithCloudServer({ deletedIds: nextDeleted, attendanceRecords: next });
+    } else if (collectionKey === "users") {
+      if (String(itemId) === "1") {
+        showToast("El usuario Administrador principal no puede ser eliminado.", "error");
+        return;
+      }
+      const next = users.filter((x) => String(x.id) !== idStr);
+      setUsers(next);
+      if (String(selectedConfigUserId) === idStr && next[0]) {
+        setSelectedConfigUserId(String(next[0].id));
+      }
+      syncWithCloudServer({ deletedIds: nextDeleted, users: next });
+    } else if (collectionKey === "chatMessages") {
+      const next = chatMessages.filter((x) => String(x.id) !== idStr);
+      setChatMessages(next);
+      syncWithCloudServer({ deletedIds: nextDeleted, chatMessages: next });
+    }
+
+    addLog(`ELIMINADO definitivamente: ${label}`);
+    showToast(`🗑️ ${label} eliminado del sistema y sincronizado en todos los dispositivos.`);
+  };
+
+  const handleUniversalAnnul = (collectionKey, itemId, label = "Registro") => {
+    const idStr = String(itemId);
+    const nowTs = Date.now();
+
+    if (collectionKey === "documents") {
+      const now = new Date();
+      const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
+      const next = documents.map((d) =>
+        String(d.id) === idStr
+          ? {
+              ...d,
+              status: "ANULADO",
+              motivoAnulacion: d.motivoAnulacion || "Anulado directamente por el usuario.",
+              anuladoPor: currentUser?.fullName || currentUser?.username || "Usuario",
+              fechaAnulacion: stamp,
+              updatedAt: nowTs,
+            }
+          : d
+      );
+      setDocuments(next);
+      syncWithCloudServer({ documents: next });
+    } else if (collectionKey === "agendaEvents") {
+      const next = agendaEvents.map((ev) =>
+        String(ev.id) === idStr ? { ...ev, status: "ANULADO", color: "ROSE", updatedAt: nowTs } : ev
+      );
+      setAgendaEvents(next);
+      if (selectedEventDetail && String(selectedEventDetail.id) === idStr) {
+        setSelectedEventDetail((prev) => (prev ? { ...prev, status: "ANULADO", color: "ROSE" } : null));
+      }
+      syncWithCloudServer({ agendaEvents: next });
+    } else if (collectionKey === "employees") {
+      const next = employees.map((emp) =>
+        String(emp.id) === idStr
+          ? { ...emp, condicionLaboral: "ANULADO / INACTIVO", updatedAt: nowTs }
+          : emp
+      );
+      setEmployees(next);
+      syncWithCloudServer({ employees: next });
+    } else if (collectionKey === "projects") {
+      const next = projects.map((p) =>
+        String(p.id) === idStr ? { ...p, estatus: "ANULADO", porcentaje: 0, updatedAt: nowTs } : p
+      );
+      setProjects(next);
+      syncWithCloudServer({ projects: next });
+    } else if (collectionKey === "bienesList") {
+      const next = bienesList.map((b) =>
+        String(b.id) === idStr ? { ...b, estado: "ANULADO / DESINCORPORADO", updatedAt: nowTs } : b
+      );
+      setBienesList(next);
+      syncWithCloudServer({ bienesList: next });
+    } else if (collectionKey === "attendanceRecords") {
+      const next = attendanceRecords.map((a) =>
+        String(a.id) === idStr ? { ...a, estatus: "ANULADO", updatedAt: nowTs } : a
+      );
+      setAttendanceRecords(next);
+      syncWithCloudServer({ attendanceRecords: next });
+    } else if (collectionKey === "users") {
+      if (String(itemId) === "1") {
+        showToast("El usuario Administrador principal no puede ser anulado.", "error");
+        return;
+      }
+      const next = users.map((u) =>
+        String(u.id) === idStr ? { ...u, active: !u.active, updatedAt: nowTs } : u
+      );
+      setUsers(next);
+      syncWithCloudServer({ users: next });
+    }
+
+    addLog(`ANULADO: ${label}`);
+    showToast(`🚫 ${label} marcado como ANULADO y sincronizado en tiempo real.`);
+  };
 
   // Estado para nuevo usuario y submódulo Usuarios en Configuración
   const [configSubTab, setConfigSubTab] = useState("USUARIOS");
@@ -2060,8 +2574,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       motivoAnulacion: "",
       anuladoPor: null,
       fechaAnulacion: null,
+      updatedAt: Date.now(),
     };
-    setDocuments((prev) => [newDoc, ...prev]);
+    const nextDocs = [newDoc, ...documents];
+    setDocuments(nextDocs);
+    syncWithCloudServer({ documents: nextDocs });
     setSelectedDocId(newDoc.id);
     if (!manualCorrelative) {
       setCounters((prev) => ({
@@ -2113,21 +2630,22 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     const now = new Date();
     const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
     const targetDoc = documents.find((d) => d.id === docId);
-    setDocuments((prev) =>
-      prev.map((d) =>
-        d.id === docId
-          ? {
-              ...d,
-              status: "APROBADO",
-              aprobadoPor: currentUser.fullName || currentUser.username,
-              fechaAprobacion: stamp,
-              motivoAnulacion: "",
-              anuladoPor: null,
-              fechaAnulacion: null,
-            }
-          : d
-      )
+    const nextDocs = documents.map((d) =>
+      d.id === docId
+        ? {
+            ...d,
+            status: "APROBADO",
+            aprobadoPor: currentUser.fullName || currentUser.username,
+            fechaAprobacion: stamp,
+            motivoAnulacion: "",
+            anuladoPor: null,
+            fechaAnulacion: null,
+            updatedAt: Date.now(),
+          }
+        : d
     );
+    setDocuments(nextDocs);
+    syncWithCloudServer({ documents: nextDocs });
     setSelectedDocId(docId);
     setReviewModalDocId(null);
     addLog(
@@ -2151,19 +2669,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     const now = new Date();
     const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
     const targetDoc = documents.find((d) => d.id === docId);
-    setDocuments((prev) =>
-      prev.map((d) =>
-        d.id === docId
-          ? {
-              ...d,
-              status: "ANULADO",
-              motivoAnulacion: cleanReason,
-              anuladoPor: currentUser?.fullName || currentUser?.username || "Administrador",
-              fechaAnulacion: stamp,
-            }
-          : d
-      )
+    const nextDocs = documents.map((d) =>
+      d.id === docId
+        ? {
+            ...d,
+            status: "ANULADO",
+            motivoAnulacion: cleanReason,
+            anuladoPor: currentUser?.fullName || currentUser?.username || "Administrador",
+            fechaAnulacion: stamp,
+            updatedAt: Date.now(),
+          }
+        : d
     );
+    setDocuments(nextDocs);
+    syncWithCloudServer({ documents: nextDocs });
     setSelectedDocId(docId);
     setReviewModalDocId(null);
     setShowAnnulBoxInModal(false);
@@ -2234,7 +2753,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       employees.find((emp) => `${emp.nombres} ${emp.apellidos}`.toLowerCase() === (ev.responsable || "").toLowerCase())
         ?.correo ||
       currentUser?.email ||
-      "presidencia.cendis@gmail.com";
+      "morris.lopez.cendis@gmail.com";
     const subject = encodeURIComponent(
       `[Recordatorio SIACENDIS - ${formatReminderLabel(ev)}] ${ev.title} (${ev.date})`
     );
@@ -2311,14 +2830,17 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     if (!selectedDayModal || !newEventForm.title.trim()) return;
     const initialStatus = currentUser?.role === "ADMIN" ? "APROBADO" : "PENDIENTE_APROBACION";
     const created = {
-      id: `ev-${Date.now()}`,
+      id: `ev-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       date: selectedDayModal,
       endDate: newEventForm.endDate || selectedDayModal,
       ...newEventForm,
       reminderValue: Number(newEventForm.reminderValue) || 1,
       status: initialStatus,
+      updatedAt: Date.now(),
     };
-    setAgendaEvents((prev) => [...prev, created]);
+    const nextEvents = [...agendaEvents, created];
+    setAgendaEvents(nextEvents);
+    syncWithCloudServer({ agendaEvents: nextEvents });
 
     const channels = [
       created.notifyApp ? "App" : null,
@@ -2338,7 +2860,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       triggerInAppReminder(created);
     } else {
       showToast(
-        `Actividad "${created.title}" agendada con recordatorio (${formatReminderLabel(created)} vía ${channels}).`
+        `Actividad "${created.title}" agendada y sincronizada en tiempo real (${formatReminderLabel(created)} vía ${channels}).`
       );
     }
 
@@ -2389,8 +2911,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         fecha: fechaStr,
         hora: horaStr,
         estatus: "Asistencia Verificada",
+        updatedAt: Date.now(),
       };
-      setAttendanceRecords((prev) => [rec, ...prev]);
+      const nextAtt = [rec, ...attendanceRecords];
+      setAttendanceRecords(nextAtt);
+      syncWithCloudServer({ attendanceRecords: nextAtt });
       setScannerAlert({
         type: "success",
         text: `Entrada registrada: ${foundEmp.nombres} ${foundEmp.apellidos} (${foundEmp.coordinacion}) a las ${horaStr}`,
@@ -2618,13 +3143,37 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       onClick={toggleThemeMode}
       title={
         themeMode === "DARK"
-          ? "Cambiar a Modo Claro en todo el sistema"
+          ? "Cambiar a Modo Claro (Blanco) en todo el sistema"
           : "Cambiar a Modo Oscuro en todo el sistema"
       }
-      className="px-3 py-1.5 rounded-xl neon-orange-nav text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0"
+      className={`px-3 py-1.5 rounded-xl text-[11px] font-black flex items-center gap-1.5 transition cursor-pointer shrink-0 shadow ${
+        themeMode === "LIGHT"
+          ? "bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500"
+          : "neon-orange-nav text-white"
+      }`}
     >
       <span>{themeMode === "DARK" ? "☀️" : "🌙"}</span>
-      <span>{themeMode === "DARK" ? "Modo Claro" : "Modo Oscuro"}</span>
+      <span>{themeMode === "DARK" ? "Modo Claro (Blanco)" : "Modo Oscuro"}</span>
+    </button>
+  );
+
+  const renderRealtimeSyncBadge = () => (
+    <button
+      type="button"
+      onClick={() => syncWithCloudServer()}
+      title={`Sincronización multi-dispositivo en tiempo real (${lastSyncTime || "Activa"}). Clic para sincronizar ahora.`}
+      className="px-2.5 py-1.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900/90 border border-emerald-500/50 text-emerald-300 text-[10.5px] font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0"
+    >
+      <span
+        className={`w-2 h-2 rounded-full ${
+          syncStatus === "SYNCING"
+            ? "bg-amber-400 animate-ping"
+            : syncStatus === "ONLINE"
+            ? "bg-emerald-400 animate-pulse"
+            : "bg-blue-400"
+        }`}
+      />
+      <span>Sync Real-Time {lastSyncTime ? `(${lastSyncTime})` : ""}</span>
     </button>
   );
 
@@ -2660,8 +3209,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   const renderGlobalThemeStyles = () => (
     <style>{`
       /* Navegabilidad en color Naranja Suave y Cálido (no chillón), transparente con letras blancas nítidas */
-      .cendis-dark-workspace button.bg-slate-100:not(#printable-area *),
-      .cendis-dark-workspace button.bg-white:not(#printable-area *),
+      :not(.cendis-theme-light) .cendis-dark-workspace button.bg-slate-100:not(#printable-area *),
+      :not(.cendis-theme-light) .cendis-dark-workspace button.bg-white:not(#printable-area *),
       .neon-orange-nav {
         background: rgba(217, 119, 6, 0.20) !important;
         border: 1px solid rgba(245, 158, 11, 0.52) !important;
@@ -2669,8 +3218,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         box-shadow: 0 2px 8px rgba(180, 83, 9, 0.16) !important;
         backdrop-filter: blur(8px);
       }
-      .cendis-dark-workspace button.bg-slate-100:hover:not(#printable-area *),
-      .cendis-dark-workspace button.bg-white:hover:not(#printable-area *),
+      :not(.cendis-theme-light) .cendis-dark-workspace button.bg-slate-100:hover:not(#printable-area *),
+      :not(.cendis-theme-light) .cendis-dark-workspace button.bg-white:hover:not(#printable-area *),
       .neon-orange-nav:hover {
         background: rgba(217, 119, 6, 0.32) !important;
         border-color: rgba(251, 191, 36, 0.78) !important;
@@ -2685,71 +3234,111 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         backdrop-filter: blur(8px);
       }
 
-      /* MODO CLARO GLOBAL (MANTIENE EL DISEÑO DEL SISTEMA SIN AFECTAR REPORTES NI CARNETS) */
-      .cendis-theme-light {
-        background-color: #eef2f6 !important;
-        color: #0f172a !important;
-      }
+      /* ======================================================================
+         MODO CLARO / BLANCO GLOBAL (CONMUTA ENTRE OSCURO Y BLANCO MANTENIENDO EL DISEÑO)
+         ====================================================================== */
+      .cendis-theme-light,
       .cendis-theme-light .cendis-dark-workspace,
       .cendis-theme-light .bg-\\[#050a15\\],
       .cendis-theme-light .bg-\\[#030710\\] {
-        background-color: #eef2f6 !important;
+        background: #f8fafc !important;
+        background-color: #f8fafc !important;
         color: #0f172a !important;
       }
       .cendis-theme-light header.bg-\\[#0b1221\\] {
-        background: linear-gradient(180deg, #172542 0%, #1e2f53 100%) !important;
-        border-bottom-color: #cbd5e1 !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06) !important;
       }
+      .cendis-theme-light header.bg-\\[#0b1221\\] h1,
+      .cendis-theme-light header.bg-\\[#0b1221\\] .text-white:not(.neon-orange-nav *):not(.neon-orange-nav-active *):not(.bg-\\[#b91c1c\\] *):not(.bg-slate-900 *) {
+        color: #0f172a !important;
+      }
+      .cendis-theme-light header.bg-\\[#0b1221\\] .text-slate-400 {
+        color: #475569 !important;
+      }
+      .cendis-theme-light .bg-\\[#0c1322\\],
+      .cendis-theme-light .bg-\\[#0d1526\\],
+      .cendis-theme-light .bg-\\[#0f172a\\],
+      .cendis-theme-light .bg-\\[#0b1221\\]:not(header),
+      .cendis-theme-light .bg-\\[#0e1526\\],
+      .cendis-theme-light .bg-\\[#0d1322\\],
+      .cendis-theme-light .bg-\\[#161f33\\],
       .cendis-theme-light .cendis-dark-workspace .bg-white:not(#printable-area):not(#printable-area *) {
         background: #ffffff !important;
+        background-color: #ffffff !important;
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
         box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06) !important;
       }
+      /* Tarjetas del Portal en Modo Blanco conservando su diseño y bordes institucionales */
+      .cendis-theme-light .group.rounded-\\[24px\\] {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important;
+      }
+      .cendis-theme-light .group.rounded-\\[24px\\] h3 {
+        color: #0f172a !important;
+      }
+      .cendis-theme-light .group.rounded-\\[24px\\] p.text-slate-300\\/90 {
+        color: #334155 !important;
+      }
+      .cendis-theme-light .group.rounded-\\[24px\\] .bg-\\[#090d16\\]\\/90 {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
       .cendis-theme-light .cendis-dark-workspace .bg-slate-50:not(#printable-area):not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .bg-slate-100:not(button):not(#printable-area):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .bg-slate-900:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-900:not(button):not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .bg-slate-900\\/90:not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .bg-\\[#070b14\\]:not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .bg-\\[#0e1526\\]:not(#printable-area *) {
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-800\\/90:not(#printable-area *),
+      .cendis-theme-light .bg-\\[#070b14\\]:not(#printable-area *) {
+        background: #f8fafc !important;
         background-color: #f8fafc !important;
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
       }
-      .cendis-theme-light .cendis-dark-workspace .text-white:not(header *):not(.neon-orange-nav *):not(.neon-orange-nav-active *):not(.bg-\\[#b91c1c\\] *):not(.bg-emerald-600 *):not(.bg-blue-600 *):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .text-slate-100:not(header *):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .text-slate-200:not(header *):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .text-slate-300:not(header *):not(#printable-area *),
+      .cendis-theme-light .text-white:not(.neon-orange-nav):not(.neon-orange-nav *):not(.neon-orange-nav-active):not(.neon-orange-nav-active *):not(.bg-\\[#b91c1c\\]):not(.bg-\\[#b91c1c\\] *):not(.bg-\\[#8b1538\\]):not(.bg-\\[#8b1538\\] *):not(.bg-emerald-600):not(.bg-emerald-600 *):not(.bg-emerald-700):not(.bg-emerald-700 *):not(.bg-blue-600):not(.bg-blue-600 *):not(.bg-blue-700):not(.bg-blue-700 *):not(.bg-blue-900):not(.bg-blue-900 *):not(.bg-indigo-700):not(.bg-indigo-700 *):not(.bg-teal-700):not(.bg-teal-700 *):not(.bg-cyan-700):not(.bg-cyan-700 *):not(.bg-purple-700):not(.bg-purple-700 *):not(.bg-red-600):not(.bg-red-600 *):not(.bg-red-700):not(.bg-red-700 *):not(#printable-area *),
+      .cendis-theme-light .text-slate-100:not(#printable-area *),
+      .cendis-theme-light .text-slate-200:not(#printable-area *),
+      .cendis-theme-light .text-slate-300:not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-900:not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-800:not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-700:not(#printable-area *) {
         color: #0f172a !important;
       }
-      .cendis-theme-light .cendis-dark-workspace .text-slate-400:not(header *):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .text-slate-500:not(header *):not(#printable-area *),
+      .cendis-theme-light .text-slate-400:not(#printable-area *),
+      .cendis-theme-light .text-slate-500:not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-600:not(#printable-area *) {
         color: #475569 !important;
       }
-      .cendis-theme-light .cendis-dark-workspace .text-\\[#ffb366\\]:not(header *):not(.neon-orange-nav *):not(.neon-orange-nav-active *):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .text-\\[#ff9f5a\\]:not(header *):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .text-amber-300:not(header *):not(#printable-area *) {
+      .cendis-theme-light .cendis-dark-workspace .text-\\[#ffb366\\]:not(.neon-orange-nav *):not(.neon-orange-nav-active *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-\\[#ff9f5a\\]:not(#printable-area *),
+      .cendis-theme-light .text-amber-300:not(.bg-slate-900):not(.bg-slate-900 *):not(#printable-area *),
+      .cendis-theme-light .text-amber-400:not(#printable-area *) {
         color: #b45309 !important;
       }
-      .cendis-theme-light .cendis-dark-workspace input:not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace select:not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace textarea:not(#printable-area *) {
+      .cendis-theme-light input:not(#printable-area *),
+      .cendis-theme-light select:not(#printable-area *),
+      .cendis-theme-light textarea:not(#printable-area *) {
         background-color: #ffffff !important;
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
       }
-      .cendis-theme-light .cendis-dark-workspace button.bg-slate-100:not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace button.bg-white:not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .neon-orange-nav:not(header *) {
-        background: rgba(217, 119, 6, 0.85) !important;
+      .cendis-theme-light .neon-orange-nav {
+        background: rgba(217, 119, 6, 0.90) !important;
         border: 1px solid #b45309 !important;
         color: #ffffff !important;
       }
-      .cendis-theme-light .cendis-dark-workspace .neon-orange-nav-active:not(header *) {
+      .cendis-theme-light .neon-orange-nav span,
+      .cendis-theme-light .neon-orange-nav svg,
+      .cendis-theme-light .neon-orange-nav-active span,
+      .cendis-theme-light .neon-orange-nav-active svg {
+        color: #ffffff !important;
+      }
+      .cendis-theme-light .neon-orange-nav-active {
         background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
         border: 1.5px solid #92400e !important;
         color: #ffffff !important;
@@ -3191,6 +3780,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             </div>
 
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+              {renderRealtimeSyncBadge()}
               {renderDeviceViewportSwitcher()}
               {renderThemeModeSwitcher()}
 
@@ -3388,37 +3978,37 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     >
       {renderGlobalThemeStyles()}
       <style>{`
-        /* Adaptación de paneles al tema oscuro de las capturas fuera del área de impresión */
-        .cendis-dark-workspace .bg-white:not(#printable-area):not(#printable-area *) {
+        /* Adaptación de paneles al tema oscuro de las capturas fuera del área de impresión (solo cuando themeMode === DARK) */
+        :not(.cendis-theme-light) .cendis-dark-workspace .bg-white:not(#printable-area):not(#printable-area *) {
           background: linear-gradient(145deg, #161824 0%, #0d1322 100%);
           color: #f1f5f9;
           border-color: rgba(148, 163, 184, 0.18);
         }
-        .cendis-dark-workspace .bg-slate-50:not(#printable-area):not(#printable-area *),
-        .cendis-dark-workspace .bg-slate-100:not(button):not(#printable-area):not(#printable-area *) {
+        :not(.cendis-theme-light) .cendis-dark-workspace .bg-slate-50:not(#printable-area):not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace .bg-slate-100:not(button):not(#printable-area):not(#printable-area *) {
           background-color: #080d19;
           color: #e2e8f0;
           border-color: rgba(148, 163, 184, 0.15);
         }
-        .cendis-dark-workspace .text-slate-900:not(#printable-area *),
-        .cendis-dark-workspace .text-slate-800:not(#printable-area *),
-        .cendis-dark-workspace .text-slate-700:not(#printable-area *) {
+        :not(.cendis-theme-light) .cendis-dark-workspace .text-slate-900:not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace .text-slate-800:not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace .text-slate-700:not(#printable-area *) {
           color: #f8fafc;
         }
-        .cendis-dark-workspace .text-slate-600:not(#printable-area *),
-        .cendis-dark-workspace .text-slate-500:not(#printable-area *) {
+        :not(.cendis-theme-light) .cendis-dark-workspace .text-slate-600:not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace .text-slate-500:not(#printable-area *) {
           color: #94a3b8;
         }
-        .cendis-dark-workspace input:not(#printable-area *),
-        .cendis-dark-workspace select:not(#printable-area *),
-        .cendis-dark-workspace textarea:not(#printable-area *) {
+        :not(.cendis-theme-light) .cendis-dark-workspace input:not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace select:not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace textarea:not(#printable-area *) {
           background-color: #070b14;
           color: #f8fafc;
           border-color: rgba(148, 163, 184, 0.25);
         }
-        .cendis-dark-workspace input:focus:not(#printable-area *),
-        .cendis-dark-workspace select:focus:not(#printable-area *),
-        .cendis-dark-workspace textarea:focus:not(#printable-area *) {
+        :not(.cendis-theme-light) .cendis-dark-workspace input:focus:not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace select:focus:not(#printable-area *),
+        :not(.cendis-theme-light) .cendis-dark-workspace textarea:focus:not(#printable-area *) {
           outline: none !important;
           border-color: #f59e0b !important;
         }
@@ -3613,6 +4203,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             </div>
 
             <div className="flex flex-wrap items-center gap-1.5">
+              {renderRealtimeSyncBadge()}
               {renderDeviceViewportSwitcher()}
               {renderThemeModeSwitcher()}
 
@@ -4151,6 +4742,27 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                 <span>Imprimir</span>
                               </button>
                             )}
+
+                            {d.status !== "ANULADO" && (
+                              <button
+                                type="button"
+                                onClick={() => handleUniversalAnnul("documents", d.id, d.correlativo)}
+                                className="px-2.5 py-1 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-bold text-[10px] cursor-pointer"
+                                title="Anular documento"
+                              >
+                                🚫 Anular
+                              </button>
+                            )}
+
+                            <button
+                              type="button"
+                              onClick={() => handleUniversalDelete("documents", d.id, d.correlativo)}
+                              className="px-2.5 py-1 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                              title="Eliminar definitivamente"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Eliminar</span>
+                            </button>
                           </div>
                         </div>
                       );
@@ -4184,15 +4796,38 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {activePreviewDoc.id && (
-                    <button
-                      type="button"
-                      onClick={() => handleOpenReviewModal(activePreviewDoc)}
-                      className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer"
-                    >
-                      🔍 Revisar / Autorizar / Anular
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenReviewModal(activePreviewDoc)}
+                        className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer"
+                      >
+                        🔍 Revisar / Autorizar
+                      </button>
+                      {activePreviewDoc.status !== "ANULADO" && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUniversalAnnul("documents", activePreviewDoc.id, activePreviewDoc.correlativo)
+                          }
+                          className="px-3 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-600 text-white text-xs font-bold cursor-pointer"
+                        >
+                          🚫 Anular
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUniversalDelete("documents", activePreviewDoc.id, activePreviewDoc.correlativo)
+                        }
+                        className="px-3 py-1.5 rounded-xl bg-red-700 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Eliminar</span>
+                      </button>
+                    </>
                   )}
                   <button
                     type="button"
@@ -4467,13 +5102,24 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                             : "Solo un Administrador puede autorizar el documento para impresión."}
                         </div>
                         <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleUniversalDelete("documents", docToReview.id, docToReview.correlativo)
+                            }
+                            className="px-3.5 py-2 rounded-xl bg-red-900 hover:bg-red-800 border border-red-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Eliminar Definitivamente</span>
+                          </button>
+
                           {canAnnul && !showAnnulBoxInModal && (
                             <button
                               type="button"
                               onClick={() => setShowAnnulBoxInModal(true)}
-                              className="px-3.5 py-2 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs cursor-pointer"
+                              className="px-3.5 py-2 rounded-xl bg-amber-700 hover:bg-amber-600 text-white font-bold text-xs cursor-pointer"
                             >
-                              ✕ Anular Documento...
+                              🚫 Anular Documento...
                             </button>
                           )}
 
@@ -4497,24 +5143,40 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         )}
 
         {/* ====================================================================
-            MÓDULO 2: AGENDA CENDIS (ESTILO GOOGLE CALENDAR COMPLETO + RECORDATORIOS)
+            MÓDULO 2: AGENDA CENDIS (ESTILO GOOGLE CALENDAR COMPLETO + RECORDATORIOS + SYNC TIEMPO REAL)
            ==================================================================== */}
         {activeTab === "agenda" && (
           <div className="flex-1 max-w-7xl w-full mx-auto p-4 space-y-4">
-            {/* Barra superior estilo Google Calendar */}
+            {/* Barra superior estilo Google Calendar con Sincronización en Tiempo Real Multi-Dispositivo */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-wrap items-center justify-between gap-3 print:hidden">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-[#f59e0b] block">
-                  Sincronización de Actividades, Parámetros de Google Calendar y Alertas Anticipadas
-                </span>
-                <h2 className="text-base font-black text-slate-900 uppercase">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#f59e0b]">
+                    Sincronización en Tiempo Real Multi-Dispositivo y Multi-Usuario Activa
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[9.5px] font-black flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    EN VIVO {lastSyncTime ? `• ${lastSyncTime}` : ""}
+                  </span>
+                </div>
+                <h2 className="text-base font-black text-slate-900 uppercase mt-0.5">
                   AGENDA CENDIS • Google Calendar & Centro de Recordatorios
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Parámetros completos de Google Calendar, descripciones detalladas y recordatorios con días u horas de anticipación por Aplicación, Correo Gmail y WhatsApp.
+                  Cualquier evento creado, modificado, anulado o eliminado en un dispositivo se actualiza en tiempo real para todos los usuarios y equipos.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    syncWithCloudServer();
+                    showToast("Agenda CENDIS sincronizada en tiempo real con todos los dispositivos.");
+                  }}
+                  className="px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
+                >
+                  <span>🔄 Sincronizar Ahora</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -4650,9 +5312,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         </div>
                         <div className="space-y-1 mt-1">
                           {dayEvents.map((ev) => {
-                            const pillClass =
-                              colorClasses[ev.color] ||
-                              (ev.status === "APROBADO" ? colorClasses.BLUE : colorClasses.AMBER);
+                            const isAnulado = ev.status === "ANULADO";
+                            const pillClass = isAnulado
+                              ? "bg-red-900/80 border-l-4 border-red-400 line-through opacity-75"
+                              : colorClasses[ev.color] ||
+                                (ev.status === "APROBADO" ? colorClasses.BLUE : colorClasses.AMBER);
                             return (
                               <div
                                 key={ev.id}
@@ -4660,17 +5324,26 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                   e.stopPropagation();
                                   setSelectedEventDetail(ev);
                                 }}
-                                title={`${ev.title}\n${ev.description || ""}\nRecordatorio: ${formatReminderLabel(ev)}`}
+                                title={`${ev.title}\n${ev.description || ""}\nEstatus: ${ev.status || "ACTIVO"}`}
                                 className={`px-1.5 py-1 rounded text-white text-[10px] font-semibold truncate shadow-2xs ${pillClass}`}
                               >
                                 <div className="flex items-center justify-between gap-1">
                                   <span className="truncate">
                                     {ev.allDay ? "Todo el día" : ev.startTime} • {ev.title}
                                   </span>
-                                  <span className="text-[9px] opacity-90 shrink-0">
-                                    🔔{ev.reminderValue || 1}
-                                    {ev.reminderUnit === "DIAS" ? "d" : "h"}
-                                  </span>
+                                  <div className="flex items-center gap-1 shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleUniversalDelete("agendaEvents", ev.id, ev.title);
+                                      }}
+                                      title="Eliminar evento"
+                                      className="px-1 rounded bg-black/30 hover:bg-red-600 text-[9px] font-black cursor-pointer"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             );
@@ -4761,6 +5434,23 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs cursor-pointer border border-slate-700"
                         >
                           📅 Google Calendar
+                        </button>
+                        {ev.status !== "ANULADO" && (
+                          <button
+                            type="button"
+                            onClick={() => handleUniversalAnnul("agendaEvents", ev.id, ev.title)}
+                            className="px-3 py-2 rounded-xl bg-amber-700 hover:bg-amber-600 text-white font-bold text-xs cursor-pointer shadow"
+                          >
+                            🚫 Anular
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleUniversalDelete("agendaEvents", ev.id, ev.title)}
+                          className="px-3 py-2 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs flex items-center gap-1 cursor-pointer shadow"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Eliminar</span>
                         </button>
                       </div>
                     </div>
@@ -5012,6 +5702,37 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         📅 Google Cal
                       </button>
                     </div>
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
+                      {selectedEventDetail.status !== "ANULADO" && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUniversalAnnul(
+                              "agendaEvents",
+                              selectedEventDetail.id,
+                              selectedEventDetail.title
+                            )
+                          }
+                          className="px-3 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-600 text-white font-bold text-xs cursor-pointer"
+                        >
+                          🚫 Anular Actividad
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUniversalDelete(
+                            "agendaEvents",
+                            selectedEventDetail.id,
+                            selectedEventDetail.title
+                          )
+                        }
+                        className="px-3 py-1.5 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs flex items-center gap-1 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Eliminar Actividad</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -5073,30 +5794,45 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                     <span className="font-bold">{ev.status}</span>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex flex-wrap items-center gap-1">
                                   {ev.status !== "APROBADO" && currentUser?.role === "ADMIN" && (
                                     <button
                                       type="button"
-                                      onClick={() =>
+                                      onClick={() => {
                                         setAgendaEvents((prev) =>
                                           prev.map((item) =>
-                                            item.id === ev.id ? { ...item, status: "APROBADO" } : item
+                                            item.id === ev.id
+                                              ? { ...item, status: "APROBADO", updatedAt: Date.now() }
+                                              : item
                                           )
-                                        )
-                                      }
+                                        );
+                                        setTimeout(() => syncWithCloudServer(), 60);
+                                      }}
                                       className="px-2 py-1 rounded bg-emerald-700 text-white text-[10px] font-bold cursor-pointer"
                                     >
                                       ✓ Aprobar
                                     </button>
                                   )}
+                                  {ev.status !== "ANULADO" && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUniversalAnnul("agendaEvents", ev.id, ev.title)
+                                      }
+                                      className="px-2 py-1 rounded bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold cursor-pointer"
+                                    >
+                                      🚫 Anular
+                                    </button>
+                                  )}
                                   <button
                                     type="button"
                                     onClick={() =>
-                                      setAgendaEvents((prev) => prev.filter((item) => item.id !== ev.id))
+                                      handleUniversalDelete("agendaEvents", ev.id, ev.title)
                                     }
-                                    className="text-red-500 hover:text-red-400 p-1 cursor-pointer"
+                                    className="px-2 py-1 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer"
                                   >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-3 h-3" />
+                                    <span>Eliminar</span>
                                   </button>
                                 </div>
                               </div>
@@ -5809,6 +6545,39 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                       Vincular
                                     </button>
                                   )}
+
+                                  {emp.status !== "ANULADO" && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUniversalAnnul(
+                                          "employees",
+                                          emp.id,
+                                          `${emp.nombres} ${emp.apellidos}`
+                                        )
+                                      }
+                                      className="px-2 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-bold text-[10px] cursor-pointer"
+                                      title="Anular expediente"
+                                    >
+                                      🚫 Anular
+                                    </button>
+                                  )}
+
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleUniversalDelete(
+                                        "employees",
+                                        emp.id,
+                                        `${emp.nombres} ${emp.apellidos}`
+                                      )
+                                    }
+                                    className="px-2 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                                    title="Eliminar trabajador definitivamente"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                    <span>Eliminar</span>
+                                  </button>
                                 </div>
                               </td>
                             </tr>
@@ -5884,6 +6653,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         className="w-full px-2.5 py-2 rounded-lg border border-slate-700 text-xs font-bold"
                       >
                         <option value="TODAS">Todas las Coordinaciones</option>
+                        <option value="Dirección General">Dirección General</option>
                         <option value="Presidencia">Presidencia</option>
                         <option value="Dirección Ejecutiva">Dirección Ejecutiva</option>
                         <option value="Producción Fonográfica">Producción Fonográfica</option>
@@ -6120,8 +6890,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       ...newProjectForm,
                       porcentaje: pct,
                       estatus: est,
+                      updatedAt: Date.now(),
                     };
                     setProjects((prev) => [created, ...prev]);
+                    setTimeout(() => syncWithCloudServer(), 60);
                     addLog(`Creado proyecto '${created.nombre}' asignado a ${created.responsable} (${pct}%)`);
                     showToast(`Proyecto asignado a ${created.responsable}`);
                     setNewProjectForm({
@@ -6193,18 +6965,22 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-4"
                     >
                       <div className="space-y-1 max-w-xl">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="font-black text-sm text-slate-900">{p.nombre}</span>
                           <span
                             className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                              p.porcentaje >= 100
+                              p.estatus === "ANULADO" || p.status === "ANULADO"
+                                ? "bg-red-100 text-red-800"
+                                : p.porcentaje >= 100
                                 ? "bg-emerald-100 text-emerald-800"
                                 : p.porcentaje > 0
                                 ? "bg-blue-100 text-blue-800"
                                 : "bg-amber-100 text-amber-800"
                             }`}
                           >
-                            {p.porcentaje >= 100
+                            {p.estatus === "ANULADO" || p.status === "ANULADO"
+                              ? "ANULADO"
+                              : p.porcentaje >= 100
                               ? "COMPLETADO (100%)"
                               : p.porcentaje > 0
                               ? `EN EJECUCIÓN (${p.porcentaje}%)`
@@ -6218,28 +6994,36 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
                         {[0, 25, 50, 75, 100].map((pctVal) => (
                           <button
                             key={pctVal}
-                            onClick={() =>
+                            onClick={() => {
                               setProjects((prev) =>
                                 prev.map((item) =>
                                   item.id === p.id
                                     ? {
                                         ...item,
                                         porcentaje: pctVal,
+                                        status:
+                                          pctVal === 100
+                                            ? "COMPLETADO"
+                                            : pctVal > 0
+                                            ? "EN_EJECUCION"
+                                            : "PENDIENTE",
                                         estatus:
                                           pctVal === 100
                                             ? "COMPLETADO"
                                             : pctVal > 0
                                             ? "EN_EJECUCION"
                                             : "PENDIENTE",
+                                        updatedAt: Date.now(),
                                       }
                                     : item
                                 )
-                              )
-                            }
+                              );
+                              setTimeout(() => syncWithCloudServer(), 60);
+                            }}
                             className={`px-2.5 py-1 rounded-lg text-xs font-black cursor-pointer ${
                               p.porcentaje === pctVal
                                 ? "bg-indigo-700 text-white"
@@ -6249,6 +7033,24 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                             {pctVal}%
                           </button>
                         ))}
+
+                        {p.estatus !== "ANULADO" && p.status !== "ANULADO" && (
+                          <button
+                            type="button"
+                            onClick={() => handleUniversalAnnul("projects", p.id, p.nombre)}
+                            className="px-2.5 py-1 rounded-lg bg-amber-700 hover:bg-amber-600 text-white text-[11px] font-bold cursor-pointer"
+                          >
+                            🚫 Anular
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleUniversalDelete("projects", p.id, p.nombre)}
+                          className="px-2.5 py-1 rounded-lg bg-red-700 hover:bg-red-600 text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          <span>Eliminar</span>
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -6382,8 +7184,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       ubicacion: newBienForm.ubicacion,
                       custodio: newBienForm.custodio,
                       estado: "OPERATIVO",
+                      updatedAt: Date.now(),
                     };
                     setBienesList((prev) => [created, ...prev]);
+                    setTimeout(() => syncWithCloudServer(), 60);
                     addLog(`Registrado Bien Nacional ${created.codigoBN} (${created.articulo})`);
                     showToast(`Bien Nacional ${created.codigoBN} incorporado al inventario.`);
                     setNewBienForm({
@@ -6507,6 +7311,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         <th className="p-3">Modelo</th>
                         <th className="p-3">Serial</th>
                         <th className="p-3">Custodio (RRHH)</th>
+                        <th className="p-3">Estatus</th>
+                        <th className="p-3">Acciones</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
@@ -6518,6 +7324,42 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           <td className="p-3">{b.modelo}</td>
                           <td className="p-3 font-mono">{b.serial}</td>
                           <td className="p-3">{b.custodio}</td>
+                          <td className="p-3">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                                b.estado === "ANULADO" || b.status === "ANULADO"
+                                  ? "bg-red-500/20 text-red-400 border border-red-500/40"
+                                  : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                              }`}
+                            >
+                              {b.estado || b.status || "OPERATIVO"}
+                            </span>
+                          </td>
+                          <td className="p-3">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {b.estado !== "ANULADO" && b.status !== "ANULADO" && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleUniversalAnnul("bienes", b.id, `${b.codigoBN} (${b.articulo})`)
+                                  }
+                                  className="px-2 py-1 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-bold text-[10px] cursor-pointer"
+                                >
+                                  🚫 Anular
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleUniversalDelete("bienes", b.id, `${b.codigoBN} (${b.articulo})`)
+                                }
+                                className="px-2 py-1 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                <span>Eliminar</span>
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -6674,6 +7516,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           <th className="border border-slate-900 p-2.5">Fecha</th>
                           <th className="border border-slate-900 p-2.5">Hora Entrada</th>
                           <th className="border border-slate-900 p-2.5">Estatus</th>
+                          <th className="border border-slate-900 p-2.5 print:hidden">Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -6685,8 +7528,39 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                             <td className="border border-slate-900 p-2.5 font-mono font-bold text-cyan-900">
                               {att.hora}
                             </td>
-                            <td className="border border-slate-900 p-2.5 font-bold text-emerald-800">
+                            <td
+                              className={`border border-slate-900 p-2.5 font-bold ${
+                                att.status === "ANULADO" || att.estatus === "ANULADO"
+                                  ? "text-red-700 line-through"
+                                  : "text-emerald-800"
+                              }`}
+                            >
                               {att.estatus}
+                            </td>
+                            <td className="border border-slate-900 p-2 print:hidden">
+                              <div className="flex flex-wrap items-center gap-1">
+                                {att.status !== "ANULADO" && att.estatus !== "ANULADO" && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleUniversalAnnul("attendance", att.id, `Asistencia de ${att.nombre}`)
+                                    }
+                                    className="px-2 py-1 rounded bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold cursor-pointer"
+                                  >
+                                    🚫 Anular
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleUniversalDelete("attendance", att.id, `Asistencia de ${att.nombre}`)
+                                  }
+                                  className="px-2 py-1 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                  <span>Eliminar</span>
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -6840,8 +7714,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 {orgViewMode === "DIAGRAM" ? (
                   <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-4">
                     <div className="px-6 py-3 bg-[#8b1538] text-white rounded-xl text-center shadow font-bold text-xs uppercase">
-                      Presidencia de la Fundación CENDIS
-                      <div className="text-[10px] text-amber-200 font-normal">Lcdo. Ali Alejandro Primera</div>
+                      Dirección General de la Fundación CENDIS
+                      <div className="text-[10px] text-amber-200 font-normal">
+                        Lcdo. Morris López • C.I. V-19.324.324
+                      </div>
                     </div>
                     <div className="h-5 w-0.5 bg-slate-400" />
                     <div className="px-6 py-3 bg-blue-900 text-white rounded-xl text-center shadow font-bold text-xs uppercase">
@@ -6851,10 +7727,32 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     <div className="h-5 w-0.5 bg-slate-400" />
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                       {employees.map((emp) => (
-                        <div key={emp.id} className="p-3 bg-white border border-slate-300 rounded-xl text-center">
+                        <div key={emp.id} className="p-3 bg-white border border-slate-300 rounded-xl text-center space-y-1.5">
                           <div className="font-black text-xs text-slate-900">{emp.coordinacion}</div>
                           <div className="text-[11px] text-slate-600">
                             {emp.nombres} {emp.apellidos} ({emp.cargo})
+                          </div>
+                          <div className="flex items-center justify-center gap-1 pt-1 print:hidden">
+                            {emp.status !== "ANULADO" && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleUniversalAnnul("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                                }
+                                className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
+                              >
+                                🚫 Anular
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleUniversalDelete("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                              }
+                              className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
+                            >
+                              🗑️ Eliminar
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -6863,9 +7761,33 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 ) : (
                   <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs text-slate-900">
                     {employees.map((emp, idx) => (
-                      <div key={emp.id} className="py-1.5 border-b border-slate-200">
-                        <strong>Nivel {idx + 1} - {emp.coordinacion}:</strong> {emp.nombres} {emp.apellidos} —{" "}
-                        <span className="text-slate-600">{emp.cargo}</span>
+                      <div key={emp.id} className="py-1.5 border-b border-slate-200 flex items-center justify-between gap-2">
+                        <div>
+                          <strong>Nivel {idx + 1} - {emp.coordinacion}:</strong> {emp.nombres} {emp.apellidos} —{" "}
+                          <span className="text-slate-600">{emp.cargo}</span>
+                        </div>
+                        <div className="flex items-center gap-1 print:hidden">
+                          {emp.status !== "ANULADO" && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleUniversalAnnul("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                              }
+                              className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold cursor-pointer"
+                            >
+                              🚫 Anular
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleUniversalDelete("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                            }
+                            className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold cursor-pointer"
+                          >
+                            🗑️ Eliminar
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -7270,8 +8192,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                             active: true,
                             linkedEmployeeId: null,
                             permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE[newUserForm.role] },
+                            updatedAt: Date.now(),
                           };
                           setUsers((prev) => [...prev, created]);
+                          setTimeout(() => syncWithCloudServer(), 60);
                           setSelectedConfigUserId(String(created.id));
                           addLog(`Creado usuario '${created.username}' (${emailClean}) con rol ${created.role}`);
                           showToast(
@@ -7354,7 +8278,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                               <th className="p-3 text-left">Nombre</th>
                               <th className="p-3 text-left">Rol</th>
                               <th className="p-3 text-left">Permisos de Acción</th>
-                              <th className="p-3 text-left">Configurar</th>
+                              <th className="p-3 text-left">Configurar / Acciones</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-200">
@@ -7405,19 +8329,44 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                     </div>
                                   </td>
                                   <td className="p-3">
-                                    <button
-                                      type="button"
-                                      onClick={() => setSelectedConfigUserId(String(u.id))}
-                                      className={`px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer ${
-                                        String(selectedUserForPerms.id) === String(u.id)
-                                          ? "bg-[#f59e0b] text-slate-950 font-black"
-                                          : "bg-slate-800 text-slate-200 hover:bg-slate-700"
-                                      }`}
-                                    >
-                                      {String(selectedUserForPerms.id) === String(u.id)
-                                        ? "Seleccionado"
-                                        : "Editar Permisos"}
-                                    </button>
+                                    <div className="flex flex-wrap items-center gap-1.5">
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedConfigUserId(String(u.id))}
+                                        className={`px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer ${
+                                          String(selectedUserForPerms.id) === String(u.id)
+                                            ? "bg-[#f59e0b] text-slate-950 font-black"
+                                            : "bg-slate-800 text-slate-200 hover:bg-slate-700"
+                                        }`}
+                                      >
+                                        {String(selectedUserForPerms.id) === String(u.id)
+                                          ? "Seleccionado"
+                                          : "Editar Permisos"}
+                                      </button>
+
+                                      {u.status !== "ANULADO" && u.active !== false && (
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            handleUniversalAnnul("users", u.id, `Usuario ${u.fullName}`)
+                                          }
+                                          className="px-2 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold cursor-pointer"
+                                        >
+                                          🚫 Anular
+                                        </button>
+                                      )}
+
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleUniversalDelete("users", u.id, `Usuario ${u.fullName}`)
+                                        }
+                                        className="px-2 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                                      >
+                                        <Trash2 className="w-3 h-3" />
+                                        <span>Eliminar</span>
+                                      </button>
+                                    </div>
                                   </td>
                                 </tr>
                               );
@@ -7482,10 +8431,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 };
 
                 if (editingEmpId) {
-                  const updatedEmp = { ...payload, id: editingEmpId };
+                  const updatedEmp = { ...payload, id: editingEmpId, updatedAt: Date.now() };
                   setEmployees((prev) =>
                     prev.map((emp) => (emp.id === editingEmpId ? updatedEmp : emp))
                   );
+                  setTimeout(() => syncWithCloudServer(), 60);
                   addLog(
                     `Actualizado expediente en RRHH: ${updatedEmp.nombres} ${updatedEmp.apellidos} (${updatedEmp.cedula})`
                   );
@@ -7493,8 +8443,9 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     `Expediente de ${updatedEmp.nombres} ${updatedEmp.apellidos} actualizado correctamente.`
                   );
                 } else {
-                  const created = { id: `emp-${Date.now()}`, ...payload };
+                  const created = { id: `emp-${Date.now()}`, ...payload, updatedAt: Date.now() };
                   setEmployees((prev) => [...prev, created]);
+                  setTimeout(() => syncWithCloudServer(), 60);
                   addLog(
                     `Ingresado trabajador en RRHH: ${created.nombres} ${created.apellidos} (${created.cedula})`
                   );
@@ -7767,6 +8718,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       onChange={(e) => setNewEmpForm({ ...newEmpForm, coordinacion: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white font-bold"
                     >
+                      <option value="Dirección General">Dirección General</option>
                       <option value="Presidencia">Presidencia</option>
                       <option value="Dirección Ejecutiva">Dirección Ejecutiva</option>
                       <option value="Producción Fonográfica">Producción Fonográfica</option>
@@ -8297,7 +9249,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           FIRMAS AUTORIZADAS
                         </div>
 
-                        {/* Fila Firma 1: DIRECTOR/A GENERAL */}
+                        {/* Fila Firma 1: DIRECTOR/A GENERAL (MORRIS LÓPEZ) */}
                         <div>
                           <div className="grid grid-cols-12 gap-1.5 items-center">
                             <div
@@ -8327,8 +9279,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                               20 SEP 2024
                             </div>
                           </div>
-                          <div className="text-[10.5px] font-bold uppercase text-slate-900 mt-0.5">
-                            DIRECTOR/A GENERAL
+                          <div className="text-[10px] font-black uppercase text-slate-900 mt-0.5 leading-tight">
+                            LCDO. MORRIS LÓPEZ • DIRECTOR GENERAL
                           </div>
                         </div>
 
@@ -8698,12 +9650,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </div>
 
                 {/* Firmas de Validación de la Hoja de Vida */}
-                <div className="grid grid-cols-2 gap-12 pt-3 text-center text-[10.5px]">
+                <div className="grid grid-cols-3 gap-6 pt-3 text-center text-[10px]">
                   <div className="border-t border-slate-900 pt-1">
                     <div className="font-black uppercase text-slate-900">
                       {selectedEmpForCV.nombres} {selectedEmpForCV.apellidos}
                     </div>
-                    <div className="text-[9.5px] text-slate-600">
+                    <div className="text-[9px] text-slate-600">
                       Firma del Trabajador(a) • C.I. {selectedEmpForCV.cedula}
                     </div>
                   </div>
@@ -8711,8 +9663,16 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     <div className="font-black uppercase text-slate-900">
                       COORDINACIÓN DE RECURSOS HUMANOS
                     </div>
-                    <div className="text-[9.5px] text-slate-600">
+                    <div className="text-[9px] text-slate-600">
                       Fundación Centro Nacional del Disco (CENDIS)
+                    </div>
+                  </div>
+                  <div className="border-t border-slate-900 pt-1">
+                    <div className="font-black uppercase text-slate-900">
+                      LCDO. MORRIS LÓPEZ
+                    </div>
+                    <div className="text-[9px] text-slate-600">
+                      Director General CENDIS • C.I. V-19.324.324
                     </div>
                   </div>
                 </div>
@@ -8758,9 +9718,19 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             <div className="p-3 h-60 overflow-y-auto space-y-2 bg-slate-50">
               {chatMessages.map((msg) => (
                 <div key={msg.id} className="p-2 rounded-xl bg-white border border-slate-200 text-xs shadow-2xs">
-                  <div className="flex justify-between text-[10px] font-black text-[#8b1538]">
+                  <div className="flex items-center justify-between text-[10px] font-black text-[#8b1538]">
                     <span>{msg.sender} → {msg.recipient}</span>
-                    <span className="text-slate-400">{msg.time}</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-slate-400">{msg.time}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleUniversalDelete("chat", msg.id, "Mensaje de chat")}
+                        title="Eliminar mensaje"
+                        className="text-red-500 hover:text-red-700 px-1 cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
                   </div>
                   <p className="text-slate-800 mt-0.5">{msg.text}</p>
                 </div>
@@ -8778,8 +9748,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     recipient: chatRecipient,
                     text: chatInput.trim(),
                     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                    updatedAt: Date.now(),
                   },
                 ]);
+                setTimeout(() => syncWithCloudServer(), 60);
                 setChatInput("");
               }}
               className="p-2 border-t border-slate-200 flex gap-1.5 bg-white"
