@@ -1,25 +1,10 @@
 import fs from "fs";
 import path from "path";
 
-const TMP_FILE = path.join(process.env.TEMP || "/tmp", "cendis_cloud_sync_v21.json");
+const TMP_FILE = path.join(process.env.TEMP || "/tmp", "cendis_cloud_sync_v212.json");
 
-function loadPersistedState() {
-  if (globalThis.__CENDIS_SYNC_STATE_V21__) {
-    return globalThis.__CENDIS_SYNC_STATE_V21__;
-  }
-  try {
-    if (fs.existsSync(TMP_FILE)) {
-      const raw = fs.readFileSync(TMP_FILE, "utf8");
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") {
-        globalThis.__CENDIS_SYNC_STATE_V21__ = parsed;
-        return parsed;
-      }
-    }
-  } catch {
-    // Ignore file read errors in serverless environment
-  }
-  const initial = {
+function createEmptyState() {
+  return {
     updatedAt: 0,
     deletedIds: [],
     agendaEvents: [],
@@ -31,19 +16,82 @@ function loadPersistedState() {
     attendanceRecords: [],
     users: [],
     chatMessages: [],
+    orgCargos: [],
+    printedLabelsLog: [],
     logs: [],
   };
-  globalThis.__CENDIS_SYNC_STATE_V21__ = initial;
+}
+
+async function loadFromKV() {
+  const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!kvUrl || !kvToken) return null;
+  try {
+    const res = await fetch(`${kvUrl.replace(/\/$/, "")}/get/cendis_sync_state_v212`, {
+      headers: { Authorization: `Bearer ${kvToken}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data || !data.result) return null;
+    const parsed = typeof data.result === "string" ? JSON.parse(data.result) : data.result;
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveToKV(state) {
+  const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!kvUrl || !kvToken) return;
+  try {
+    await fetch(`${kvUrl.replace(/\/$/, "")}/set/cendis_sync_state_v212`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${kvToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(JSON.stringify(state)),
+    });
+  } catch {
+    // Ignore KV write errors
+  }
+}
+
+async function loadPersistedState() {
+  const kvState = await loadFromKV();
+  if (kvState) {
+    globalThis.__CENDIS_SYNC_STATE_V212__ = kvState;
+    return kvState;
+  }
+  if (globalThis.__CENDIS_SYNC_STATE_V212__) {
+    return globalThis.__CENDIS_SYNC_STATE_V212__;
+  }
+  try {
+    if (fs.existsSync(TMP_FILE)) {
+      const raw = fs.readFileSync(TMP_FILE, "utf8");
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") {
+        globalThis.__CENDIS_SYNC_STATE_V212__ = parsed;
+        return parsed;
+      }
+    }
+  } catch {
+    // Ignore file read errors in serverless environment
+  }
+  const initial = createEmptyState();
+  globalThis.__CENDIS_SYNC_STATE_V212__ = initial;
   return initial;
 }
 
-function savePersistedState(state) {
-  globalThis.__CENDIS_SYNC_STATE_V21__ = state;
+async function savePersistedState(state) {
+  globalThis.__CENDIS_SYNC_STATE_V212__ = state;
   try {
     fs.writeFileSync(TMP_FILE, JSON.stringify(state), "utf8");
   } catch {
     // Ignore write errors if read-only fs
   }
+  await saveToKV(state);
 }
 
 function mergeCollectionById(serverArr = [], clientArr = [], deletedSet = new Set()) {
@@ -105,13 +153,19 @@ export function mergeSyncPayload(currentState, incoming = {}) {
     ),
     users: mergeCollectionById(currentState.users, incoming.users, deletedSet),
     chatMessages: mergeCollectionById(currentState.chatMessages, incoming.chatMessages, deletedSet),
+    orgCargos: mergeCollectionById(currentState.orgCargos, incoming.orgCargos, deletedSet),
+    printedLabelsLog: mergeCollectionById(
+      currentState.printedLabelsLog,
+      incoming.printedLabelsLog,
+      deletedSet
+    ),
     logs: mergeCollectionById(currentState.logs, incoming.logs, deletedSet).slice(0, 150),
   };
 
   return nextState;
 }
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -121,7 +175,7 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
 
-  const currentState = loadPersistedState();
+  const currentState = await loadPersistedState();
 
   if (req.method === "GET") {
     return res.status(200).json(currentState);
@@ -137,7 +191,7 @@ export default function handler(req, res) {
       }
     }
     const nextState = mergeSyncPayload(currentState, body || {});
-    savePersistedState(nextState);
+    await savePersistedState(nextState);
     return res.status(200).json(nextState);
   }
 

@@ -537,6 +537,45 @@ const INITIAL_BIENES = [
   },
 ];
 
+const INITIAL_ORG_CARGOS = [
+  {
+    id: "cargo-1",
+    nombreCargo: "DIRECTOR GENERAL",
+    coordinacion: "DIRECCIÓN GENERAL",
+    nivelJerarquico: "DIRECCIÓN",
+    reportaA: "MINISTERIO DEL PODER POPULAR PARA LA CULTURA",
+    funciones: "Dirección estratégica, representación legal y conducción general de la Fundación CENDIS.",
+    assignedEmpId: "emp-1",
+    assignedEmpName: "MORRIS LÓPEZ",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "cargo-2",
+    nombreCargo: "DIRECTORA EJECUTIVA",
+    coordinacion: "DIRECCIÓN EJECUTIVA",
+    nivelJerarquico: "DIRECCIÓN",
+    reportaA: "DIRECTOR GENERAL",
+    funciones: "Coordinación administrativa, operativa e institucional de las unidades del CENDIS.",
+    assignedEmpId: "emp-2",
+    assignedEmpName: "JULIMAR FLORES",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "cargo-3",
+    nombreCargo: "COORDINADORA DE PRODUCCIÓN",
+    coordinacion: "PRODUCCIÓN FONOGRÁFICA",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "DIRECTORA EJECUTIVA",
+    funciones: "Planificación y control técnico de grabaciones, estudios y archivo sonoro.",
+    assignedEmpId: "emp-3",
+    assignedEmpName: "ANAILETH BRICEÑO",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+];
+
 // ============================================================================
 // COMPONENTES GRÁFICOS OFICIALES (LOGO GLIFO Y CINTILLO MPPC / CENDIS)
 // ============================================================================
@@ -1152,6 +1191,8 @@ const UPPERCASE_PRESERVE_KEYS = new Set([
   "availability",
   "reminderUnit",
   "tipo",
+  "concepto",
+  "ordenSalidaObservaciones",
 ]);
 
 function normalizeRecordToUpperCase(val) {
@@ -1295,12 +1336,48 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  // Estado Universal de Memorandos, Solicitudes y Oficios (Formato Oficial FC-DG-MEM-2026-007)
-  const [docType, setDocType] = useState("MEMORANDUM"); // MEMORANDUM | SOLICITUD | OFICIO
+  // Estado Universal de Memorandos, Solicitudes, Oficios y Órdenes de Salida (Formato Oficial FC-DG-MEM-2026-007)
+  const [docType, setDocType] = useState("MEMORANDUM"); // MEMORANDUM | SOLICITUD | OFICIO | ORDEN_SALIDA
   const [docUnitPrefix, setDocUnitPrefix] = useState("FC-DG");
-  const [counters, setCounters] = useState({ MEMORANDUM: 7, SOLICITUD: 1, OFICIO: 1 });
+  const [counters, setCounters] = useState({ MEMORANDUM: 7, SOLICITUD: 1, OFICIO: 1, ORDEN_SALIDA: 1 });
   const [manualCorrelative, setManualCorrelative] = useState(false);
   const [customCorrelative, setCustomCorrelative] = useState("");
+
+  // Variables específicas para Orden de Salida de Equipos (integrada con RRHH y Bienes Nacionales)
+  const [ordenSalidaData, setOrdenSalidaData] = useState({
+    tipoSalida: "PRÉSTAMO / COMISIÓN DE SERVICIO",
+    fechaSalida: "2026-11-15",
+    fechaRetorno: "2026-11-20",
+    responsableNombre: "ANAILETH BRICEÑO",
+    responsableCedula: "V-20.164.307",
+    responsableCargo: "COORDINADORA DE PRODUCCIÓN - PRODUCCIÓN FONOGRÁFICA",
+    responsableTelefono: "0424-1643007",
+    destino: "TEATRO TERESA CARREÑO / ACTIVIDAD CULTURAL MPPC",
+    autorizadoPor: "LCDO. MORRIS LÓPEZ (DIRECTOR GENERAL)",
+    equipos: [
+      {
+        id: "eq-init-1",
+        bienId: "bn-2",
+        codigoBN: "BN-CENDIS-001046",
+        descripcion: "MICRÓFONO DE CONDENSADOR ESTUDIO",
+        marca: "NEUMANN",
+        modelo: "U87 AI",
+        serial: "NM-U87-44120",
+        cantidad: 1,
+        estadoSalida: "OPERATIVO / BUEN ESTADO",
+      },
+    ],
+  });
+  const [equipoDraft, setEquipoDraft] = useState({
+    bienId: "",
+    codigoBN: "",
+    descripcion: "",
+    marca: "",
+    modelo: "",
+    serial: "",
+    cantidad: 1,
+    estadoSalida: "OPERATIVO / BUEN ESTADO",
+  });
 
   const [para, setPara] = useState("LCDO. JESÚS GARCÍA");
   const [paraDireccion, setParaDireccion] = useState(
@@ -1522,8 +1599,29 @@ export default function App() {
   const [scannerInput, setScannerInput] = useState("");
   const [scannerAlert, setScannerAlert] = useState(null);
 
-  // Estado de Organigrama
+  // Estado de Organigrama y Cargos Vinculados a RRHH
   const [orgViewMode, setOrgViewMode] = useState("DIAGRAM"); // DIAGRAM | TEXT
+  const [orgCargos, setOrgCargosState] = useState(() =>
+    normalizeRecordToUpperCase(loadStoredJson("cendis_org_cargos_v1", INITIAL_ORG_CARGOS))
+  );
+  const setOrgCargos = (updater) => {
+    setOrgCargosState((prev) => {
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
+      saveStoredJson("cendis_org_cargos_v1", next);
+      return next;
+    });
+  };
+  const [orgCargoModalOpen, setOrgCargoModalOpen] = useState(false);
+  const [editingOrgCargoId, setEditingOrgCargoId] = useState(null);
+  const [orgCargoForm, setOrgCargoForm] = useState({
+    nombreCargo: "",
+    coordinacion: "PRODUCCIÓN FONOGRÁFICA",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "DIRECCIÓN GENERAL",
+    funciones: "",
+    assignedEmpId: "",
+  });
 
   // Estado de Proyectos y Tareas
   const [projects, setProjectsState] = useState(() =>
@@ -1582,7 +1680,30 @@ export default function App() {
       return next;
     });
   };
-  const [bienesViewMode, setBienesViewMode] = useState("FORM"); // FORM | PDF
+  const [bienesViewMode, setBienesViewMode] = useState("FORM"); // FORM | PDF | LABELS
+  const [printedLabelsLog, setPrintedLabelsLogState] = useState(() =>
+    normalizeRecordToUpperCase(loadStoredJson("cendis_printed_labels_v1", []))
+  );
+  const setPrintedLabelsLog = (updater) => {
+    setPrintedLabelsLogState((prev) => {
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
+      saveStoredJson("cendis_printed_labels_v1", next);
+      return next;
+    });
+  };
+  const [labelGenForm, setLabelGenForm] = useState({
+    sourceBienId: "",
+    cantidad: 1,
+    articulo: "CONSOLA DE MEZCLA DIGITAL",
+    prefijoBN: "BN-CENDIS",
+    ubicacion: "SEDE CENDIS",
+  });
+  const [currentLabelBatch, setCurrentLabelBatch] = useState({
+    batchId: null,
+    items: [],
+    isLockedPrinted: false,
+  });
   const [newBienForm, setNewBienForm] = useState({
     articulo: "CONSOLA DE MEZCLA DIGITAL",
     nuevoArticuloTexto: "",
@@ -1630,9 +1751,122 @@ export default function App() {
     attendanceRecords,
     users,
     chatMessages,
+    orgCargos,
+    printedLabelsLog,
   };
 
-  const syncWithCloudServer = async (overridePartial = {}) => {
+  const applyRemoteState = (remote, currentSnap) => {
+    if (!remote || typeof remote !== "object") return;
+
+    const mergedDeletedList = Array.from(
+      new Set([
+        ...(currentSnap.deletedIds || []).map(String),
+        ...(Array.isArray(remote.deletedIds) ? remote.deletedIds.map(String) : []),
+      ])
+    );
+    const deletedSet = new Set(mergedDeletedList);
+
+    if (mergedDeletedList.length !== (currentSnap.deletedIds || []).length) {
+      setDeletedIds(mergedDeletedList);
+    }
+
+    if (Array.isArray(remote.agendaEvents)) {
+      const mergedAgenda = mergeSyncArrays(
+        currentSnap.agendaEvents,
+        remote.agendaEvents,
+        deletedSet
+      );
+      if (JSON.stringify(mergedAgenda) !== JSON.stringify(currentSnap.agendaEvents)) {
+        setAgendaEvents(mergedAgenda);
+      }
+    }
+    if (Array.isArray(remote.documents)) {
+      const mergedDocs = mergeSyncArrays(currentSnap.documents, remote.documents, deletedSet);
+      if (JSON.stringify(mergedDocs) !== JSON.stringify(currentSnap.documents)) {
+        setDocuments(mergedDocs);
+      }
+    }
+    if (Array.isArray(remote.employees)) {
+      const mergedEmps = sanitizeEmployeesDirectorGeneral(
+        mergeSyncArrays(currentSnap.employees, remote.employees, deletedSet)
+      );
+      if (JSON.stringify(mergedEmps) !== JSON.stringify(currentSnap.employees)) {
+        setEmployees(mergedEmps);
+      }
+    }
+    if (Array.isArray(remote.projects)) {
+      const mergedProjs = mergeSyncArrays(currentSnap.projects, remote.projects, deletedSet);
+      if (JSON.stringify(mergedProjs) !== JSON.stringify(currentSnap.projects)) {
+        setProjects(mergedProjs);
+      }
+    }
+    if (Array.isArray(remote.bienesList)) {
+      const mergedBienes = mergeSyncArrays(currentSnap.bienesList, remote.bienesList, deletedSet);
+      if (JSON.stringify(mergedBienes) !== JSON.stringify(currentSnap.bienesList)) {
+        setBienesList(mergedBienes);
+      }
+    }
+    if (Array.isArray(remote.bienesCatalog) && remote.bienesCatalog.length > 0) {
+      const mergedCatalog = Array.from(
+        new Set([...(currentSnap.bienesCatalog || []), ...remote.bienesCatalog])
+      );
+      if (JSON.stringify(mergedCatalog) !== JSON.stringify(currentSnap.bienesCatalog)) {
+        setBienesCatalog(mergedCatalog);
+      }
+    }
+    if (Array.isArray(remote.attendanceRecords)) {
+      const mergedAtt = mergeSyncArrays(
+        currentSnap.attendanceRecords,
+        remote.attendanceRecords,
+        deletedSet
+      );
+      if (JSON.stringify(mergedAtt) !== JSON.stringify(currentSnap.attendanceRecords)) {
+        setAttendanceRecords(mergedAtt);
+      }
+    }
+    if (Array.isArray(remote.users)) {
+      const mergedUsers = sanitizeUsersDirectorGeneral(
+        mergeSyncArrays(currentSnap.users, remote.users, deletedSet)
+      );
+      if (JSON.stringify(mergedUsers) !== JSON.stringify(currentSnap.users)) {
+        setUsers(mergedUsers);
+      }
+    }
+    if (Array.isArray(remote.chatMessages)) {
+      const mergedChat = mergeSyncArrays(
+        currentSnap.chatMessages,
+        remote.chatMessages,
+        deletedSet
+      );
+      if (JSON.stringify(mergedChat) !== JSON.stringify(currentSnap.chatMessages)) {
+        setChatMessages(mergedChat);
+      }
+    }
+    if (Array.isArray(remote.orgCargos)) {
+      const mergedCargos = mergeSyncArrays(
+        currentSnap.orgCargos,
+        remote.orgCargos,
+        deletedSet
+      );
+      if (JSON.stringify(mergedCargos) !== JSON.stringify(currentSnap.orgCargos)) {
+        setOrgCargos(mergedCargos);
+      }
+    }
+    if (Array.isArray(remote.printedLabelsLog)) {
+      const mergedLabels = mergeSyncArrays(
+        currentSnap.printedLabelsLog,
+        remote.printedLabelsLog,
+        deletedSet
+      );
+      if (JSON.stringify(mergedLabels) !== JSON.stringify(currentSnap.printedLabelsLog)) {
+        setPrintedLabelsLog(mergedLabels);
+      }
+    }
+  };
+
+  const broadcastSyncRef = React.useRef(null);
+
+  const syncWithCloudServer = async (overridePartial = {}, mode = "PUSH") => {
     if (typeof window === "undefined") return;
     try {
       setSyncStatus("SINCRONIZANDO");
@@ -1640,94 +1874,48 @@ export default function App() {
         ...syncPayloadRef.current,
         ...overridePartial,
       };
-      const response = await fetch("/api/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(currentSnap),
-      });
-      if (!response.ok) {
-        setSyncStatus("LOCAL");
-        return;
-      }
-      const remote = await response.json();
-      if (!remote || typeof remote !== "object") return;
 
-      const mergedDeletedList = Array.from(
-        new Set([
-          ...(currentSnap.deletedIds || []).map(String),
-          ...(Array.isArray(remote.deletedIds) ? remote.deletedIds.map(String) : []),
-        ])
-      );
-      const deletedSet = new Set(mergedDeletedList);
-
-      if (mergedDeletedList.length !== (currentSnap.deletedIds || []).length) {
-        setDeletedIds(mergedDeletedList);
+      if (mode === "PUSH" && broadcastSyncRef.current) {
+        try {
+          broadcastSyncRef.current.postMessage(currentSnap);
+        } catch {
+          // ignore BroadcastChannel errors
+        }
       }
 
-      if (Array.isArray(remote.agendaEvents)) {
-        const mergedAgenda = mergeSyncArrays(
-          currentSnap.agendaEvents,
-          remote.agendaEvents,
-          deletedSet
-        );
-        if (JSON.stringify(mergedAgenda) !== JSON.stringify(currentSnap.agendaEvents)) {
-          setAgendaEvents(mergedAgenda);
+      let remote = null;
+      if (mode === "PULL") {
+        const resGet = await fetch(`/api/sync?t=${Date.now()}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+        if (!resGet.ok) {
+          setSyncStatus("LOCAL");
+          return;
         }
-      }
-      if (Array.isArray(remote.documents)) {
-        const mergedDocs = mergeSyncArrays(currentSnap.documents, remote.documents, deletedSet);
-        if (JSON.stringify(mergedDocs) !== JSON.stringify(currentSnap.documents)) {
-          setDocuments(mergedDocs);
+        remote = await resGet.json();
+        if (!remote || !remote.updatedAt) {
+          const resSeed = await fetch("/api/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(currentSnap),
+          });
+          if (resSeed.ok) remote = await resSeed.json();
         }
-      }
-      if (Array.isArray(remote.employees)) {
-        const mergedEmps = sanitizeEmployeesDirectorGeneral(
-          mergeSyncArrays(currentSnap.employees, remote.employees, deletedSet)
-        );
-        if (JSON.stringify(mergedEmps) !== JSON.stringify(currentSnap.employees)) {
-          setEmployees(mergedEmps);
+      } else {
+        const response = await fetch("/api/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(currentSnap),
+        });
+        if (!response.ok) {
+          setSyncStatus("LOCAL");
+          return;
         }
+        remote = await response.json();
       }
-      if (Array.isArray(remote.projects)) {
-        const mergedProjs = mergeSyncArrays(currentSnap.projects, remote.projects, deletedSet);
-        if (JSON.stringify(mergedProjs) !== JSON.stringify(currentSnap.projects)) {
-          setProjects(mergedProjs);
-        }
-      }
-      if (Array.isArray(remote.bienesList)) {
-        const mergedBienes = mergeSyncArrays(currentSnap.bienesList, remote.bienesList, deletedSet);
-        if (JSON.stringify(mergedBienes) !== JSON.stringify(currentSnap.bienesList)) {
-          setBienesList(mergedBienes);
-        }
-      }
-      if (Array.isArray(remote.attendanceRecords)) {
-        const mergedAtt = mergeSyncArrays(
-          currentSnap.attendanceRecords,
-          remote.attendanceRecords,
-          deletedSet
-        );
-        if (JSON.stringify(mergedAtt) !== JSON.stringify(currentSnap.attendanceRecords)) {
-          setAttendanceRecords(mergedAtt);
-        }
-      }
-      if (Array.isArray(remote.users)) {
-        const mergedUsers = sanitizeUsersDirectorGeneral(
-          mergeSyncArrays(currentSnap.users, remote.users, deletedSet)
-        );
-        if (JSON.stringify(mergedUsers) !== JSON.stringify(currentSnap.users)) {
-          setUsers(mergedUsers);
-        }
-      }
-      if (Array.isArray(remote.chatMessages)) {
-        const mergedChat = mergeSyncArrays(
-          currentSnap.chatMessages,
-          remote.chatMessages,
-          deletedSet
-        );
-        if (JSON.stringify(mergedChat) !== JSON.stringify(currentSnap.chatMessages)) {
-          setChatMessages(mergedChat);
-        }
-      }
+
+      applyRemoteState(remote, currentSnap);
       setSyncStatus("SINCRONIZADO");
       setLastSyncTime(
         new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })
@@ -1739,24 +1927,43 @@ export default function App() {
 
   // Ciclo continuo de sincronización en tiempo real cada 2.5 segundos + al enfocar ventana + entre pestañas
   useEffect(() => {
-    syncWithCloudServer();
+    if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+      const bc = new BroadcastChannel("cendis_realtime_sync_v212");
+      broadcastSyncRef.current = bc;
+      bc.onmessage = (ev) => {
+        if (ev && ev.data && typeof ev.data === "object") {
+          applyRemoteState(ev.data, syncPayloadRef.current);
+        }
+      };
+    }
+
+    syncWithCloudServer({}, "PUSH");
     const intervalId = setInterval(() => {
-      syncWithCloudServer();
+      syncWithCloudServer({}, "PULL");
     }, 2500);
-    const onFocus = () => syncWithCloudServer();
+    const onFocus = () => syncWithCloudServer({}, "PULL");
     window.addEventListener("focus", onFocus);
     window.addEventListener("storage", onFocus);
     return () => {
       clearInterval(intervalId);
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("storage", onFocus);
+      if (broadcastSyncRef.current) {
+        broadcastSyncRef.current.close();
+        broadcastSyncRef.current = null;
+      }
     };
   }, []);
 
   // Empujar cambios inmediatamente cuando se crea, modifica, anula o elimina en cualquier módulo
+  const hasMountedSyncRef = React.useRef(false);
   useEffect(() => {
+    if (!hasMountedSyncRef.current) {
+      hasMountedSyncRef.current = true;
+      return;
+    }
     const timer = setTimeout(() => {
-      syncWithCloudServer();
+      syncWithCloudServer({}, "PUSH");
     }, 180);
     return () => clearTimeout(timer);
   }, [
@@ -1766,9 +1973,12 @@ export default function App() {
     employees,
     projects,
     bienesList,
+    bienesCatalog,
     attendanceRecords,
     users,
     chatMessages,
+    orgCargos,
+    printedLabelsLog,
   ]);
 
   // ============================================================================
@@ -1826,6 +2036,10 @@ export default function App() {
       const next = chatMessages.filter((x) => String(x.id) !== idStr);
       setChatMessages(next);
       syncWithCloudServer({ deletedIds: nextDeleted, chatMessages: next });
+    } else if (collectionKey === "orgCargos") {
+      const next = orgCargos.filter((x) => String(x.id) !== idStr);
+      setOrgCargos(next);
+      syncWithCloudServer({ deletedIds: nextDeleted, orgCargos: next });
     }
 
     addLog(`ELIMINADO definitivamente: ${label}`);
@@ -1904,6 +2118,12 @@ export default function App() {
       );
       setUsers(next);
       syncWithCloudServer({ users: next });
+    } else if (collectionKey === "orgCargos") {
+      const next = orgCargos.map((c) =>
+        String(c.id) === idStr ? { ...c, status: "ANULADO", updatedAt: nowTs } : c
+      );
+      setOrgCargos(next);
+      syncWithCloudServer({ orgCargos: next });
     }
 
     addLog(`ANULADO: ${label}`);
@@ -1957,7 +2177,13 @@ export default function App() {
   const formattedCorrelative = useMemo(() => {
     if (manualCorrelative && customCorrelative.trim()) return customCorrelative.trim();
     const typeCode =
-      docType === "MEMORANDUM" ? "MEM" : docType === "SOLICITUD" ? "SOL" : "OFI";
+      docType === "MEMORANDUM"
+        ? "MEM"
+        : docType === "SOLICITUD"
+        ? "SOL"
+        : docType === "ORDEN_SALIDA"
+        ? "OS"
+        : "OFI";
     const cleanUnit = (docUnitPrefix || "FC-DG").trim().toUpperCase();
     const num = String(counters[docType] || 1).padStart(3, "0");
     return `${cleanUnit}-${typeCode}-2026-${num}`;
@@ -2010,6 +2236,7 @@ export default function App() {
       signerCargo,
       signerEnte,
       signerMinisterio,
+      ordenSalida: docType === "ORDEN_SALIDA" ? ordenSalidaData : undefined,
       status: "BORRADOR",
       creadoPor: currentUser?.username || "usuario",
       motivoAnulacion: "",
@@ -2030,6 +2257,7 @@ export default function App() {
     signerCargo,
     signerEnte,
     signerMinisterio,
+    ordenSalidaData,
     currentUser,
   ]);
 
@@ -2535,6 +2763,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       signerCargo,
       signerEnte,
       signerMinisterio,
+      ordenSalida: docType === "ORDEN_SALIDA" ? ordenSalidaData : undefined,
       status: "PENDIENTE_APROBACION",
       creadoPor: currentUser?.fullName || currentUser?.username || "usuario",
       creadoEn: stamp,
@@ -2580,6 +2809,9 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     setSignerCargo(docObj.signerCargo || "Director General");
     setSignerEnte(docObj.signerEnte || "Fundación Centro Nacional del Disco (CENDIS)");
     setSignerMinisterio(docObj.signerMinisterio || "Ministerio del Poder Popular para la Cultura");
+    if (docObj.ordenSalida) {
+      setOrdenSalidaData(docObj.ordenSalida);
+    }
   };
 
   const handleOpenReviewModal = (docObj) => {
@@ -3128,7 +3360,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       onClick={toggleThemeMode}
       title={
         themeMode === "DARK"
-          ? "Cambiar a Modo Claro (Blanco) en todo el sistema"
+          ? "Cambiar a Modo Claro en todo el sistema"
           : "Cambiar a Modo Oscuro en todo el sistema"
       }
       className={`px-3 py-1.5 rounded-xl text-[11px] font-black flex items-center gap-1.5 transition cursor-pointer shrink-0 shadow ${
@@ -3138,7 +3370,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       }`}
     >
       <span>{themeMode === "DARK" ? "☀️" : "🌙"}</span>
-      <span>{themeMode === "DARK" ? "Modo Claro (Blanco)" : "Modo Oscuro"}</span>
+      <span>{themeMode === "DARK" ? "Modo Claro" : "Modo Oscuro"}</span>
     </button>
   );
 
@@ -3277,39 +3509,116 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       .cendis-theme-light .cendis-dark-workspace .bg-slate-50:not(#printable-area):not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .bg-slate-100:not(button):not(#printable-area):not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .bg-slate-900:not(button):not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .bg-slate-900\\/90:not(#printable-area *),
-      .cendis-theme-light .cendis-dark-workspace .bg-slate-800\\/90:not(#printable-area *),
-      .cendis-theme-light .bg-\\[#070b14\\]:not(#printable-area *) {
-        background: #f8fafc !important;
-        background-color: #f8fafc !important;
-        color: #0f172a !important;
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-900\\/90:not(button):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-900\\/60:not(button):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-900\\/50:not(button):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-800\\/90:not(button):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-800:not(button):not(#printable-area *),
+      .cendis-theme-light .bg-\\[#070b14\\]:not(#printable-area *),
+      .cendis-theme-light .bg-\\[#090d16\\]\\/90:not(#printable-area *),
+      .cendis-theme-light .bg-\\[#161824\\]:not(#printable-area *) {
+        background: #f1f5f9 !important;
+        background-color: #f1f5f9 !important;
+        color: #1e293b !important;
         border-color: #cbd5e1 !important;
       }
-      .cendis-theme-light .text-white:not(.neon-orange-nav):not(.neon-orange-nav *):not(.neon-orange-nav-active):not(.neon-orange-nav-active *):not(.bg-\\[#b91c1c\\]):not(.bg-\\[#b91c1c\\] *):not(.bg-\\[#8b1538\\]):not(.bg-\\[#8b1538\\] *):not(.bg-emerald-600):not(.bg-emerald-600 *):not(.bg-emerald-700):not(.bg-emerald-700 *):not(.bg-blue-600):not(.bg-blue-600 *):not(.bg-blue-700):not(.bg-blue-700 *):not(.bg-blue-900):not(.bg-blue-900 *):not(.bg-indigo-700):not(.bg-indigo-700 *):not(.bg-teal-700):not(.bg-teal-700 *):not(.bg-cyan-700):not(.bg-cyan-700 *):not(.bg-purple-700):not(.bg-purple-700 *):not(.bg-red-600):not(.bg-red-600 *):not(.bg-red-700):not(.bg-red-700 *):not(#printable-area *),
-      .cendis-theme-light .text-slate-100:not(#printable-area *),
-      .cendis-theme-light .text-slate-200:not(#printable-area *),
-      .cendis-theme-light .text-slate-300:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-amber-950\\/85:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-amber-950\\/70:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-amber-950\\/50:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-amber-950\\/40:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-orange-950\\/80:not(#printable-area *) {
+        background: #fffbeb !important;
+        background-color: #fffbeb !important;
+        color: #78350f !important;
+        border-color: #f59e0b !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .bg-emerald-950\\/75:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-emerald-950\\/70:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-emerald-950\\/30:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-emerald-950\\/90:not(#printable-area *) {
+        background: #ecfdf5 !important;
+        background-color: #ecfdf5 !important;
+        color: #065f46 !important;
+        border-color: #10b981 !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .bg-blue-950\\/70:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-blue-950\\/60:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-blue-950\\/80:not(#printable-area *) {
+        background: #eff6ff !important;
+        background-color: #eff6ff !important;
+        color: #1e3a8a !important;
+        border-color: #3b82f6 !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .bg-red-950\\/90:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-red-950\\/70:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-red-950\\/60:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-red-950\\/40:not(#printable-area *) {
+        background: #fef2f2 !important;
+        background-color: #fef2f2 !important;
+        color: #7f1d1d !important;
+        border-color: #ef4444 !important;
+      }
+      .cendis-theme-light .text-white:not(.neon-orange-nav):not(.neon-orange-nav *):not(.neon-orange-nav-active):not(.neon-orange-nav-active *):not(button.bg-slate-900):not(button.bg-slate-900 *):not(button.bg-slate-800):not(button.bg-slate-800 *):not(button.bg-slate-700):not(button.bg-slate-700 *):not(.bg-\\[#8b1538\\]):not(.bg-\\[#8b1538\\] *):not(.bg-\\[#b91c1c\\]):not(.bg-\\[#b91c1c\\] *):not(.bg-emerald-600):not(.bg-emerald-600 *):not(.bg-emerald-700):not(.bg-emerald-700 *):not(.bg-blue-600):not(.bg-blue-600 *):not(.bg-blue-700):not(.bg-blue-700 *):not(.bg-blue-900):not(.bg-blue-900 *):not(.bg-indigo-700):not(.bg-indigo-700 *):not(.bg-teal-700):not(.bg-teal-700 *):not(.bg-cyan-700):not(.bg-cyan-700 *):not(.bg-purple-700):not(.bg-purple-700 *):not(.bg-amber-700):not(.bg-amber-700 *):not(.bg-red-600):not(.bg-red-600 *):not(.bg-red-700):not(.bg-red-700 *):not(.bg-red-900):not(.bg-red-900 *):not(#printable-area *),
+      .cendis-theme-light .text-slate-100:not(button *):not(#printable-area *),
+      .cendis-theme-light .text-slate-200:not(button *):not(#printable-area *),
+      .cendis-theme-light .text-slate-300:not(button *):not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-900:not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-800:not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-700:not(#printable-area *) {
-        color: #0f172a !important;
+        color: #1e293b !important;
       }
-      .cendis-theme-light .text-slate-400:not(#printable-area *),
-      .cendis-theme-light .text-slate-500:not(#printable-area *),
+      .cendis-theme-light .text-slate-400:not(button *):not(#printable-area *),
+      .cendis-theme-light .text-slate-500:not(button *):not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-slate-600:not(#printable-area *) {
         color: #475569 !important;
       }
       .cendis-theme-light .cendis-dark-workspace .text-\\[#ffb366\\]:not(.neon-orange-nav *):not(.neon-orange-nav-active *):not(#printable-area *),
       .cendis-theme-light .cendis-dark-workspace .text-\\[#ff9f5a\\]:not(#printable-area *),
-      .cendis-theme-light .text-amber-300:not(.bg-slate-900):not(.bg-slate-900 *):not(#printable-area *),
-      .cendis-theme-light .text-amber-400:not(#printable-area *) {
+      .cendis-theme-light .text-amber-300:not(button):not(button *):not(#printable-area *),
+      .cendis-theme-light .text-amber-200:not(button):not(button *):not(#printable-area *),
+      .cendis-theme-light .text-amber-400:not(button):not(button *):not(#printable-area *) {
         color: #b45309 !important;
+      }
+      .cendis-theme-light .text-emerald-300:not(button *):not(#printable-area *),
+      .cendis-theme-light .text-emerald-400:not(button *):not(#printable-area *) {
+        color: #047857 !important;
+      }
+      .cendis-theme-light .text-blue-300:not(button *):not(#printable-area *),
+      .cendis-theme-light .text-blue-400:not(button *):not(#printable-area *) {
+        color: #1d4ed8 !important;
+      }
+      .cendis-theme-light .text-red-200:not(button *):not(#printable-area *),
+      .cendis-theme-light .text-red-300:not(button *):not(#printable-area *),
+      .cendis-theme-light .text-red-400:not(button *):not(#printable-area *) {
+        color: #b91c1c !important;
+      }
+      .cendis-theme-light button.bg-slate-900,
+      .cendis-theme-light button.bg-slate-800,
+      .cendis-theme-light button.bg-slate-700,
+      .cendis-theme-light button.bg-\\[#8b1538\\],
+      .cendis-theme-light button.bg-\\[#b91c1c\\],
+      .cendis-theme-light button.bg-emerald-700,
+      .cendis-theme-light button.bg-emerald-600,
+      .cendis-theme-light button.bg-blue-600,
+      .cendis-theme-light button.bg-purple-700,
+      .cendis-theme-light button.bg-teal-700,
+      .cendis-theme-light button.bg-cyan-700,
+      .cendis-theme-light button.bg-indigo-700,
+      .cendis-theme-light button.bg-amber-700,
+      .cendis-theme-light button.bg-red-700,
+      .cendis-theme-light button.bg-red-900 {
+        color: #ffffff !important;
+      }
+      .cendis-theme-light button.bg-slate-900 span,
+      .cendis-theme-light button.bg-slate-800 span,
+      .cendis-theme-light button.bg-slate-700 span {
+        color: #ffffff !important;
       }
       .cendis-theme-light input:not(#printable-area *),
       .cendis-theme-light select:not(#printable-area *),
       .cendis-theme-light textarea:not(#printable-area *) {
         background-color: #ffffff !important;
-        color: #0f172a !important;
+        color: #1e293b !important;
         border-color: #cbd5e1 !important;
       }
       .cendis-theme-light .neon-orange-nav {
@@ -3330,17 +3639,21 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       }
 
       /* ======================================================================
-         UNIFICACIÓN GLOBAL EN MAYÚSCULAS EN TODOS LOS MÓDULOS (SIN VARIEDAD)
+         UNIFICACIÓN GLOBAL EN MAYÚSCULAS EN TODOS LOS MÓDULOS (EXCEPTO CUERPO DE MEMO)
          ====================================================================== */
       .cendis-dark-workspace input:not([type="password"]):not([type="email"]):not([data-no-uppercase="true"]),
-      .cendis-dark-workspace textarea,
+      .cendis-dark-workspace textarea:not([data-no-uppercase="true"]),
       .cendis-dark-workspace select,
       .cendis-dark-workspace option,
       .cendis-dark-workspace table td,
       .cendis-dark-workspace table th,
       #printable-area,
-      #printable-area *:not(svg):not(path) {
+      #printable-area *:not(svg):not(path):not(.preserve-case-content):not(.preserve-case-content *) {
         text-transform: uppercase !important;
+      }
+      .preserve-case-content,
+      .preserve-case-content * {
+        text-transform: none !important;
       }
     `}</style>
   );
@@ -4189,11 +4502,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               )}
 
               {/* Selector Universal de Tipo de Documento */}
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { id: "MEMORANDUM", label: "Memorando" },
                   { id: "SOLICITUD", label: "Solicitud" },
                   { id: "OFICIO", label: "Oficio / Circular" },
+                  { id: "ORDEN_SALIDA", label: "Orden de Salida" },
                 ].map((t) => (
                   <button
                     key={t.id}
@@ -4201,8 +4515,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     onClick={() => {
                       setSelectedDocId(null);
                       setDocType(t.id);
+                      if (t.id === "ORDEN_SALIDA" && asunto === "SOLICITUD DE TRANSPORTE") {
+                        setAsunto("AUTORIZACIÓN DE SALIDA DE EQUIPOS Y BIENES NACIONALES");
+                      }
                     }}
-                    className={`py-2 rounded-xl text-xs font-black uppercase border cursor-pointer ${
+                    className={`py-2 px-1.5 rounded-xl text-[11px] font-black uppercase border cursor-pointer ${
                       docType === t.id
                         ? "bg-[#8b1538] text-white border-[#8b1538]"
                         : "bg-slate-50 text-slate-700 border-slate-200"
@@ -4366,19 +4683,330 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
-                    CONTENIDO / CUERPO DEL DOCUMENTO:
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[11px] font-bold uppercase text-slate-600">
+                      CONTENIDO / CUERPO DEL DOCUMENTO:
+                    </label>
+                    <span className="text-[10px] font-semibold text-emerald-500">
+                      Respeta mayúsculas y minúsculas originales
+                    </span>
+                  </div>
                   <textarea
                     rows={5}
+                    data-no-uppercase="true"
                     value={concepto}
                     onChange={(e) => {
                       setSelectedDocId(null);
                       setConcepto(e.target.value);
                     }}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs leading-relaxed"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs leading-relaxed preserve-case-content"
                   />
                 </div>
+
+                {/* VARIABLES COMPLETAS PARA ORDEN DE SALIDA DE EQUIPOS (INTEGRADO CON RRHH Y BIENES NACIONALES) */}
+                {docType === "ORDEN_SALIDA" && (
+                  <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/50 space-y-3">
+                    <div className="flex items-center justify-between border-b border-amber-500/30 pb-1.5">
+                      <span className="text-[11px] font-black uppercase text-amber-300">
+                        📦 Variables de Orden de Salida de Equipos
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-400">
+                        Integrado con RRHH y Bienes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                          Tipo de Salida
+                        </label>
+                        <select
+                          value={ordenSalidaData.tipoSalida}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setOrdenSalidaData({ ...ordenSalidaData, tipoSalida: e.target.value });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          <option value="PRÉSTAMO / COMISIÓN DE SERVICIO">Préstamo / Comisión</option>
+                          <option value="TRASLADO EXTERNO / EVENTO">Traslado Externo / Evento</option>
+                          <option value="MANTENIMIENTO / REPARACIÓN">Mantenimiento / Reparación</option>
+                          <option value="ASIGNACIÓN PERMANENTE">Asignación Permanente</option>
+                          <option value="DEVOLUCIÓN / RESGUARDO">Devolución / Resguardo</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                          Fecha de Salida
+                        </label>
+                        <input
+                          type="date"
+                          value={ordenSalidaData.fechaSalida}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setOrdenSalidaData({ ...ordenSalidaData, fechaSalida: e.target.value });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                          Fecha Estimada Retorno
+                        </label>
+                        <input
+                          type="date"
+                          value={ordenSalidaData.fechaRetorno}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setOrdenSalidaData({ ...ordenSalidaData, fechaRetorno: e.target.value });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                          Responsable que Retira (RRHH)
+                        </label>
+                        <select
+                          onChange={(e) => {
+                            const emp = employees.find((x) => x.id === e.target.value);
+                            if (!emp) return;
+                            setSelectedDocId(null);
+                            setOrdenSalidaData({
+                              ...ordenSalidaData,
+                              responsableNombre: `${emp.nombres} ${emp.apellidos}`,
+                              responsableCedula: emp.cedula || "",
+                              responsableCargo: `${emp.cargo} - ${emp.coordinacion}`,
+                              responsableTelefono: emp.telefono || "",
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold mb-1"
+                        >
+                          <option value="">Seleccionar trabajador de RRHH...</option>
+                          {employees.map((emp) => (
+                            <option key={emp.id} value={emp.id}>
+                              {emp.nombres} {emp.apellidos} ({emp.cedula})
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          type="text"
+                          placeholder="Nombre del responsable"
+                          value={ordenSalidaData.responsableNombre}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setOrdenSalidaData({ ...ordenSalidaData, responsableNombre: e.target.value });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-[10px] font-bold uppercase text-slate-500">
+                          Cédula / Teléfono y Cargo
+                        </label>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <input
+                            type="text"
+                            placeholder="Cédula"
+                            value={ordenSalidaData.responsableCedula}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setOrdenSalidaData({ ...ordenSalidaData, responsableCedula: e.target.value });
+                            }}
+                            className="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Teléfono"
+                            value={ordenSalidaData.responsableTelefono}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setOrdenSalidaData({ ...ordenSalidaData, responsableTelefono: e.target.value });
+                            }}
+                            className="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Cargo / Coordinación"
+                          value={ordenSalidaData.responsableCargo}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setOrdenSalidaData({ ...ordenSalidaData, responsableCargo: e.target.value });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        placeholder="Destino / Lugar donde se trasladan los equipos"
+                        value={ordenSalidaData.destino}
+                        onChange={(e) => {
+                          setSelectedDocId(null);
+                          setOrdenSalidaData({ ...ordenSalidaData, destino: e.target.value });
+                        }}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Autorizado por (Ej. Lcdo. Morris López)"
+                        value={ordenSalidaData.autorizadoPor}
+                        onChange={(e) => {
+                          setSelectedDocId(null);
+                          setOrdenSalidaData({ ...ordenSalidaData, autorizadoPor: e.target.value });
+                        }}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                      />
+                    </div>
+
+                    {/* AGREGAR EQUIPOS DESDE BIENES NACIONALES O MANUAL */}
+                    <div className="pt-2 border-t border-amber-500/30 space-y-2">
+                      <label className="block text-[10px] font-black uppercase text-amber-300">
+                        + Agregar Equipos / Artículos a la Orden de Salida
+                      </label>
+                      <select
+                        value={equipoDraft.bienId}
+                        onChange={(e) => {
+                          const bn = bienesList.find((b) => String(b.id) === e.target.value);
+                          if (!bn) {
+                            setEquipoDraft({ ...equipoDraft, bienId: "" });
+                            return;
+                          }
+                          setEquipoDraft({
+                            bienId: bn.id,
+                            codigoBN: bn.codigoBN || "",
+                            descripcion: bn.articulo || "",
+                            marca: bn.marca || "",
+                            modelo: bn.modelo || "",
+                            serial: bn.serial || "",
+                            cantidad: 1,
+                            estadoSalida: bn.estado || "OPERATIVO",
+                          });
+                        }}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                      >
+                        <option value="">-- Cargar desde Bienes Nacionales (o escribir abajo) --</option>
+                        {bienesList.map((b) => (
+                          <option key={b.id} value={b.id}>
+                            {b.codigoBN} • {b.articulo} ({b.marca} {b.modelo} • S/N: {b.serial})
+                          </option>
+                        ))}
+                      </select>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                        <input
+                          type="text"
+                          placeholder="Descripción equipo"
+                          value={equipoDraft.descripcion}
+                          onChange={(e) => setEquipoDraft({ ...equipoDraft, descripcion: e.target.value })}
+                          className="sm:col-span-2 px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Código BN"
+                          value={equipoDraft.codigoBN}
+                          onChange={(e) => setEquipoDraft({ ...equipoDraft, codigoBN: e.target.value })}
+                          className="px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Marca"
+                          value={equipoDraft.marca}
+                          onChange={(e) => setEquipoDraft({ ...equipoDraft, marca: e.target.value })}
+                          className="px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Modelo"
+                          value={equipoDraft.modelo}
+                          onChange={(e) => setEquipoDraft({ ...equipoDraft, modelo: e.target.value })}
+                          className="px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Serial"
+                          value={equipoDraft.serial}
+                          onChange={(e) => setEquipoDraft({ ...equipoDraft, serial: e.target.value })}
+                          className="px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <input
+                          type="number"
+                          min="1"
+                          placeholder="Cant."
+                          value={equipoDraft.cantidad}
+                          onChange={(e) =>
+                            setEquipoDraft({ ...equipoDraft, cantidad: Number(e.target.value) || 1 })
+                          }
+                          className="px-2 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!equipoDraft.descripcion.trim()) {
+                              showToast("Indique la descripción del equipo para agregarlo.", "error");
+                              return;
+                            }
+                            setSelectedDocId(null);
+                            setOrdenSalidaData((prev) => ({
+                              ...prev,
+                              equipos: [
+                                ...(prev.equipos || []),
+                                { ...equipoDraft, id: `eq-${Date.now()}` },
+                              ],
+                            }));
+                            setEquipoDraft({
+                              bienId: "",
+                              codigoBN: "",
+                              descripcion: "",
+                              marca: "",
+                              modelo: "",
+                              serial: "",
+                              cantidad: 1,
+                              estadoSalida: "OPERATIVO / BUEN ESTADO",
+                            });
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-black text-xs cursor-pointer"
+                        >
+                          + Agregar Equipo
+                        </button>
+                      </div>
+
+                      {(ordenSalidaData.equipos || []).length > 0 && (
+                        <div className="space-y-1 max-h-32 overflow-y-auto pt-1">
+                          {ordenSalidaData.equipos.map((eq, idx) => (
+                            <div
+                              key={eq.id || idx}
+                              className="flex items-center justify-between gap-2 px-2.5 py-1 rounded-lg bg-slate-900/60 border border-slate-700 text-[11px]"
+                            >
+                              <span className="truncate font-semibold">
+                                {idx + 1}. {eq.descripcion} ({eq.codigoBN || "S/N"} • {eq.serial || "-"}) x{eq.cantidad}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedDocId(null);
+                                  setOrdenSalidaData((prev) => ({
+                                    ...prev,
+                                    equipos: prev.equipos.filter((x) => x.id !== eq.id),
+                                  }));
+                                }}
+                                className="text-red-400 hover:text-red-300 font-black cursor-pointer"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* DATOS DE LA FIRMA CENTRADA */}
@@ -4748,7 +5376,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </p>
                     </div>
 
-                    {/* TÍTULO CENTRADO (MEMORANDO / SOLICITUD / OFICIO) */}
+                    {/* TÍTULO CENTRADO (MEMORANDO / SOLICITUD / OFICIO / ORDEN DE SALIDA) */}
                     <div className="mt-3 mb-5 text-center">
                       <h2
                         style={{ fontSize: "13pt", letterSpacing: "0.04em" }}
@@ -4758,6 +5386,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           ? "MEMORANDO"
                           : activePreviewDoc.tipo === "SOLICITUD"
                           ? "SOLICITUD"
+                          : activePreviewDoc.tipo === "ORDEN_SALIDA"
+                          ? "ORDEN DE SALIDA DE EQUIPOS Y BIENES"
                           : "OFICIO"}
                       </h2>
                     </div>
@@ -4804,13 +5434,81 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </div>
                     </div>
 
-                    {/* CUERPO DEL MEMORANDO / SOLICITUD (MISMA FUENTE, TAMAÑO 12PT Y SANGRÍA/JUSTIFICADO) */}
+                    {/* CUERPO DEL MEMORANDO / SOLICITUD (RESPETA MAYÚSCULAS Y MINÚSCULAS ORIGINALES) */}
                     <div
                       style={{ fontSize: "12pt", lineHeight: "1.55" }}
-                      className="mt-6 text-justify whitespace-pre-line text-slate-950 min-h-[190px]"
+                      className="mt-5 text-justify whitespace-pre-line text-slate-950 preserve-case-content"
                     >
                       {activePreviewDoc.concepto}
                     </div>
+
+                    {/* BLOQUE ESPECÍFICO DE ORDEN DE SALIDA DE EQUIPOS EN EL PDF */}
+                    {activePreviewDoc.tipo === "ORDEN_SALIDA" && activePreviewDoc.ordenSalida && (
+                      <div className="mt-4 space-y-3 text-[10.5pt] text-slate-950">
+                        <div className="grid grid-cols-2 gap-2 border border-slate-900 p-2.5 bg-slate-50">
+                          <div>
+                            <strong>TIPO DE SALIDA:</strong> {activePreviewDoc.ordenSalida.tipoSalida}
+                          </div>
+                          <div>
+                            <strong>DESTINO:</strong> {activePreviewDoc.ordenSalida.destino}
+                          </div>
+                          <div>
+                            <strong>FECHA SALIDA:</strong> {activePreviewDoc.ordenSalida.fechaSalida}
+                          </div>
+                          <div>
+                            <strong>RETORNO ESTIMADO:</strong> {activePreviewDoc.ordenSalida.fechaRetorno}
+                          </div>
+                          <div>
+                            <strong>RESPONSABLE QUE RETIRA:</strong> {activePreviewDoc.ordenSalida.responsableNombre} ({activePreviewDoc.ordenSalida.responsableCedula})
+                          </div>
+                          <div>
+                            <strong>CARGO / TELÉFONO:</strong> {activePreviewDoc.ordenSalida.responsableCargo} • {activePreviewDoc.ordenSalida.responsableTelefono}
+                          </div>
+                        </div>
+
+                        <table className="w-full border-collapse border border-slate-900 text-[9.5pt]">
+                          <thead>
+                            <tr className="bg-slate-200 font-bold uppercase">
+                              <th className="border border-slate-900 p-1.5 text-center">#</th>
+                              <th className="border border-slate-900 p-1.5">Código BN</th>
+                              <th className="border border-slate-900 p-1.5">Equipo / Descripción</th>
+                              <th className="border border-slate-900 p-1.5">Marca / Modelo</th>
+                              <th className="border border-slate-900 p-1.5">Serial</th>
+                              <th className="border border-slate-900 p-1.5 text-center">Cant.</th>
+                              <th className="border border-slate-900 p-1.5">Estado</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(activePreviewDoc.ordenSalida.equipos || []).map((eq, i) => (
+                              <tr key={eq.id || i}>
+                                <td className="border border-slate-900 p-1.5 text-center font-bold">{i + 1}</td>
+                                <td className="border border-slate-900 p-1.5 font-bold">{eq.codigoBN || "N/A"}</td>
+                                <td className="border border-slate-900 p-1.5 font-semibold">{eq.descripcion}</td>
+                                <td className="border border-slate-900 p-1.5">{eq.marca} {eq.modelo}</td>
+                                <td className="border border-slate-900 p-1.5 font-mono">{eq.serial || "S/N"}</td>
+                                <td className="border border-slate-900 p-1.5 text-center font-bold">{eq.cantidad || 1}</td>
+                                <td className="border border-slate-900 p-1.5">{eq.estadoSalida}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+
+                        <div className="grid grid-cols-3 gap-4 pt-6 text-center text-[9pt]">
+                          <div className="border-t border-slate-900 pt-1">
+                            <div className="font-bold">{activePreviewDoc.ordenSalida.autorizadoPor || activePreviewDoc.signerNombre}</div>
+                            <div>AUTORIZADO POR</div>
+                          </div>
+                          <div className="border-t border-slate-900 pt-1">
+                            <div className="font-bold">BIENES NACIONALES / SEGURIDAD</div>
+                            <div>ENTREGADO / VERIFICADO</div>
+                          </div>
+                          <div className="border-t border-slate-900 pt-1">
+                            <div className="font-bold">{activePreviewDoc.ordenSalida.responsableNombre}</div>
+                            <div>RECIBÍ CONFORME ({activePreviewDoc.ordenSalida.responsableCedula})</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {/* DESPEDIDA Y BLOQUE DE FIRMA CENTRADO */}
                     <div
@@ -6327,6 +7025,274 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   </table>
                 </div>
               </div>
+            ) : bienesViewMode === "LABELS" ? (
+              /* GENERADOR DE ETIQUETAS CON CÓDIGO DE BARRA, LOGO DORADO CENDIS Y SEGURIDAD NO REPETIBLE / NO REIMPRIMIBLE */
+              <div className="space-y-5">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4 print:hidden">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-500 block">
+                        Control de Seguridad Patrimonial • Correlativo Único Irrepetible
+                      </span>
+                      <h3 className="text-sm font-black uppercase text-slate-900">
+                        Generador de Etiquetas de Bienes Nacionales (Uso Único — No Reimprimible)
+                      </h3>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-black">
+                      🔒 {printedLabelsLog.length} Etiquetas Emitidas y Bloqueadas
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        Artículo / Bien a Etiquetar
+                      </label>
+                      <select
+                        value={labelGenForm.sourceBienId}
+                        onChange={(e) => {
+                          const bn = bienesList.find((x) => String(x.id) === e.target.value);
+                          setLabelGenForm({
+                            ...labelGenForm,
+                            sourceBienId: e.target.value,
+                            articulo: bn ? bn.articulo : labelGenForm.articulo,
+                            ubicacion: bn ? bn.ubicacion : labelGenForm.ubicacion,
+                          });
+                        }}
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                      >
+                        <option value="">-- Lote Nuevo de Artículos --</option>
+                        {bienesList.map((b) => (
+                          <option key={b.id} value={b.id}>
+                            {b.codigoBN} • {b.articulo}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        Descripción en Etiqueta
+                      </label>
+                      <input
+                        type="text"
+                        value={labelGenForm.articulo}
+                        onChange={(e) => setLabelGenForm({ ...labelGenForm, articulo: e.target.value })}
+                        placeholder="Ej. Consola / Micrófono / Laptop"
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        ¿Cuántos Artículos va a Ingresar?
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={labelGenForm.cantidad}
+                        onChange={(e) =>
+                          setLabelGenForm({
+                            ...labelGenForm,
+                            cantidad: Math.max(1, Math.min(50, Number(e.target.value) || 1)),
+                          })
+                        }
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-black"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const qty = Math.max(1, Math.min(50, Number(labelGenForm.cantidad) || 1));
+                        const existingNums = printedLabelsLog
+                          .map((l) => {
+                            const m = String(l.correlativoSeguridad || "").match(/(\d+)$/);
+                            return m ? parseInt(m[1], 10) : 0;
+                          })
+                          .filter((n) => !Number.isNaN(n));
+                        let nextSeq = existingNums.length > 0 ? Math.max(...existingNums) + 1 : 1001;
+                        const existingCodesSet = new Set(
+                          printedLabelsLog.map((l) => String(l.correlativoSeguridad || "").toUpperCase())
+                        );
+
+                        const items = [];
+                        for (let i = 0; i < qty; i++) {
+                          let code = "";
+                          do {
+                            code = `BN-CENDIS-${String(nextSeq).padStart(6, "0")}`;
+                            nextSeq++;
+                          } while (existingCodesSet.has(code));
+                          existingCodesSet.add(code);
+                          items.push({
+                            id: `lbl-${Date.now()}-${i}`,
+                            correlativoSeguridad: code,
+                            articulo: labelGenForm.articulo || "BIEN NACIONAL CENDIS",
+                            ubicacion: labelGenForm.ubicacion || "SEDE CENDIS",
+                            fechaEmision: new Date().toISOString().slice(0, 10),
+                          });
+                        }
+                        setCurrentLabelBatch({
+                          batchId: `BATCH-${Date.now()}`,
+                          items,
+                          isLockedPrinted: false,
+                        });
+                        showToast(
+                          `Generadas ${items.length} etiqueta(s) únicas con código de barra listas para impresión única.`
+                        );
+                      }}
+                      className="py-2 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-black text-xs cursor-pointer shadow"
+                    >
+                      🏷️ Generar {labelGenForm.cantidad} Etiqueta(s) Única(s)
+                    </button>
+                  </div>
+
+                  {currentLabelBatch.items.length > 0 && (
+                    <div className="p-3 rounded-xl bg-amber-950/50 border border-amber-500/50 flex flex-wrap items-center justify-between gap-3">
+                      <div className="text-xs">
+                        {currentLabelBatch.isLockedPrinted ? (
+                          <span className="font-black text-red-300">
+                            🔒 LOTE IMPRESO Y BLOQUEADO: Por seguridad, estas etiquetas ya quedaron registradas y NO pueden reimprimirse.
+                          </span>
+                        ) : (
+                          <span className="font-bold text-amber-200">
+                            ⚠️ Lote listo ({currentLabelBatch.items.length} etiquetas). Al imprimir, quedarán bloqueadas permanentemente contra reimpresión.
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        disabled={currentLabelBatch.isLockedPrinted}
+                        onClick={() => {
+                          if (currentLabelBatch.isLockedPrinted) return;
+                          const alreadyUsed = currentLabelBatch.items.some((it) =>
+                            printedLabelsLog.some(
+                              (log) =>
+                                String(log.correlativoSeguridad).toUpperCase() ===
+                                String(it.correlativoSeguridad).toUpperCase()
+                            )
+                          );
+                          if (alreadyUsed) {
+                            showToast(
+                              "BLOQUEO DE SEGURIDAD: Uno o más correlativos ya fueron impresos anteriormente y no pueden repetirse.",
+                              "error"
+                            );
+                            setCurrentLabelBatch((prev) => ({ ...prev, isLockedPrinted: true }));
+                            return;
+                          }
+                          const now = new Date();
+                          const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
+                          const newLogEntries = currentLabelBatch.items.map((it) => ({
+                            ...it,
+                            impresoPor: currentUser?.fullName || currentUser?.username || "USUARIO",
+                            impresoEn: stamp,
+                            bloqueada: true,
+                            updatedAt: Date.now(),
+                          }));
+                          const nextLogs = [...newLogEntries, ...printedLabelsLog];
+                          setPrintedLabelsLog(nextLogs);
+                          syncWithCloudServer({ printedLabelsLog: nextLogs });
+                          setCurrentLabelBatch((prev) => ({ ...prev, isLockedPrinted: true }));
+                          addLog(
+                            `Impresas y bloqueadas por seguridad ${newLogEntries.length} etiqueta(s) BN (${newLogEntries[0].correlativoSeguridad} ...)`
+                          );
+                          setTimeout(() => window.print(), 120);
+                        }}
+                        className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 ${
+                          currentLabelBatch.isLockedPrinted
+                            ? "bg-slate-700 text-slate-400 cursor-not-allowed opacity-70"
+                            : "bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer shadow"
+                        }`}
+                      >
+                        <Printer className="w-4 h-4" />
+                        <span>
+                          {currentLabelBatch.isLockedPrinted
+                            ? "🔒 Ya Impresa (Bloqueada por Seguridad)"
+                            : "🔒 Imprimir Etiquetas (Uso Único)"}
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* ÁREA IMPRIMIBLE DE ETIQUETAS PEQUEÑAS CON LOGO DORADO CENDIS Y CÓDIGO DE BARRA */}
+                {currentLabelBatch.items.length > 0 && (
+                  <div
+                    id="printable-area"
+                    className="w-full max-w-[820px] mx-auto bg-white p-6 rounded-xl border border-slate-200 text-slate-950"
+                  >
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {currentLabelBatch.items.map((lbl) => (
+                        <div
+                          key={lbl.id}
+                          className="border-2 border-[#c5a059] rounded-lg p-2.5 bg-[#fbfbfa] flex flex-col items-center justify-between text-center shadow-sm"
+                          style={{ minHeight: "155px", pageBreakInside: "avoid" }}
+                        >
+                          <div className="w-full border-b border-[#c5a059]/60 pb-1 flex flex-col items-center">
+                            <GoldenCendisGlyphSVG sizeClass="w-[96px]" />
+                            <span className="text-[7.5px] font-black uppercase tracking-wider text-[#0b2545] mt-0.5">
+                              BIEN NACIONAL • MPPC CENDIS
+                            </span>
+                          </div>
+
+                          <div className="my-1 w-full">
+                            <div className="text-[8.5px] font-black uppercase text-slate-800 truncate">
+                              {lbl.articulo}
+                            </div>
+                            <div className="text-[11px] font-black font-mono text-[#0b294d] tracking-tight">
+                              {lbl.correlativoSeguridad}
+                            </div>
+                          </div>
+
+                          <div className="w-full flex flex-col items-center">
+                            <ScannableCarnetBarcode value={lbl.correlativoSeguridad} />
+                            <span className="text-[6.5px] font-bold uppercase text-red-700 tracking-wider mt-0.5">
+                              ETIQUETA ÚNICA DE SEGURIDAD • NO REPETIBLE
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* AUDITORÍA DE ETIQUETAS YA IMPRESAS Y BLOQUEADAS */}
+                {printedLabelsLog.length > 0 && (
+                  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3 print:hidden">
+                    <h4 className="text-xs font-black uppercase text-slate-800">
+                      Registro de Seguridad: Etiquetas Emitidas (No Reimprimibles)
+                    </h4>
+                    <div className="overflow-x-auto max-h-56">
+                      <table className="w-full text-left text-[11px] border-collapse">
+                        <thead>
+                          <tr className="bg-slate-100 text-slate-700 uppercase font-black">
+                            <th className="p-2">N° Bien / Correlativo</th>
+                            <th className="p-2">Artículo</th>
+                            <th className="p-2">Emitida Por</th>
+                            <th className="p-2">Fecha/Hora</th>
+                            <th className="p-2">Estado Seguridad</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200">
+                          {printedLabelsLog.slice(0, 30).map((log) => (
+                            <tr key={log.id}>
+                              <td className="p-2 font-mono font-black text-teal-900">
+                                {log.correlativoSeguridad}
+                              </td>
+                              <td className="p-2 font-semibold">{log.articulo}</td>
+                              <td className="p-2">{log.impresoPor}</td>
+                              <td className="p-2">{log.impresoEn}</td>
+                              <td className="p-2">
+                                <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/40 font-black text-[9.5px]">
+                                  🔒 IMPRESA / BLOQUEADA
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               /* REPORTE COMPLETO DEL PERSONAL CON DIFERENTES FILTROS */
               <div className="space-y-4">
@@ -6879,7 +7845,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   Lista desplegable de artículos auto-alimentada, marca, modelo, serial, código BN y reporte oficial en PDF.
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setBienesViewMode("FORM")}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer ${
@@ -6887,6 +7853,17 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   }`}
                 >
                   Inventario y Registro
+                </button>
+                <button
+                  onClick={() => setBienesViewMode("LABELS")}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer ${
+                    bienesViewMode === "LABELS"
+                      ? "bg-amber-600 text-white"
+                      : "bg-slate-100 text-slate-700"
+                  }`}
+                >
+                  <QrCode className="w-4 h-4" />
+                  <span>Etiquetas Código de Barra (Seguridad)</span>
                 </button>
                 <button
                   onClick={() => setBienesViewMode("PDF")}
@@ -7105,6 +8082,274 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </tbody>
                   </table>
                 </div>
+              </div>
+            ) : bienesViewMode === "LABELS" ? (
+              /* GENERADOR DE ETIQUETAS CON CÓDIGO DE BARRA, LOGO DORADO CENDIS Y SEGURIDAD NO REPETIBLE / NO REIMPRIMIBLE */
+              <div className="space-y-5">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4 print:hidden">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-500 block">
+                        Control de Seguridad Patrimonial • Correlativo Único Irrepetible
+                      </span>
+                      <h3 className="text-sm font-black uppercase text-slate-900">
+                        Generador de Etiquetas de Bienes Nacionales (Uso Único — No Reimprimible)
+                      </h3>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-black">
+                      🔒 {printedLabelsLog.length} Etiquetas Emitidas y Bloqueadas
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        Artículo / Bien a Etiquetar
+                      </label>
+                      <select
+                        value={labelGenForm.sourceBienId}
+                        onChange={(e) => {
+                          const bn = bienesList.find((x) => String(x.id) === e.target.value);
+                          setLabelGenForm({
+                            ...labelGenForm,
+                            sourceBienId: e.target.value,
+                            articulo: bn ? bn.articulo : labelGenForm.articulo,
+                            ubicacion: bn ? bn.ubicacion : labelGenForm.ubicacion,
+                          });
+                        }}
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold"
+                      >
+                        <option value="">-- Lote Nuevo de Artículos --</option>
+                        {bienesList.map((b) => (
+                          <option key={b.id} value={b.id}>
+                            {b.codigoBN} • {b.articulo}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        Descripción en Etiqueta
+                      </label>
+                      <input
+                        type="text"
+                        value={labelGenForm.articulo}
+                        onChange={(e) => setLabelGenForm({ ...labelGenForm, articulo: e.target.value })}
+                        placeholder="Ej. Consola / Micrófono / Laptop"
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        ¿Cuántos Artículos va a Ingresar?
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={labelGenForm.cantidad}
+                        onChange={(e) =>
+                          setLabelGenForm({
+                            ...labelGenForm,
+                            cantidad: Math.max(1, Math.min(50, Number(e.target.value) || 1)),
+                          })
+                        }
+                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-black"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const qty = Math.max(1, Math.min(50, Number(labelGenForm.cantidad) || 1));
+                        const existingNums = printedLabelsLog
+                          .map((l) => {
+                            const m = String(l.correlativoSeguridad || "").match(/(\d+)$/);
+                            return m ? parseInt(m[1], 10) : 0;
+                          })
+                          .filter((n) => !Number.isNaN(n));
+                        let nextSeq = existingNums.length > 0 ? Math.max(...existingNums) + 1 : 1001;
+                        const existingCodesSet = new Set(
+                          printedLabelsLog.map((l) => String(l.correlativoSeguridad || "").toUpperCase())
+                        );
+
+                        const items = [];
+                        for (let i = 0; i < qty; i++) {
+                          let code = "";
+                          do {
+                            code = `BN-CENDIS-${String(nextSeq).padStart(6, "0")}`;
+                            nextSeq++;
+                          } while (existingCodesSet.has(code));
+                          existingCodesSet.add(code);
+                          items.push({
+                            id: `lbl-${Date.now()}-${i}`,
+                            correlativoSeguridad: code,
+                            articulo: labelGenForm.articulo || "BIEN NACIONAL CENDIS",
+                            ubicacion: labelGenForm.ubicacion || "SEDE CENDIS",
+                            fechaEmision: new Date().toISOString().slice(0, 10),
+                          });
+                        }
+                        setCurrentLabelBatch({
+                          batchId: `BATCH-${Date.now()}`,
+                          items,
+                          isLockedPrinted: false,
+                        });
+                        showToast(
+                          `Generadas ${items.length} etiqueta(s) únicas con código de barra listas para impresión única.`
+                        );
+                      }}
+                      className="py-2 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-black text-xs cursor-pointer shadow"
+                    >
+                      🏷️ Generar {labelGenForm.cantidad} Etiqueta(s) Única(s)
+                    </button>
+                  </div>
+
+                  {currentLabelBatch.items.length > 0 && (
+                    <div className="p-3 rounded-xl bg-amber-950/50 border border-amber-500/50 flex flex-wrap items-center justify-between gap-3">
+                      <div className="text-xs">
+                        {currentLabelBatch.isLockedPrinted ? (
+                          <span className="font-black text-red-300">
+                            🔒 LOTE IMPRESO Y BLOQUEADO: Por seguridad, estas etiquetas ya quedaron registradas y NO pueden reimprimirse.
+                          </span>
+                        ) : (
+                          <span className="font-bold text-amber-200">
+                            ⚠️ Lote listo ({currentLabelBatch.items.length} etiquetas). Al imprimir, quedarán bloqueadas permanentemente contra reimpresión.
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        disabled={currentLabelBatch.isLockedPrinted}
+                        onClick={() => {
+                          if (currentLabelBatch.isLockedPrinted) return;
+                          const alreadyUsed = currentLabelBatch.items.some((it) =>
+                            printedLabelsLog.some(
+                              (log) =>
+                                String(log.correlativoSeguridad).toUpperCase() ===
+                                String(it.correlativoSeguridad).toUpperCase()
+                            )
+                          );
+                          if (alreadyUsed) {
+                            showToast(
+                              "BLOQUEO DE SEGURIDAD: Uno o más correlativos ya fueron impresos anteriormente y no pueden repetirse.",
+                              "error"
+                            );
+                            setCurrentLabelBatch((prev) => ({ ...prev, isLockedPrinted: true }));
+                            return;
+                          }
+                          const now = new Date();
+                          const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
+                          const newLogEntries = currentLabelBatch.items.map((it) => ({
+                            ...it,
+                            impresoPor: currentUser?.fullName || currentUser?.username || "USUARIO",
+                            impresoEn: stamp,
+                            bloqueada: true,
+                            updatedAt: Date.now(),
+                          }));
+                          const nextLogs = [...newLogEntries, ...printedLabelsLog];
+                          setPrintedLabelsLog(nextLogs);
+                          syncWithCloudServer({ printedLabelsLog: nextLogs });
+                          setCurrentLabelBatch((prev) => ({ ...prev, isLockedPrinted: true }));
+                          addLog(
+                            `Impresas y bloqueadas por seguridad ${newLogEntries.length} etiqueta(s) BN (${newLogEntries[0].correlativoSeguridad} ...)`
+                          );
+                          setTimeout(() => window.print(), 120);
+                        }}
+                        className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 ${
+                          currentLabelBatch.isLockedPrinted
+                            ? "bg-slate-700 text-slate-400 cursor-not-allowed opacity-70"
+                            : "bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer shadow"
+                        }`}
+                      >
+                        <Printer className="w-4 h-4" />
+                        <span>
+                          {currentLabelBatch.isLockedPrinted
+                            ? "🔒 Ya Impresa (Bloqueada por Seguridad)"
+                            : "🔒 Imprimir Etiquetas (Uso Único)"}
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* ÁREA IMPRIMIBLE DE ETIQUETAS PEQUEÑAS CON LOGO DORADO CENDIS Y CÓDIGO DE BARRA */}
+                {currentLabelBatch.items.length > 0 && (
+                  <div
+                    id="printable-area"
+                    className="w-full max-w-[820px] mx-auto bg-white p-6 rounded-xl border border-slate-200 text-slate-950"
+                  >
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {currentLabelBatch.items.map((lbl) => (
+                        <div
+                          key={lbl.id}
+                          className="border-2 border-[#c5a059] rounded-lg p-2.5 bg-[#fbfbfa] flex flex-col items-center justify-between text-center shadow-sm"
+                          style={{ minHeight: "155px", pageBreakInside: "avoid" }}
+                        >
+                          <div className="w-full border-b border-[#c5a059]/60 pb-1 flex flex-col items-center">
+                            <GoldenCendisGlyphSVG sizeClass="w-[96px]" />
+                            <span className="text-[7.5px] font-black uppercase tracking-wider text-[#0b2545] mt-0.5">
+                              BIEN NACIONAL • MPPC CENDIS
+                            </span>
+                          </div>
+
+                          <div className="my-1 w-full">
+                            <div className="text-[8.5px] font-black uppercase text-slate-800 truncate">
+                              {lbl.articulo}
+                            </div>
+                            <div className="text-[11px] font-black font-mono text-[#0b294d] tracking-tight">
+                              {lbl.correlativoSeguridad}
+                            </div>
+                          </div>
+
+                          <div className="w-full flex flex-col items-center">
+                            <ScannableCarnetBarcode value={lbl.correlativoSeguridad} />
+                            <span className="text-[6.5px] font-bold uppercase text-red-700 tracking-wider mt-0.5">
+                              ETIQUETA ÚNICA DE SEGURIDAD • NO REPETIBLE
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* AUDITORÍA DE ETIQUETAS YA IMPRESAS Y BLOQUEADAS */}
+                {printedLabelsLog.length > 0 && (
+                  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3 print:hidden">
+                    <h4 className="text-xs font-black uppercase text-slate-800">
+                      Registro de Seguridad: Etiquetas Emitidas (No Reimprimibles)
+                    </h4>
+                    <div className="overflow-x-auto max-h-56">
+                      <table className="w-full text-left text-[11px] border-collapse">
+                        <thead>
+                          <tr className="bg-slate-100 text-slate-700 uppercase font-black">
+                            <th className="p-2">N° Bien / Correlativo</th>
+                            <th className="p-2">Artículo</th>
+                            <th className="p-2">Emitida Por</th>
+                            <th className="p-2">Fecha/Hora</th>
+                            <th className="p-2">Estado Seguridad</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200">
+                          {printedLabelsLog.slice(0, 30).map((log) => (
+                            <tr key={log.id}>
+                              <td className="p-2 font-mono font-black text-teal-900">
+                                {log.correlativoSeguridad}
+                              </td>
+                              <td className="p-2 font-semibold">{log.articulo}</td>
+                              <td className="p-2">{log.impresoPor}</td>
+                              <td className="p-2">{log.impresoEn}</td>
+                              <td className="p-2">
+                                <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/40 font-black text-[9.5px]">
+                                  🔒 IMPRESA / BLOQUEADA
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               /* REPORTE PDF DE BIENES NACIONALES CON CINTILLO DE MEMORANDO */
@@ -7341,6 +8586,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               id="printable-area"
               className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
             >
+              {/* ... */}
               <div className="p-10 space-y-6">
                 <OfficialHeaderCintillo showRightLogo={true} />
 
@@ -7410,6 +8656,24 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </h2>
               <div className="flex flex-wrap gap-2">
                 <button
+                  type="button"
+                  onClick={() => {
+                    setEditingOrgCargoId(null);
+                    setOrgCargoForm({
+                      nombreCargo: "",
+                      coordinacion: "PRODUCCIÓN FONOGRÁFICA",
+                      nivelJerarquico: "COORDINACIÓN",
+                      reportaA: "DIRECCIÓN GENERAL",
+                      funciones: "",
+                      assignedEmpId: "",
+                    });
+                    setOrgCargoModalOpen(true);
+                  }}
+                  className="px-3.5 py-1.5 rounded-lg bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-black cursor-pointer shadow"
+                >
+                  + Crear Nuevo Cargo
+                </button>
+                <button
                   onClick={() => setOrgViewMode("DIAGRAM")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
                     orgViewMode === "DIAGRAM" ? "bg-purple-700 text-white" : "bg-slate-100 text-slate-700"
@@ -7439,6 +8703,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               id="printable-area"
               className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
             >
+              {/* ... */}
               <div className="p-10 space-y-6">
                 <OfficialHeaderCintillo showRightLogo={true} />
 
@@ -7464,6 +8729,87 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       Dirección Ejecutiva
                       <div className="text-[10px] text-blue-200 font-normal">Lic. Julimar Flores</div>
                     </div>
+                    <div className="h-5 w-0.5 bg-slate-400" />
+                    <div className="w-full space-y-2">
+                      <div className="text-center text-[11px] font-black uppercase text-slate-700">
+                        Cargos Institucionales Vinculados a Recursos Humanos ({orgCargos.length})
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+                        {orgCargos.map((cargoItem) => {
+                          const linkedEmp = employees.find(
+                            (e) => String(e.id) === String(cargoItem.assignedEmpId)
+                          );
+                          return (
+                            <div
+                              key={cargoItem.id}
+                              className={`p-3 bg-white border rounded-xl text-center space-y-1.5 ${
+                                cargoItem.status === "ANULADO"
+                                  ? "border-red-300 opacity-60"
+                                  : "border-amber-500/60 shadow-sm"
+                              }`}
+                            >
+                              <span className="inline-block px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[9px] font-black uppercase">
+                                {cargoItem.nivelJerarquico} • {cargoItem.coordinacion}
+                              </span>
+                              <div className="font-black text-xs text-slate-900">
+                                {cargoItem.nombreCargo}
+                              </div>
+                              <div className="text-[11px] font-bold text-blue-900">
+                                {linkedEmp
+                                  ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
+                                  : "VACANTE / SIN ASIGNAR"}
+                              </div>
+                              {cargoItem.funciones && (
+                                <p className="text-[10px] text-slate-500 line-clamp-2">
+                                  {cargoItem.funciones}
+                                </p>
+                              )}
+                              <div className="flex flex-wrap items-center justify-center gap-1 pt-1 print:hidden">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingOrgCargoId(cargoItem.id);
+                                    setOrgCargoForm({
+                                      nombreCargo: cargoItem.nombreCargo || "",
+                                      coordinacion: cargoItem.coordinacion || "PRODUCCIÓN FONOGRÁFICA",
+                                      nivelJerarquico: cargoItem.nivelJerarquico || "COORDINACIÓN",
+                                      reportaA: cargoItem.reportaA || "DIRECCIÓN GENERAL",
+                                      funciones: cargoItem.funciones || "",
+                                      assignedEmpId: cargoItem.assignedEmpId || "",
+                                    });
+                                    setOrgCargoModalOpen(true);
+                                  }}
+                                  className="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                >
+                                  ✏️ Asignar RRHH
+                                </button>
+                                {cargoItem.status !== "ANULADO" && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleUniversalAnnul("orgCargos", cargoItem.id, cargoItem.nombreCargo)
+                                    }
+                                    className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                  >
+                                    🚫 Anular
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleUniversalDelete("orgCargos", cargoItem.id, cargoItem.nombreCargo)
+                                  }
+                                  className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                >
+                                  🗑️ Eliminar
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                     <div className="h-5 w-0.5 bg-slate-400" />
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                       {employees.map((emp) => (
@@ -7500,6 +8846,56 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   </div>
                 ) : (
                   <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs text-slate-900">
+                    {orgCargos.map((cargoItem, idx) => {
+                      const linkedEmp = employees.find(
+                        (e) => String(e.id) === String(cargoItem.assignedEmpId)
+                      );
+                      return (
+                        <div
+                          key={cargoItem.id}
+                          className="py-1.5 border-b border-amber-300/60 flex items-center justify-between gap-2 bg-amber-50/70 px-2 rounded"
+                        >
+                          <div>
+                            <strong>Cargo {idx + 1} ({cargoItem.nivelJerarquico}):</strong>{" "}
+                            {cargoItem.nombreCargo} — {cargoItem.coordinacion} •{" "}
+                            <span className="font-bold text-blue-900">
+                              {linkedEmp
+                                ? `${linkedEmp.nombres} ${linkedEmp.apellidos}`
+                                : "VACANTE"}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 print:hidden">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingOrgCargoId(cargoItem.id);
+                                setOrgCargoForm({
+                                  nombreCargo: cargoItem.nombreCargo || "",
+                                  coordinacion: cargoItem.coordinacion || "PRODUCCIÓN FONOGRÁFICA",
+                                  nivelJerarquico: cargoItem.nivelJerarquico || "COORDINACIÓN",
+                                  reportaA: cargoItem.reportaA || "DIRECCIÓN GENERAL",
+                                  funciones: cargoItem.funciones || "",
+                                  assignedEmpId: cargoItem.assignedEmpId || "",
+                                });
+                                setOrgCargoModalOpen(true);
+                              }}
+                              className="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white text-[10px] font-bold cursor-pointer"
+                            >
+                              ✏️ Asignar RRHH
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleUniversalDelete("orgCargos", cargoItem.id, cargoItem.nombreCargo)
+                              }
+                              className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold cursor-pointer"
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                     {employees.map((emp, idx) => (
                       <div key={emp.id} className="py-1.5 border-b border-slate-200 flex items-center justify-between gap-2">
                         <div>
@@ -7535,6 +8931,214 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
               <OfficialFooterWave />
             </div>
+
+            {/* VENTANA FLOTANTE PARA CREAR NUEVO CARGO Y VINCULARLO CON RECURSOS HUMANOS */}
+            {orgCargoModalOpen && (
+              <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 print:hidden">
+                <div className="bg-[#0b1221] text-white rounded-2xl shadow-2xl max-w-lg w-full border-2 border-[#d97706]/80 overflow-hidden">
+                  <div className="px-5 py-4 bg-[#161f33] border-b border-slate-700 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">
+                        Integración Organigrama ↔ Recursos Humanos
+                      </span>
+                      <h3 className="text-sm font-black uppercase text-white">
+                        {editingOrgCargoId ? "Editar / Asignar Cargo a RRHH" : "Crear Nuevo Cargo en Organigrama"}
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setOrgCargoModalOpen(false)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!orgCargoForm.nombreCargo.trim()) return;
+                      const assignedEmp = employees.find(
+                        (emp) => String(emp.id) === String(orgCargoForm.assignedEmpId)
+                      );
+                      const nowTs = Date.now();
+                      const cargoPayload = {
+                        id: editingOrgCargoId || `cargo-${nowTs}`,
+                        nombreCargo: orgCargoForm.nombreCargo.trim(),
+                        coordinacion: orgCargoForm.coordinacion,
+                        nivelJerarquico: orgCargoForm.nivelJerarquico,
+                        reportaA: orgCargoForm.reportaA,
+                        funciones: orgCargoForm.funciones,
+                        assignedEmpId: assignedEmp ? assignedEmp.id : "",
+                        assignedEmpName: assignedEmp
+                          ? `${assignedEmp.nombres} ${assignedEmp.apellidos}`
+                          : "",
+                        status: "ACTIVO",
+                        updatedAt: nowTs,
+                      };
+
+                      const nextCargos = editingOrgCargoId
+                        ? orgCargos.map((c) => (c.id === editingOrgCargoId ? cargoPayload : c))
+                        : [cargoPayload, ...orgCargos];
+                      setOrgCargos(nextCargos);
+
+                      let nextEmps = employees;
+                      if (assignedEmp) {
+                        nextEmps = employees.map((emp) =>
+                          String(emp.id) === String(assignedEmp.id)
+                            ? {
+                                ...emp,
+                                cargo: cargoPayload.nombreCargo,
+                                coordinacion: cargoPayload.coordinacion,
+                                updatedAt: nowTs,
+                              }
+                            : emp
+                        );
+                        setEmployees(nextEmps);
+                      }
+
+                      syncWithCloudServer({ orgCargos: nextCargos, employees: nextEmps }, "PUSH");
+                      addLog(
+                        `Cargo '${cargoPayload.nombreCargo}' ${
+                          editingOrgCargoId ? "actualizado" : "creado"
+                        } en Organigrama${
+                          assignedEmp ? ` y vinculado a ${assignedEmp.nombres} ${assignedEmp.apellidos}` : ""
+                        }`
+                      );
+                      showToast(
+                        assignedEmp
+                          ? `Cargo "${cargoPayload.nombreCargo}" vinculado a ${assignedEmp.nombres} ${assignedEmp.apellidos} en RRHH.`
+                          : `Cargo "${cargoPayload.nombreCargo}" creado en Organigrama y disponible en RRHH.`
+                      );
+                      setOrgCargoModalOpen(false);
+                    }}
+                    className="p-5 space-y-3 text-xs"
+                  >
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        Nombre del Nuevo Cargo *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ej. ESPECIALISTA EN MASTERIZACIÓN"
+                        value={orgCargoForm.nombreCargo}
+                        onChange={(e) =>
+                          setOrgCargoForm({ ...orgCargoForm, nombreCargo: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#070b14] border border-slate-700 text-white font-bold"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                          Coordinación / Unidad
+                        </label>
+                        <select
+                          value={orgCargoForm.coordinacion}
+                          onChange={(e) =>
+                            setOrgCargoForm({ ...orgCargoForm, coordinacion: e.target.value })
+                          }
+                          className="w-full px-3 py-2 rounded-lg bg-[#070b14] border border-slate-700 text-white font-bold"
+                        >
+                          <option value="DIRECCIÓN GENERAL">DIRECCIÓN GENERAL</option>
+                          <option value="PRESIDENCIA">PRESIDENCIA</option>
+                          <option value="DIRECCIÓN EJECUTIVA">DIRECCIÓN EJECUTIVA</option>
+                          <option value="PRODUCCIÓN FONOGRÁFICA">PRODUCCIÓN FONOGRÁFICA</option>
+                          <option value="CULTURA AUDIOVISUAL">CULTURA AUDIOVISUAL</option>
+                          <option value="ADMINISTRACIÓN Y RRHH">ADMINISTRACIÓN Y RRHH</option>
+                          <option value="TECNOLOGÍA Y SISTEMAS">TECNOLOGÍA Y SISTEMAS</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                          Nivel Jerárquico
+                        </label>
+                        <select
+                          value={orgCargoForm.nivelJerarquico}
+                          onChange={(e) =>
+                            setOrgCargoForm({ ...orgCargoForm, nivelJerarquico: e.target.value })
+                          }
+                          className="w-full px-3 py-2 rounded-lg bg-[#070b14] border border-slate-700 text-white font-bold"
+                        >
+                          <option value="DIRECCIÓN">DIRECCIÓN</option>
+                          <option value="COORDINACIÓN">COORDINACIÓN</option>
+                          <option value="ESPECIALISTA">ESPECIALISTA</option>
+                          <option value="TÉCNICO / OPERATIVO">TÉCNICO / OPERATIVO</option>
+                          <option value="APOYO ADMINISTRATIVO">APOYO ADMINISTRATIVO</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        Reporta a (Superior Inmediato)
+                      </label>
+                      <input
+                        type="text"
+                        value={orgCargoForm.reportaA}
+                        onChange={(e) =>
+                          setOrgCargoForm({ ...orgCargoForm, reportaA: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#070b14] border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-amber-300 mb-1">
+                        Vincular / Asignar Personal de Recursos Humanos (RRHH)
+                      </label>
+                      <select
+                        value={orgCargoForm.assignedEmpId}
+                        onChange={(e) =>
+                          setOrgCargoForm({ ...orgCargoForm, assignedEmpId: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#070b14] border border-amber-500/60 text-white font-bold"
+                      >
+                        <option value="">-- Dejar Cargo Vacante (Disponible para RRHH) --</option>
+                        {employees.map((emp) => (
+                          <option key={emp.id} value={emp.id}>
+                            {emp.nombres} {emp.apellidos} ({emp.cedula} • Actual: {emp.cargo})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        Funciones Principales del Cargo
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="Describa las responsabilidades del cargo..."
+                        value={orgCargoForm.funciones}
+                        onChange={(e) =>
+                          setOrgCargoForm({ ...orgCargoForm, funciones: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#070b14] border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                      <button
+                        type="button"
+                        onClick={() => setOrgCargoModalOpen(false)}
+                        className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold cursor-pointer"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white font-black cursor-pointer shadow"
+                      >
+                        💾 Guardar Cargo y Vincular RRHH
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -8414,8 +10018,31 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div>
                     <label className="block text-[10px] font-bold text-slate-300 mb-1">
-                      Cargo en el CENDIS *
+                      Cargo en el CENDIS * (Vinculado a Organigrama)
                     </label>
+                    <select
+                      onChange={(e) => {
+                        const selectedCargo = orgCargos.find(
+                          (c) => String(c.id) === e.target.value
+                        );
+                        if (!selectedCargo) return;
+                        setNewEmpForm({
+                          ...newEmpForm,
+                          cargo: selectedCargo.nombreCargo,
+                          coordinacion: selectedCargo.coordinacion || newEmpForm.coordinacion,
+                        });
+                      }}
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#0d1322] border border-amber-500/50 text-amber-300 text-[11px] font-bold mb-1.5"
+                    >
+                      <option value="">Elegir cargo del Organigrama...</option>
+                      {orgCargos
+                        .filter((c) => c.status !== "ANULADO")
+                        .map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.nombreCargo} ({c.coordinacion})
+                          </option>
+                        ))}
+                    </select>
                     <input
                       type="text"
                       required
