@@ -1369,6 +1369,7 @@ export default function App() {
   const [systemNewNotices, setSystemNewNotices] = useState(() =>
     loadStoredJson("cendis_new_notices_v1", INITIAL_NEW_NOTICES)
   );
+  const [newNoticesModalOpen, setNewNoticesModalOpen] = useState(false);
   const registerNewNotice = (module, title, detail) => {
     const entry = {
       id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -1821,6 +1822,7 @@ export default function App() {
     chatMessages,
     orgCargos,
     printedLabelsLog,
+    systemNewNotices,
   };
 
   const applyRemoteState = (remote, currentSnap) => {
@@ -1890,6 +1892,17 @@ export default function App() {
       );
       if (JSON.stringify(mergedAtt) !== JSON.stringify(currentSnap.attendanceRecords)) {
         setAttendanceRecords(mergedAtt);
+      }
+    }
+    if (Array.isArray(remote.systemNewNotices)) {
+      const mergedNotices = mergeSyncArrays(
+        currentSnap.systemNewNotices || [],
+        remote.systemNewNotices,
+        deletedSet
+      ).slice(0, 25);
+      if (JSON.stringify(mergedNotices) !== JSON.stringify(currentSnap.systemNewNotices || [])) {
+        setSystemNewNotices(mergedNotices);
+        saveStoredJson("cendis_new_notices_v1", mergedNotices);
       }
     }
     if (Array.isArray(remote.users)) {
@@ -3960,34 +3973,59 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
 
               <div className="space-y-3 max-h-[430px] overflow-y-auto pr-1">
-                {activeIntranetEvents.length === 0 ? (
+                {activeIntranetEvents.length === 0 && projects.length === 0 ? (
                   <p className="text-xs text-slate-400 italic py-6 text-center">
-                    No hay eventos registrados en la Agenda en este momento.
+                    No hay eventos ni tareas registrados en este momento.
                   </p>
                 ) : (
-                  activeIntranetEvents.map((ev) => (
-                    <div
-                      key={ev.id}
-                      className="rounded-xl bg-[#070b14] border border-slate-800/90 hover:border-blue-500/50 p-3.5 transition"
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-black">
-                          📅 {ev.date} • {ev.allDay ? "TODO EL DÍA" : `${ev.startTime || "08:00"}${ev.endTime ? ` - ${ev.endTime}` : ""}`}
-                        </span>
-                        <span className="text-[9.5px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                          {ev.status || "PROGRAMADO"}
-                        </span>
+                  <>
+                    {activeIntranetEvents.map((ev) => (
+                      <div
+                        key={ev.id}
+                        className="rounded-xl bg-[#070b14] border border-slate-800/90 hover:border-blue-500/50 p-3.5 transition"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-black">
+                            📅 {ev.date} • {ev.allDay ? "TODO EL DÍA" : `${ev.startTime || "08:00"}${ev.endTime ? ` - ${ev.endTime}` : ""}`}
+                          </span>
+                          <span className="text-[9.5px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                            {ev.status || "PROGRAMADO"}
+                          </span>
+                        </div>
+                        <h3 className="text-xs font-black text-white uppercase leading-snug">{ev.title}</h3>
+                        {ev.description && (
+                          <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{ev.description}</p>
+                        )}
+                        <div className="flex flex-wrap items-center gap-3 mt-2 text-[10px] text-slate-300">
+                          <span>📍 {ev.location || "Sede CENDIS"}</span>
+                          <span>👤 {ev.responsable || "CENDIS"}</span>
+                        </div>
                       </div>
-                      <h3 className="text-xs font-black text-white uppercase leading-snug">{ev.title}</h3>
-                      {ev.description && (
-                        <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{ev.description}</p>
-                      )}
-                      <div className="flex flex-wrap items-center gap-3 mt-2 text-[10px] text-slate-300">
-                        <span>📍 {ev.location || "Sede CENDIS"}</span>
-                        <span>👤 {ev.responsable || "CENDIS"}</span>
+                    ))}
+                    {projects.slice(0, 6).map((proj) => (
+                      <div
+                        key={proj.id}
+                        className="rounded-xl bg-[#070b14] border border-amber-500/30 p-3 transition"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-black">
+                            📋 TAREA / PROYECTO • Entrega: {proj.fechaEntrega || "Por definir"}
+                          </span>
+                          <span className="text-[9.5px] font-black text-emerald-300">
+                            {proj.porcentaje || 0}%
+                          </span>
+                        </div>
+                        <h3 className="text-xs font-black text-white uppercase leading-snug">{proj.nombre}</h3>
+                        {proj.tarea && (
+                          <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-2">{proj.tarea}</p>
+                        )}
+                        <div className="flex flex-wrap items-center gap-3 mt-1.5 text-[10px] text-slate-300">
+                          <span>🏢 {proj.coordinacion || "CENDIS"}</span>
+                          <span>👤 {proj.responsable || "CENDIS"}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+                  </>
                 )}
               </div>
             </section>
@@ -4838,6 +4876,63 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         </div>
       )}
 
+      {/* PANEL FLOTANTE DE NOVEDADES ("NEW") */}
+      {newNoticesModalOpen && (
+        <div className="fixed top-20 right-4 z-50 w-80 sm:w-96 rounded-2xl bg-[#0c1322] border border-amber-500/60 shadow-2xl p-4 space-y-3 print:hidden">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black uppercase">
+                NEW
+              </span>
+              <span className="text-xs font-black uppercase text-white">Novedades y Acciones Recientes</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {unseenNewCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = systemNewNotices.map((n) => ({ ...n, seen: true }));
+                    setSystemNewNotices(next);
+                    saveStoredJson("cendis_new_notices_v1", next);
+                  }}
+                  className="text-[10px] font-bold text-amber-300 hover:text-amber-200 cursor-pointer"
+                >
+                  Marcar vistas
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setNewNoticesModalOpen(false)}
+                className="text-slate-400 hover:text-white text-xs font-black cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          <div className="max-h-72 overflow-y-auto space-y-2 pr-1">
+            {systemNewNotices.slice(0, 15).map((n) => (
+              <div
+                key={n.id}
+                className={`rounded-xl p-2.5 border text-[11px] ${
+                  n.seen
+                    ? "bg-[#070b14] border-slate-800 text-slate-300"
+                    : "bg-[#141c2f] border-amber-500/50 text-white"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <span className="px-1.5 py-0.2 rounded bg-amber-400 text-slate-950 text-[8.5px] font-black uppercase">
+                    {n.seen ? n.module : "NEW"}
+                  </span>
+                  <span className="text-[9.5px] text-slate-400 font-mono">{n.date}</span>
+                </div>
+                <p className="font-bold leading-snug">{n.title}</p>
+                {n.detail && <p className="text-[10px] text-slate-400 mt-0.5">{n.detail}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* CONTENEDOR ADAPTABLE SEGÚN DISPOSITIVO (INCLUYE BARRA DE NAVEGACIÓN Y ÁREA DE TRABAJO) */}
       <div className={`cendis-dark-workspace bg-[#050a15] flex-1 flex flex-col ${viewportContainerClass}`}>
         <div className="grid grid-cols-3 h-1.5 w-full print:hidden">
@@ -4872,6 +4967,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             </div>
 
             <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setNewNoticesModalOpen((v) => !v)}
+                className="px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/60 text-amber-300 text-[11px] font-black flex items-center gap-1.5 cursor-pointer"
+                title="Ver novedades, acciones recientes y modificaciones del sistema"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>NEW</span>
+                {unseenNewCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black animate-pulse">
+                    {unseenNewCount}
+                  </span>
+                )}
+              </button>
               {renderRealtimeSyncBadge()}
               {renderDeviceViewportSwitcher()}
               {renderThemeModeSwitcher()}
@@ -9913,6 +10022,24 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                               </option>
                             ))}
                           </select>
+                          {(() => {
+                            const linkedEmp = employees.find(
+                              (emp) => String(emp.id) === String(selectedUserForPerms.linkedEmployeeId)
+                            );
+                            return (
+                              <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
+                                {linkedEmp ? (
+                                  <span className="px-2.5 py-1 rounded-lg bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 font-bold">
+                                    ✓ Trabajador RRHH Vinculado: {linkedEmp.nombres} {linkedEmp.apellidos} ({linkedEmp.cedula}) • {linkedEmp.cargo}
+                                  </span>
+                                ) : (
+                                  <span className="px-2.5 py-1 rounded-lg bg-amber-950/70 border border-amber-500/50 text-amber-300 font-bold">
+                                    ⚠ Usuario base sin ficha RRHH vinculada (use el formulario inferior para vincular nuevos trabajadores)
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })()}
                         </div>
 
                         <div>
