@@ -28,7 +28,11 @@ import {
   MessageSquare,
   Filter,
   Archive,
-  Download
+  Download,
+  Clock,
+  Sparkles,
+  Cake,
+  Newspaper
 } from "lucide-react";
 
 // ============================================================================
@@ -1280,8 +1284,8 @@ export default function App() {
   };
   const [currentUser, setCurrentUser] = useState(() => getSessionFromCookie(loadStoredUsers()));
   const [currentScreen, setCurrentScreen] = useState(() =>
-    getSessionFromCookie(loadStoredUsers()) ? "PORTAL" : "LOGIN"
-  ); // LOGIN | PORTAL | APP
+    getSessionFromCookie(loadStoredUsers()) ? "PORTAL" : "INTRANET"
+  ); // INTRANET | LOGIN | PORTAL | APP
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -1329,12 +1333,70 @@ export default function App() {
   // Pestaña activa
   const [activeTab, setActiveTab] = useState("editor");
 
-  // Mensajes de aviso / notificaciones
+  // Mensajes de aviso / notificaciones y Registro de Novedades ("NEW")
   const [toastMessage, setToastMessage] = useState(null);
-  const showToast = (text, type = "success") => {
-    setToastMessage({ text, type });
-    setTimeout(() => setToastMessage(null), 4000);
+  const showToast = (text, type = "success", isNew = false) => {
+    setToastMessage({ text, type, isNew });
+    setTimeout(() => setToastMessage(null), 4500);
   };
+
+  const INITIAL_NEW_NOTICES = [
+    {
+      id: "new-intranet-215",
+      module: "intranet",
+      title: "Canal Informativo del CENDIS (Intranet)",
+      detail: "Nueva página de inicio con eventos de Agenda, cumpleaños del personal y novedades del sistema.",
+      date: "2026-11-15",
+      seen: false,
+    },
+    {
+      id: "new-agenda-clock-215",
+      module: "agenda",
+      title: "Reloj selector de hora y Cumpleaños automáticos",
+      detail: "Selector de reloj en eventos de Agenda e ingreso automático de cumpleaños desde RRHH.",
+      date: "2026-11-15",
+      seen: false,
+    },
+    {
+      id: "new-config-rrhh-215",
+      module: "config",
+      title: "Usuarios vinculados a Recursos Humanos",
+      detail: "Para crear un usuario en Configuración ahora debe seleccionarse un trabajador registrado en RRHH.",
+      date: "2026-11-15",
+      seen: false,
+    },
+  ];
+  const [systemNewNotices, setSystemNewNotices] = useState(() =>
+    loadStoredJson("cendis_new_notices_v1", INITIAL_NEW_NOTICES)
+  );
+  const registerNewNotice = (module, title, detail) => {
+    const entry = {
+      id: `new-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      module: module || "sistema",
+      title,
+      detail: detail || title,
+      date: new Date().toISOString().slice(0, 10),
+      seen: false,
+    };
+    setSystemNewNotices((prev) => {
+      const next = [entry, ...prev].slice(0, 25);
+      saveStoredJson("cendis_new_notices_v1", next);
+      return next;
+    });
+  };
+  const markModuleNewSeen = (moduleId) => {
+    setSystemNewNotices((prev) => {
+      const hasUnseen = prev.some((n) => n.module === moduleId && !n.seen);
+      if (!hasUnseen) return prev;
+      const next = prev.map((n) => (n.module === moduleId ? { ...n, seen: true } : n));
+      saveStoredJson("cendis_new_notices_v1", next);
+      return next;
+    });
+  };
+  const unseenNewCount = useMemo(
+    () => systemNewNotices.filter((n) => !n.seen).length,
+    [systemNewNotices]
+  );
 
   // Estado Universal de Memorandos, Solicitudes, Oficios y Órdenes de Salida (Formato Oficial FC-DG-MEM-2026-007)
   const [docType, setDocType] = useState("MEMORANDUM"); // MEMORANDUM | SOLICITUD | OFICIO | ORDEN_SALIDA
@@ -1436,7 +1498,7 @@ export default function App() {
     },
   ]);
 
-  const addLog = (actionText, userObj = currentUser) => {
+  const addLog = (actionText, userObj = currentUser, moduleKey = activeTab) => {
     const now = new Date();
     const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 8)}`;
     setLogs((prev) => [
@@ -1449,6 +1511,9 @@ export default function App() {
       },
       ...prev,
     ]);
+    if (actionText && !actionText.startsWith("Inicio de sesión") && !actionText.startsWith("Cierre de sesión")) {
+      registerNewNotice(moduleKey || "sistema", actionText, `Acción registrada por ${userObj ? userObj.fullName : "Sistema"} (${stamp})`);
+    }
   };
 
   // Estado de Recursos Humanos
@@ -2140,6 +2205,7 @@ export default function App() {
     return initialList[0] ? String(initialList[0].id) : "1";
   });
   const [newUserForm, setNewUserForm] = useState({
+    linkedEmployeeId: "",
     username: "",
     email: "",
     password: "",
@@ -2477,6 +2543,88 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     setLoginPassword("");
     setCurrentScreen("LOGIN");
   };
+
+  // Sincronización automática de cumpleaños de RRHH hacia el Calendario de Agenda
+  const upsertEmployeeBirthdayEvent = (emp) => {
+    if (!emp || !emp.fechaNacimiento || !/^\d{4}-\d{2}-\d{2}$/.test(emp.fechaNacimiento)) return;
+    const [, mm, dd] = emp.fechaNacimiento.split("-");
+    const currentYear = new Date().getFullYear();
+    const bdayDate = `${currentYear}-${mm}-${dd}`;
+    const fullName = `${emp.nombres || ""} ${emp.apellidos || ""}`.trim().toUpperCase();
+    const bdayId = `bday-${emp.id}`;
+    const bdayEvent = {
+      id: bdayId,
+      title: `🎂 CUMPLEAÑOS DE ${fullName}`,
+      date: bdayDate,
+      endDate: bdayDate,
+      allDay: true,
+      startTime: "08:00",
+      endTime: "17:00",
+      recurrence: "ANUAL",
+      eventType: "CUMPLEANOS",
+      location: `SEDE CENDIS • ${emp.coordinacion || "TALENTO HUMANO"}`,
+      ente: "FUNDACIÓN CENDIS",
+      meetLink: "",
+      responsable: fullName,
+      responsableEmail: emp.correo || "",
+      guests: [],
+      description: `Celebración de cumpleaños del trabajador ${fullName} (${emp.cargo || "Personal CENDIS"}). Registrado automáticamente desde Recursos Humanos.`,
+      remindBeforeMinutes: 1440,
+      color: "ROSE",
+      status: "APROBADO",
+      linkedEmployeeId: emp.id,
+      updatedAt: Date.now(),
+    };
+    setAgendaEvents((prev) => {
+      const exists = prev.some((ev) => String(ev.id) === bdayId);
+      if (exists) {
+        return prev.map((ev) => (String(ev.id) === bdayId ? { ...ev, ...bdayEvent } : ev));
+      }
+      return [...prev, bdayEvent];
+    });
+  };
+
+  useEffect(() => {
+    if (!employees || employees.length === 0) return;
+    const currentYear = new Date().getFullYear();
+    setAgendaEvents((prev) => {
+      let changed = false;
+      const next = [...prev];
+      employees.forEach((emp) => {
+        if (!emp || !emp.fechaNacimiento || !/^\d{4}-\d{2}-\d{2}$/.test(emp.fechaNacimiento)) return;
+        const bdayId = `bday-${emp.id}`;
+        if (!next.some((ev) => String(ev.id) === bdayId)) {
+          const [, mm, dd] = emp.fechaNacimiento.split("-");
+          const fullName = `${emp.nombres || ""} ${emp.apellidos || ""}`.trim().toUpperCase();
+          next.push({
+            id: bdayId,
+            title: `🎂 CUMPLEAÑOS DE ${fullName}`,
+            date: `${currentYear}-${mm}-${dd}`,
+            endDate: `${currentYear}-${mm}-${dd}`,
+            allDay: true,
+            startTime: "08:00",
+            endTime: "17:00",
+            recurrence: "ANUAL",
+            eventType: "CUMPLEANOS",
+            location: `SEDE CENDIS • ${emp.coordinacion || "TALENTO HUMANO"}`,
+            ente: "FUNDACIÓN CENDIS",
+            meetLink: "",
+            responsable: fullName,
+            responsableEmail: emp.correo || "",
+            guests: [],
+            description: `Celebración de cumpleaños del trabajador ${fullName} (${emp.cargo || "Personal CENDIS"}).`,
+            remindBeforeMinutes: 1440,
+            color: "ROSE",
+            status: "APROBADO",
+            linkedEmployeeId: emp.id,
+            updatedAt: Date.now(),
+          });
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [employees.length]);
 
   // Caducidad automática de la sesión después de 5 minutos (300.000 ms) de inactividad
   useEffect(() => {
@@ -3662,6 +3810,297 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   );
 
   // ==========================================================================
+  // 0) CANAL INFORMATIVO DEL CENDIS (PÁGINA TIPO INTRANET)
+  // ==========================================================================
+  if (currentScreen === "INTRANET") {
+    const todayIso = new Date().toISOString().slice(0, 10);
+    const todayMmDd = todayIso.slice(5, 10);
+    const currentMonthMm = todayIso.slice(5, 7);
+
+    const activeIntranetEvents = agendaEvents
+      .filter((ev) => ev.status !== "ANULADO" && ev.eventType !== "CUMPLEANOS")
+      .sort((a, b) => (a.date || "").localeCompare(b.date || "") || (a.startTime || "").localeCompare(b.startTime || ""));
+
+    const birthdayEmployees = employees
+      .filter((emp) => emp.fechaNacimiento && /^\d{4}-\d{2}-\d{2}$/.test(emp.fechaNacimiento))
+      .map((emp) => {
+        const [, mm, dd] = emp.fechaNacimiento.split("-");
+        const mmdd = `${mm}-${dd}`;
+        return {
+          ...emp,
+          mmdd,
+          mm,
+          dd,
+          isToday: mmdd === todayMmDd,
+          isThisMonth: mm === currentMonthMm,
+        };
+      })
+      .sort((a, b) => (a.isToday === b.isToday ? a.mmdd.localeCompare(b.mmdd) : a.isToday ? -1 : 1));
+
+    const monthNamesEs = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+    ];
+    const currentMonthLabel = monthNamesEs[Math.max(0, Number(currentMonthMm) - 1)] || "Mes";
+
+    return (
+      <div
+        className={`min-h-screen ${
+          themeMode === "LIGHT"
+            ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
+            : "bg-[#050a15] text-slate-100"
+        } flex flex-col font-sans`}
+      >
+        {renderGlobalThemeStyles()}
+
+        {/* Franja tricolor superior */}
+        <div className="grid grid-cols-3 h-1.5 w-full shrink-0">
+          <div className="bg-[#facc15]" />
+          <div className="bg-[#1d4ed8]" />
+          <div className="bg-[#dc2626]" />
+        </div>
+
+        {/* Cabecera Intranet */}
+        <header className="bg-gradient-to-r from-[#4a0e13] via-[#171226] to-[#0a1326] border-b border-slate-800 px-4 md:px-8 py-4 shadow-xl">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="bg-white rounded-xl px-3 py-1.5 shadow-md shrink-0">
+                <CendisGlyphLogo className="w-28" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#f59e0b]">
+                  MINISTERIO DEL PODER POPULAR PARA LA CULTURA • INTRANET INSTITUCIONAL
+                </p>
+                <h1 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
+                  <span>CANAL INFORMATIVO DEL CENDIS</span>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black animate-pulse">
+                    NEW
+                  </span>
+                </h1>
+                <p className="text-[11px] text-slate-300 font-medium">
+                  Cartelera institucional en tiempo real: eventos de agenda, tareas, cumpleaños del personal y novedades del sistema.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5">
+              {renderThemeModeSwitcher()}
+              <button
+                type="button"
+                onClick={() => setCurrentScreen(currentUser ? "PORTAL" : "LOGIN")}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#b91c1c] to-[#dc2626] hover:from-[#991b1b] hover:to-[#b91c1c] text-white text-xs font-black uppercase tracking-wider shadow-lg border border-amber-400/50 flex items-center gap-2 transition cursor-pointer"
+              >
+                <Lock className="w-4 h-4 text-amber-300" />
+                <span>{currentUser ? "Ir al Portal del Sistema" : "Ingresar al Sistema"}</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Contenido Intranet */}
+        <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+          {/* Tarjetas Resumen */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <div className="rounded-2xl bg-[#0e1526] border border-blue-500/40 p-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase text-blue-300">Eventos y Tareas (Agenda)</span>
+                <CalendarIcon className="w-4 h-4 text-blue-400" />
+              </div>
+              <p className="text-2xl font-black text-white mt-1">{activeIntranetEvents.length}</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Actividades programadas</p>
+            </div>
+            <div className="rounded-2xl bg-[#0e1526] border border-rose-500/40 p-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase text-rose-300">Cumpleaños ({currentMonthLabel})</span>
+                <Cake className="w-4 h-4 text-rose-400" />
+              </div>
+              <p className="text-2xl font-black text-white mt-1">
+                {birthdayEmployees.filter((e) => e.isThisMonth).length}
+              </p>
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                {birthdayEmployees.filter((e) => e.isToday).length} celebrando hoy
+              </p>
+            </div>
+            <div className="rounded-2xl bg-[#0e1526] border border-emerald-500/40 p-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase text-emerald-300">Personal CENDIS</span>
+                <Users className="w-4 h-4 text-emerald-400" />
+              </div>
+              <p className="text-2xl font-black text-white mt-1">{employees.length}</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Trabajadores activos en RRHH</p>
+            </div>
+            <div className="rounded-2xl bg-[#0e1526] border border-amber-500/50 p-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase text-amber-300">Novedades Sistema</span>
+                <Sparkles className="w-4 h-4 text-amber-400" />
+              </div>
+              <p className="text-2xl font-black text-white mt-1">{systemNewNotices.length}</p>
+              <p className="text-[10px] text-amber-300 font-bold mt-0.5">
+                {unseenNewCount} actualizaciones NEW
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            {/* Columna 1: Eventos y Tareas de la Agenda */}
+            <section className="lg:col-span-5 rounded-2xl bg-[#0c1322] border border-slate-800 p-5 shadow-xl flex flex-col">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <div>
+                  <h2 className="text-sm font-black uppercase text-white flex items-center gap-2">
+                    <CalendarIcon className="w-4 h-4 text-blue-400" />
+                    <span>Eventos y Tareas de la Agenda</span>
+                  </h2>
+                  <p className="text-[11px] text-slate-400">
+                    Actividades institucionales sincronizadas en tiempo real
+                  </p>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-blue-950/80 border border-blue-500/40 text-blue-300 text-[10px] font-black">
+                  {activeIntranetEvents.length} ACTIVOS
+                </span>
+              </div>
+
+              <div className="space-y-3 max-h-[430px] overflow-y-auto pr-1">
+                {activeIntranetEvents.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic py-6 text-center">
+                    No hay eventos registrados en la Agenda en este momento.
+                  </p>
+                ) : (
+                  activeIntranetEvents.map((ev) => (
+                    <div
+                      key={ev.id}
+                      className="rounded-xl bg-[#070b14] border border-slate-800/90 hover:border-blue-500/50 p-3.5 transition"
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-black">
+                          📅 {ev.date} • {ev.allDay ? "TODO EL DÍA" : `${ev.startTime || "08:00"}${ev.endTime ? ` - ${ev.endTime}` : ""}`}
+                        </span>
+                        <span className="text-[9.5px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                          {ev.status || "PROGRAMADO"}
+                        </span>
+                      </div>
+                      <h3 className="text-xs font-black text-white uppercase leading-snug">{ev.title}</h3>
+                      {ev.description && (
+                        <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{ev.description}</p>
+                      )}
+                      <div className="flex flex-wrap items-center gap-3 mt-2 text-[10px] text-slate-300">
+                        <span>📍 {ev.location || "Sede CENDIS"}</span>
+                        <span>👤 {ev.responsable || "CENDIS"}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
+
+            {/* Columna 2: Cumpleaños del Personal */}
+            <section className="lg:col-span-4 rounded-2xl bg-[#0c1322] border border-slate-800 p-5 shadow-xl flex flex-col">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <div>
+                  <h2 className="text-sm font-black uppercase text-white flex items-center gap-2">
+                    <Cake className="w-4 h-4 text-rose-400" />
+                    <span>Cumpleaños del Personal</span>
+                  </h2>
+                  <p className="text-[11px] text-slate-400">
+                    Vinculados automáticamente desde Recursos Humanos
+                  </p>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-rose-950/80 border border-rose-500/40 text-rose-300 text-[10px] font-black">
+                  🎂 RRHH
+                </span>
+              </div>
+
+              <div className="space-y-2.5 max-h-[430px] overflow-y-auto pr-1">
+                {birthdayEmployees.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic py-6 text-center">
+                    No hay fechas de nacimiento registradas en RRHH aún.
+                  </p>
+                ) : (
+                  birthdayEmployees.map((emp) => (
+                    <div
+                      key={emp.id}
+                      className={`rounded-xl p-3 border transition ${
+                        emp.isToday
+                          ? "bg-gradient-to-r from-rose-950/80 to-amber-950/60 border-amber-400 shadow-lg"
+                          : emp.isThisMonth
+                          ? "bg-[#11192e] border-rose-500/40"
+                          : "bg-[#070b14] border-slate-800"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-black text-white uppercase">
+                          🎂 {emp.nombres} {emp.apellidos}
+                        </span>
+                        {emp.isToday ? (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black animate-pulse">
+                            ¡HOY!
+                          </span>
+                        ) : emp.isThisMonth ? (
+                          <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[9px] font-black">
+                            ESTE MES
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="text-[10.5px] text-amber-300 font-bold mt-0.5">
+                        {emp.cargo || "Trabajador CENDIS"}
+                      </p>
+                      <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1">
+                        <span>🏢 {emp.coordinacion || "CENDIS"}</span>
+                        <span className="font-bold text-slate-200">
+                          Día {emp.dd}/{emp.mm}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
+
+            {/* Columna 3: Novedades y Actualizaciones NEW del Sistema */}
+            <section className="lg:col-span-3 rounded-2xl bg-[#0c1322] border border-slate-800 p-5 shadow-xl flex flex-col">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <div>
+                  <h2 className="text-sm font-black uppercase text-white flex items-center gap-2">
+                    <Newspaper className="w-4 h-4 text-amber-400" />
+                    <span>Novedades</span>
+                    <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black">
+                      NEW
+                    </span>
+                  </h2>
+                  <p className="text-[11px] text-slate-400">
+                    Módulos, acciones y mejoras recientes
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2.5 max-h-[430px] overflow-y-auto pr-1">
+                {systemNewNotices.slice(0, 12).map((notice) => (
+                  <div
+                    key={notice.id}
+                    className="rounded-xl bg-[#070b14] border border-amber-500/30 p-3"
+                  >
+                    <div className="flex items-center justify-between gap-1.5 mb-1">
+                      <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black uppercase">
+                        NEW
+                      </span>
+                      <span className="text-[9.5px] text-slate-400 font-mono">{notice.date}</span>
+                    </div>
+                    <p className="text-[11px] font-black text-white leading-snug">{notice.title}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">{notice.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </main>
+
+        <footer className="border-t border-slate-800/80 py-3 px-6 text-center text-[10.5px] text-slate-400">
+          SIACENDIS • Fundación Centro Nacional del Disco (CENDIS) • RIF: G-20008344-9 • Canal Informativo Institucional
+        </footer>
+      </div>
+    );
+  }
+
+  // ==========================================================================
   // 1) VENTANA ÚNICA DE INICIO DE SESIÓN (IDÉNTICA A LA CAPTURA ADJUNTA)
   // ==========================================================================
   if (currentScreen === "LOGIN") {
@@ -3674,6 +4113,16 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         } flex flex-col items-center justify-center p-3 font-sans relative`}
       >
         {renderGlobalThemeStyles()}
+        <div className="fixed top-3 left-3 z-40">
+          <button
+            type="button"
+            onClick={() => setCurrentScreen("INTRANET")}
+            className="px-3 py-1.5 rounded-xl bg-[#0e1526] hover:bg-[#17223b] border border-amber-500/50 text-amber-300 text-[11px] font-bold flex items-center gap-1.5 shadow cursor-pointer"
+          >
+            <Newspaper className="w-3.5 h-3.5" />
+            <span>Canal Informativo</span>
+          </button>
+        </div>
         <div className="fixed top-3 right-3 z-40">{renderThemeModeSwitcher()}</div>
         <div className="w-full max-w-[360px] bg-[#0c1322] rounded-2xl shadow-2xl border border-slate-800/90 overflow-hidden">
           {/* Franja tricolor superior en 3 bloques exactos */}
@@ -3991,6 +4440,21 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
+                  onClick={() => setCurrentScreen("INTRANET")}
+                  className="px-3 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-blue-500/40 text-blue-300 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shadow"
+                  title="Abrir Canal Informativo del CENDIS (Intranet)"
+                >
+                  <Newspaper className="w-3.5 h-3.5" />
+                  <span>Intranet</span>
+                  {unseenNewCount > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black">
+                      NEW
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
                   onClick={openPasswordModal}
                   className="px-3 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] border border-amber-500/40 text-amber-400 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shadow"
                   title="Cambiar clave de seguridad (Vigencia límite: 90 días)"
@@ -4043,6 +4507,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         return;
                       }
                       setActiveTab(mod.id);
+                      markModuleNewSeen(mod.id);
                       setCurrentScreen("APP");
                     }}
                     className={`group relative rounded-[24px] ${
@@ -4074,20 +4539,27 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           </span>
                         </div>
 
-                        <span
-                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 border ${
-                            isWarm
-                              ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-400"
-                              : "bg-blue-950/80 border-blue-400/40 text-blue-300"
-                          }`}
-                        >
+                        <div className="flex items-center gap-1.5">
+                          {systemNewNotices.some((n) => n.module === mod.id && !n.seen) && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black uppercase animate-pulse shadow">
+                              NEW
+                            </span>
+                          )}
                           <span
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              isWarm ? "bg-emerald-400" : "bg-blue-400"
+                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 border ${
+                              isWarm
+                                ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-400"
+                                : "bg-blue-950/80 border-blue-400/40 text-blue-300"
                             }`}
-                          />
-                          {mod.badgeText}
-                        </span>
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                isWarm ? "bg-emerald-400" : "bg-blue-400"
+                              }`}
+                            />
+                            {mod.badgeText}
+                          </span>
+                        </div>
                       </div>
 
                       <p
@@ -4345,8 +4817,23 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
       {/* NOTIFICACIÓN FLOTANTE (TOAST) */}
       {toastMessage && (
-        <div className="fixed top-16 right-4 z-50 bg-[#161824] text-amber-400 px-4 py-3 rounded-xl shadow-2xl border border-amber-500/50 text-xs font-bold flex items-center gap-2 print:hidden">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div
+          className={`fixed top-16 right-4 z-50 px-4 py-3 rounded-xl shadow-2xl border text-xs font-bold flex items-center gap-2 print:hidden ${
+            toastMessage.type === "error"
+              ? "bg-red-950 text-red-200 border-red-500/60"
+              : "bg-[#161824] text-amber-400 border-amber-500/50"
+          }`}
+        >
+          {toastMessage.type === "error" ? (
+            <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+          ) : (
+            <>
+              <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black uppercase tracking-wider shrink-0">
+                NEW
+              </span>
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            </>
+          )}
           <span>{toastMessage.text}</span>
         </div>
       )}
@@ -4369,6 +4856,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               >
                 <Grid className="w-3.5 h-3.5 text-[#f59e0b]" />
                 <span>Módulos</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentScreen("INTRANET")}
+                className="px-3 py-1.5 rounded-xl bg-[#161f33] hover:bg-[#1e2942] text-xs font-bold flex items-center gap-1.5 border border-blue-500/40 text-blue-300 cursor-pointer"
+                title="Abrir Canal Informativo del CENDIS"
+              >
+                <Newspaper className="w-3.5 h-3.5" />
+                <span>Intranet</span>
               </button>
               <span className="font-black tracking-tight text-xs uppercase text-white">
                 SIACENDIS
@@ -4420,6 +4916,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             ].map((tab) => {
               const IconT = tab.icon;
               const allowed = canEnterModule(tab.id);
+              const hasNew = systemNewNotices.some((n) => n.module === tab.id && !n.seen);
               return (
                 <button
                   key={tab.id}
@@ -4432,6 +4929,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       return;
                     }
                     setActiveTab(tab.id);
+                    markModuleNewSeen(tab.id);
                   }}
                   className={`px-3 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0 ${
                     activeTab === tab.id
@@ -4443,6 +4941,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 >
                   <IconT className="w-3.5 h-3.5 text-[#ffb366]" />
                   <span>{tab.label}</span>
+                  {hasNew && (
+                    <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950 text-[8.5px] font-black uppercase animate-pulse">
+                      NEW
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -5801,16 +6304,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <button
                   type="button"
                   onClick={() => {
-                    syncWithCloudServer();
-                    showToast("Agenda CENDIS sincronizada en tiempo real con todos los dispositivos.");
-                  }}
-                  className="px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
-                >
-                  <span>🔄 Sincronizar Ahora</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
                     setSelectedDayModal("2026-11-16");
                     setNewEventForm((prev) => ({ ...prev, endDate: "2026-11-16" }));
                   }}
@@ -6544,22 +7037,58 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           <span>Todo el día</span>
                         </label>
                         {!newEventForm.allDay && (
-                          <>
-                            <input
-                              type="time"
-                              value={newEventForm.startTime}
-                              onChange={(e) => setNewEventForm({ ...newEventForm, startTime: e.target.value })}
-                              className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
-                              title="Hora de inicio"
-                            />
-                            <input
-                              type="time"
-                              value={newEventForm.endTime}
-                              onChange={(e) => setNewEventForm({ ...newEventForm, endTime: e.target.value })}
-                              className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
-                              title="Hora de finalización"
-                            />
-                          </>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex items-center gap-1 rounded-lg border border-slate-300 px-2 py-1 bg-[#070b14]">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  const inp = e.currentTarget.parentElement?.querySelector('input[type="time"]');
+                                  if (inp) {
+                                    inp.focus();
+                                    try { inp.showPicker?.(); } catch {}
+                                  }
+                                }}
+                                title="Abrir reloj para escoger hora de inicio"
+                                className="text-amber-400 hover:text-amber-300 cursor-pointer flex items-center gap-1 text-[10px] font-bold"
+                              >
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>Inicio:</span>
+                              </button>
+                              <input
+                                type="time"
+                                value={newEventForm.startTime}
+                                onChange={(e) => setNewEventForm({ ...newEventForm, startTime: e.target.value })}
+                                className="bg-transparent text-xs outline-none cursor-pointer"
+                                style={{ colorScheme: themeMode === "LIGHT" ? "light" : "dark" }}
+                                title="Hora de inicio"
+                              />
+                            </div>
+                            <div className="flex items-center gap-1 rounded-lg border border-slate-300 px-2 py-1 bg-[#070b14]">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  const inp = e.currentTarget.parentElement?.querySelector('input[type="time"]');
+                                  if (inp) {
+                                    inp.focus();
+                                    try { inp.showPicker?.(); } catch {}
+                                  }
+                                }}
+                                title="Abrir reloj para escoger hora de finalización"
+                                className="text-amber-400 hover:text-amber-300 cursor-pointer flex items-center gap-1 text-[10px] font-bold"
+                              >
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>Fin:</span>
+                              </button>
+                              <input
+                                type="time"
+                                value={newEventForm.endTime}
+                                onChange={(e) => setNewEventForm({ ...newEventForm, endTime: e.target.value })}
+                                className="bg-transparent text-xs outline-none cursor-pointer"
+                                style={{ colorScheme: themeMode === "LIGHT" ? "light" : "dark" }}
+                                title="Hora de finalización"
+                              />
+                            </div>
+                          </div>
                         )}
                         <select
                           value={newEventForm.recurrence}
@@ -9561,35 +10090,61 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                     {/* Formulario para registrar un nuevo usuario en el sistema */}
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
-                      <h3 className="text-sm font-black uppercase text-slate-900">
-                        Registrar Nuevo Usuario en el Sistema
-                      </h3>
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <h3 className="text-sm font-black uppercase text-slate-900">
+                          Registrar Nuevo Usuario en el Sistema (Vinculado a RRHH)
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9.5px] font-black uppercase">
+                          Requiere Trabajador RRHH
+                        </span>
+                      </div>
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
+                          if (!newUserForm.linkedEmployeeId) {
+                            showToast(
+                              "El trabajador debe estar incluido previamente en Recursos Humanos para crear su usuario y vincular su permisología.",
+                              "error"
+                            );
+                            return;
+                          }
+                          const selectedEmp = employees.find(
+                            (emp) => String(emp.id) === String(newUserForm.linkedEmployeeId)
+                          );
+                          if (!selectedEmp) {
+                            showToast(
+                              "Trabajador no encontrado en Recursos Humanos. Regístrelo primero en RRHH.",
+                              "error"
+                            );
+                            return;
+                          }
                           if (!newUserForm.username || !newUserForm.password) return;
+                          const empFullName = `${selectedEmp.nombres || ""} ${selectedEmp.apellidos || ""}`.trim();
                           const emailClean =
-                            (newUserForm.email || "").trim().toLowerCase() ||
+                            (newUserForm.email || selectedEmp.correo || "").trim().toLowerCase() ||
                             (newUserForm.username.includes("@")
                               ? newUserForm.username.trim().toLowerCase()
                               : `${newUserForm.username.trim().toLowerCase()}@gmail.com`);
                           const created = {
                             id: Date.now(),
                             ...newUserForm,
+                            fullName: empFullName || newUserForm.fullName,
+                            cargo: selectedEmp.cargo || newUserForm.cargo || "PERSONAL CENDIS",
                             email: emailClean,
                             active: true,
-                            linkedEmployeeId: null,
+                            linkedEmployeeId: selectedEmp.id,
                             permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE[newUserForm.role] },
                             updatedAt: Date.now(),
                           };
                           setUsers((prev) => [...prev, created]);
                           setTimeout(() => syncWithCloudServer(), 60);
                           setSelectedConfigUserId(String(created.id));
-                          addLog(`Creado usuario '${created.username}' (${emailClean}) con rol ${created.role}`);
+                          addLog(`Creado usuario '${created.username}' vinculado a RRHH (${empFullName}) con rol ${created.role}`, currentUser, "config");
                           showToast(
-                            `Usuario ${created.fullName} creado y seleccionado para configurar su permisología.`
+                            `Usuario ${created.fullName} creado y vinculado a Recursos Humanos.`
                           );
                           setNewUserForm({
+                            linkedEmployeeId: "",
                             username: "",
                             email: "",
                             password: "",
@@ -9600,6 +10155,29 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         }}
                         className="grid grid-cols-1 md:grid-cols-6 gap-2"
                       >
+                        <select
+                          required
+                          value={newUserForm.linkedEmployeeId || ""}
+                          onChange={(e) => {
+                            const empId = e.target.value;
+                            const emp = employees.find((x) => String(x.id) === String(empId));
+                            setNewUserForm({
+                              ...newUserForm,
+                              linkedEmployeeId: empId,
+                              fullName: emp ? `${emp.nombres || ""} ${emp.apellidos || ""}`.trim() : "",
+                              cargo: emp ? emp.cargo || "" : "",
+                              email: emp && emp.correo ? emp.correo : newUserForm.email,
+                            });
+                          }}
+                          className="md:col-span-2 px-3 py-2 rounded-lg border border-amber-400 text-xs font-bold"
+                        >
+                          <option value="">-- Seleccionar Trabajador de RRHH * --</option>
+                          {employees.map((emp) => (
+                            <option key={emp.id} value={String(emp.id)}>
+                              {emp.nombres} {emp.apellidos} ({emp.cedula}) • {emp.cargo}
+                            </option>
+                          ))}
+                        </select>
                         <input
                           type="text"
                           required
@@ -9632,13 +10210,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         />
                         <input
                           type="text"
-                          required
-                          placeholder="Nombre Completo"
+                          readOnly
+                          placeholder="Nombre Completo (RRHH)"
                           value={newUserForm.fullName}
-                          onChange={(e) =>
-                            setNewUserForm({ ...newUserForm, fullName: e.target.value })
-                          }
-                          className="px-3 py-2 rounded-lg border border-slate-300 text-xs"
+                          className="px-3 py-2 rounded-lg border border-slate-300 text-xs opacity-80"
+                          title="Se completa automáticamente desde Recursos Humanos"
                         />
                         <select
                           value={newUserForm.role}
@@ -9824,22 +10400,28 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   setEmployees((prev) =>
                     prev.map((emp) => (emp.id === editingEmpId ? updatedEmp : emp))
                   );
+                  upsertEmployeeBirthdayEvent(updatedEmp);
                   setTimeout(() => syncWithCloudServer(), 60);
                   addLog(
-                    `Actualizado expediente en RRHH: ${updatedEmp.nombres} ${updatedEmp.apellidos} (${updatedEmp.cedula})`
+                    `Actualizado expediente en RRHH: ${updatedEmp.nombres} ${updatedEmp.apellidos} (${updatedEmp.cedula})`,
+                    currentUser,
+                    "hr"
                   );
                   showToast(
-                    `Expediente de ${updatedEmp.nombres} ${updatedEmp.apellidos} actualizado correctamente.`
+                    `Expediente de ${updatedEmp.nombres} ${updatedEmp.apellidos} actualizado y cumpleaños sincronizado en Agenda.`
                   );
                 } else {
                   const created = { id: `emp-${Date.now()}`, ...payload, updatedAt: Date.now() };
                   setEmployees((prev) => [...prev, created]);
+                  upsertEmployeeBirthdayEvent(created);
                   setTimeout(() => syncWithCloudServer(), 60);
                   addLog(
-                    `Ingresado trabajador en RRHH: ${created.nombres} ${created.apellidos} (${created.cedula})`
+                    `Ingresado trabajador en RRHH: ${created.nombres} ${created.apellidos} (${created.cedula})`,
+                    currentUser,
+                    "hr"
                   );
                   showToast(
-                    `Trabajador ${created.nombres} ${created.apellidos} ingresado al sistema con carnet y hoja de vida PDF.`
+                    `Trabajador ${created.nombres} ${created.apellidos} ingresado al sistema con cumpleaños agendado.`
                   );
                 }
                 setHrModalOpen(false);
