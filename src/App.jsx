@@ -582,52 +582,19 @@ function GoldenCoatOfArmsSVG({ className = "w-16 h-16" }) {
   );
 }
 
-function GoldenCendisGlyphSVG({ showTopTitle = true, compact = false }) {
+function GoldenCendisGlyphSVG({ sizeClass = "w-[228px]" }) {
   return (
-    <div className="flex flex-col items-center select-none w-full">
-      {showTopTitle && (
-        <div
-          style={{ fontFamily: "'Trebuchet MS', Arial, sans-serif" }}
-          className={`${
-            compact ? "text-[13px]" : "text-[17px]"
-          } font-bold text-[#0b2545] tracking-[0.06em] leading-none mb-1`}
-        >
-          Centro Nacional
-        </div>
-      )}
-      {/* Glifo precolombino CENDIS en color dorado metálico fiel al carnet */}
-      <svg
-        viewBox="0 0 360 88"
-        className={compact ? "w-36 h-9" : "w-52 h-12"}
-        fill="#a88644"
-      >
-        {/* Barra curva izquierda */}
-        <path d="M12,8 C6,28 6,60 12,80 L22,80 C18,60 18,28 22,8 Z" />
-        {/* Bloque pequeño interno izquierdo */}
-        <rect x="27" y="26" width="12" height="34" rx="2" />
-        {/* Bloque principal izquierdo con triángulo calado */}
-        <path d="M29,8 L128,8 L128,16 L96,34 L128,46 L128,54 L76,54 L76,68 L94,68 L94,76 L29,76 L29,64 L54,64 L54,18 L29,18 Z" />
-        {/* Llave inferior izquierda */}
-        <path d="M96,58 L128,58 L128,80 L96,80 L96,71 L117,71 L117,66 L96,66 Z" />
-        {/* Estructura central escalonada */}
-        <rect x="156" y="8" width="28" height="24" rx="2" />
-        <path d="M135,14 L147,14 L147,36 L193,36 L193,8 L272,8 L272,80 L193,80 L193,58 L146,58 L146,80 L135,80 L135,48 L204,48 L204,69 L259,69 L259,19 L204,19 L204,45 L135,45 Z" />
-        {/* Espiral cuadrada concéntrica central-derecha */}
-        <path d="M212,26 L251,26 L251,62 L212,62 L212,53 L241,53 L241,35 L212,35 Z" />
-        <rect x="214" y="39" width="21" height="12" rx="1.5" />
-        {/* Figura zoomorfa/tambor derecha */}
-        <path d="M272,26 L292,26 L296,8 L328,8 L328,16 L306,16 L304,26 C322,28 334,34 334,46 C334,58 322,64 304,66 L306,72 L328,72 L328,80 L294,80 L292,64 L272,64 Z" />
-        {/* Barra curva derecha */}
-        <path d="M338,8 C344,28 344,60 338,80 L348,80 C354,60 354,28 348,8 Z" />
-      </svg>
-      <div
-        style={{ fontFamily: "'Trebuchet MS', Arial, sans-serif" }}
-        className={`${
-          compact ? "text-[12px] tracking-[0.3em]" : "text-[16px] tracking-[0.34em]"
-        } font-bold text-[#0b2545] leading-none mt-1 pl-2`}
-      >
-        del Disco
-      </div>
+    <div className="w-full flex flex-col items-center justify-center select-none">
+      <img
+        src="/logo-cendis-dorado.png"
+        alt="Centro Nacional del Disco (CENDIS) - Logo Completo en Dorado"
+        loading="eager"
+        decoding="sync"
+        style={{
+          filter: "drop-shadow(0 1px 1.5px rgba(140, 98, 20, 0.22))",
+        }}
+        className={`${sizeClass} max-w-[92%] h-auto object-contain block mx-auto`}
+      />
     </div>
   );
 }
@@ -943,6 +910,28 @@ export default function App() {
 
   // Conmutador de vista (DESKTOP | TABLET | MOBILE)
   const [deviceViewport, setDeviceViewport] = useState("DESKTOP");
+
+  // Conmutador global de Modo Oscuro / Modo Claro en todo el sistema
+  const [themeMode, setThemeMode] = useState(() => {
+    if (typeof window === "undefined") return "DARK";
+    try {
+      return window.localStorage.getItem("cendis_theme_mode") === "LIGHT" ? "LIGHT" : "DARK";
+    } catch {
+      return "DARK";
+    }
+  });
+
+  const toggleThemeMode = () => {
+    setThemeMode((prev) => {
+      const next = prev === "DARK" ? "LIGHT" : "DARK";
+      try {
+        window.localStorage.setItem("cendis_theme_mode", next);
+      } catch {
+        // Ignorar bloqueo de almacenamiento
+      }
+      return next;
+    });
+  };
 
   // Pestaña activa
   const [activeTab, setActiveTab] = useState("editor");
@@ -2623,6 +2612,22 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       ? "viewport-tablet w-full max-w-[860px] mx-auto border-x-4 border-b-4 border-slate-800/90 rounded-b-3xl shadow-2xl min-h-screen transition-all duration-300 overflow-x-hidden"
       : "viewport-desktop w-full min-h-screen transition-all duration-300";
 
+  const renderThemeModeSwitcher = () => (
+    <button
+      type="button"
+      onClick={toggleThemeMode}
+      title={
+        themeMode === "DARK"
+          ? "Cambiar a Modo Claro en todo el sistema"
+          : "Cambiar a Modo Oscuro en todo el sistema"
+      }
+      className="px-3 py-1.5 rounded-xl neon-orange-nav text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0"
+    >
+      <span>{themeMode === "DARK" ? "☀️" : "🌙"}</span>
+      <span>{themeMode === "DARK" ? "Modo Claro" : "Modo Oscuro"}</span>
+    </button>
+  );
+
   const renderDeviceViewportSwitcher = () => (
     <div className="flex items-center bg-[#070b14] p-1 rounded-xl border border-slate-700/80 shadow-inner">
       {[
@@ -2640,7 +2645,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             title={dev.title}
             className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition cursor-pointer ${
               active
-                ? "bg-[#f59e0b] text-slate-950 font-black shadow"
+                ? "bg-[#d97706] text-white font-black shadow"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -2652,12 +2657,120 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     </div>
   );
 
+  const renderGlobalThemeStyles = () => (
+    <style>{`
+      /* Navegabilidad en color Naranja Suave y Cálido (no chillón), transparente con letras blancas nítidas */
+      .cendis-dark-workspace button.bg-slate-100:not(#printable-area *),
+      .cendis-dark-workspace button.bg-white:not(#printable-area *),
+      .neon-orange-nav {
+        background: rgba(217, 119, 6, 0.20) !important;
+        border: 1px solid rgba(245, 158, 11, 0.52) !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(180, 83, 9, 0.16) !important;
+        backdrop-filter: blur(8px);
+      }
+      .cendis-dark-workspace button.bg-slate-100:hover:not(#printable-area *),
+      .cendis-dark-workspace button.bg-white:hover:not(#printable-area *),
+      .neon-orange-nav:hover {
+        background: rgba(217, 119, 6, 0.32) !important;
+        border-color: rgba(251, 191, 36, 0.78) !important;
+        color: #ffffff !important;
+        box-shadow: 0 3px 12px rgba(217, 119, 6, 0.26) !important;
+      }
+      .neon-orange-nav-active {
+        background: linear-gradient(135deg, rgba(217, 119, 6, 0.46) 0%, rgba(180, 83, 9, 0.34) 100%) !important;
+        border: 1.5px solid #f59e0b !important;
+        color: #ffffff !important;
+        box-shadow: 0 3px 14px rgba(217, 119, 6, 0.32), inset 0 0 8px rgba(251, 191, 36, 0.18) !important;
+        backdrop-filter: blur(8px);
+      }
+
+      /* MODO CLARO GLOBAL (MANTIENE EL DISEÑO DEL SISTEMA SIN AFECTAR REPORTES NI CARNETS) */
+      .cendis-theme-light {
+        background-color: #eef2f6 !important;
+        color: #0f172a !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace,
+      .cendis-theme-light .bg-\\[#050a15\\],
+      .cendis-theme-light .bg-\\[#030710\\] {
+        background-color: #eef2f6 !important;
+        color: #0f172a !important;
+      }
+      .cendis-theme-light header.bg-\\[#0b1221\\] {
+        background: linear-gradient(180deg, #172542 0%, #1e2f53 100%) !important;
+        border-bottom-color: #cbd5e1 !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .bg-white:not(#printable-area):not(#printable-area *) {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06) !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-50:not(#printable-area):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-100:not(button):not(#printable-area):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-900:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-slate-900\\/90:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-\\[#070b14\\]:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .bg-\\[#0e1526\\]:not(#printable-area *) {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .text-white:not(header *):not(.neon-orange-nav *):not(.neon-orange-nav-active *):not(.bg-\\[#b91c1c\\] *):not(.bg-emerald-600 *):not(.bg-blue-600 *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-100:not(header *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-200:not(header *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-300:not(header *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-900:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-800:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-700:not(#printable-area *) {
+        color: #0f172a !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .text-slate-400:not(header *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-500:not(header *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-slate-600:not(#printable-area *) {
+        color: #475569 !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .text-\\[#ffb366\\]:not(header *):not(.neon-orange-nav *):not(.neon-orange-nav-active *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-\\[#ff9f5a\\]:not(header *):not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .text-amber-300:not(header *):not(#printable-area *) {
+        color: #b45309 !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace input:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace select:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace textarea:not(#printable-area *) {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace button.bg-slate-100:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace button.bg-white:not(#printable-area *),
+      .cendis-theme-light .cendis-dark-workspace .neon-orange-nav:not(header *) {
+        background: rgba(217, 119, 6, 0.85) !important;
+        border: 1px solid #b45309 !important;
+        color: #ffffff !important;
+      }
+      .cendis-theme-light .cendis-dark-workspace .neon-orange-nav-active:not(header *) {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+        border: 1.5px solid #92400e !important;
+        color: #ffffff !important;
+      }
+    `}</style>
+  );
+
   // ==========================================================================
   // 1) VENTANA ÚNICA DE INICIO DE SESIÓN (IDÉNTICA A LA CAPTURA ADJUNTA)
   // ==========================================================================
   if (currentScreen === "LOGIN") {
     return (
-      <div className="min-h-screen max-h-screen overflow-y-auto bg-[#050a15] flex items-center justify-center p-3 font-sans text-slate-100">
+      <div
+        className={`min-h-screen max-h-screen overflow-y-auto ${
+          themeMode === "LIGHT"
+            ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
+            : "bg-[#050a15] text-slate-100"
+        } flex flex-col items-center justify-center p-3 font-sans relative`}
+      >
+        {renderGlobalThemeStyles()}
+        <div className="fixed top-3 right-3 z-40">{renderThemeModeSwitcher()}</div>
         <div className="w-full max-w-[360px] bg-[#0c1322] rounded-2xl shadow-2xl border border-slate-800/90 overflow-hidden">
           {/* Franja tricolor superior en 3 bloques exactos */}
           <div className="grid grid-cols-3 h-1.5 w-full">
@@ -3028,7 +3141,14 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     ];
 
     return (
-      <div className="min-h-screen bg-[#030710] text-slate-100 flex flex-col font-sans">
+      <div
+        className={`min-h-screen ${
+          themeMode === "LIGHT"
+            ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
+            : "bg-[#030710] text-slate-100"
+        } flex flex-col font-sans`}
+      >
+        {renderGlobalThemeStyles()}
         <div className={`bg-[#050a15] flex flex-col ${viewportContainerClass}`}>
           <div className="grid grid-cols-3 h-1.5 w-full">
             <div className="bg-[#facc15]" />
@@ -3072,6 +3192,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
               {renderDeviceViewportSwitcher()}
+              {renderThemeModeSwitcher()}
 
               <div className="flex items-center gap-1.5">
                 <button
@@ -3255,63 +3376,45 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   }
 
   // ==========================================================================
-  // 3) ÁREA DE TRABAJO PRINCIPAL (ESTILO OSCURO CÁLIDO/AZUL COMO LAS CAPTURAS)
+  // 3) ÁREA DE TRABAJO PRINCIPAL (ESTILO OSCURO CÁLIDO/AZUL O CLARO CONMUTABLE)
   // ==========================================================================
   return (
-    <div className="min-h-screen bg-[#030710] text-slate-100 flex flex-col font-sans">
+    <div
+      className={`min-h-screen ${
+        themeMode === "LIGHT"
+          ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
+          : "bg-[#030710] text-slate-100"
+      } flex flex-col font-sans`}
+    >
+      {renderGlobalThemeStyles()}
       <style>{`
         /* Adaptación de paneles al tema oscuro de las capturas fuera del área de impresión */
         .cendis-dark-workspace .bg-white:not(#printable-area):not(#printable-area *) {
-          background: linear-gradient(145deg, #161824 0%, #0d1322 100%) !important;
-          color: #f1f5f9 !important;
-          border-color: rgba(148, 163, 184, 0.18) !important;
+          background: linear-gradient(145deg, #161824 0%, #0d1322 100%);
+          color: #f1f5f9;
+          border-color: rgba(148, 163, 184, 0.18);
         }
         .cendis-dark-workspace .bg-slate-50:not(#printable-area):not(#printable-area *),
         .cendis-dark-workspace .bg-slate-100:not(button):not(#printable-area):not(#printable-area *) {
-          background-color: #080d19 !important;
-          color: #e2e8f0 !important;
-          border-color: rgba(148, 163, 184, 0.15) !important;
-        }
-        /* Navegabilidad en color Naranja Neón Transparente con letras blancas nítidas */
-        .cendis-dark-workspace button.bg-slate-100:not(#printable-area *),
-        .cendis-dark-workspace button.bg-white:not(#printable-area *),
-        .neon-orange-nav {
-          background: rgba(255, 95, 0, 0.22) !important;
-          border: 1px solid rgba(255, 115, 0, 0.85) !important;
-          color: #ffffff !important;
-          box-shadow: 0 0 12px rgba(255, 95, 0, 0.28) !important;
-          backdrop-filter: blur(8px);
-        }
-        .cendis-dark-workspace button.bg-slate-100:hover:not(#printable-area *),
-        .cendis-dark-workspace button.bg-white:hover:not(#printable-area *),
-        .neon-orange-nav:hover {
-          background: rgba(255, 95, 0, 0.38) !important;
-          border-color: #ff7b00 !important;
-          color: #ffffff !important;
-          box-shadow: 0 0 18px rgba(255, 102, 0, 0.55) !important;
-        }
-        .neon-orange-nav-active {
-          background: linear-gradient(135deg, rgba(255, 94, 0, 0.52) 0%, rgba(255, 123, 0, 0.34) 100%) !important;
-          border: 1.5px solid #ff7b00 !important;
-          color: #ffffff !important;
-          box-shadow: 0 0 20px rgba(255, 95, 0, 0.65), inset 0 0 10px rgba(255, 145, 0, 0.35) !important;
-          backdrop-filter: blur(8px);
+          background-color: #080d19;
+          color: #e2e8f0;
+          border-color: rgba(148, 163, 184, 0.15);
         }
         .cendis-dark-workspace .text-slate-900:not(#printable-area *),
         .cendis-dark-workspace .text-slate-800:not(#printable-area *),
         .cendis-dark-workspace .text-slate-700:not(#printable-area *) {
-          color: #f8fafc !important;
+          color: #f8fafc;
         }
         .cendis-dark-workspace .text-slate-600:not(#printable-area *),
         .cendis-dark-workspace .text-slate-500:not(#printable-area *) {
-          color: #94a3b8 !important;
+          color: #94a3b8;
         }
         .cendis-dark-workspace input:not(#printable-area *),
         .cendis-dark-workspace select:not(#printable-area *),
         .cendis-dark-workspace textarea:not(#printable-area *) {
-          background-color: #070b14 !important;
-          color: #f8fafc !important;
-          border-color: rgba(148, 163, 184, 0.25) !important;
+          background-color: #070b14;
+          color: #f8fafc;
+          border-color: rgba(148, 163, 184, 0.25);
         }
         .cendis-dark-workspace input:focus:not(#printable-area *),
         .cendis-dark-workspace select:focus:not(#printable-area *),
@@ -3511,6 +3614,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             <div className="flex flex-wrap items-center gap-1.5">
               {renderDeviceViewportSwitcher()}
+              {renderThemeModeSwitcher()}
 
               <button
                 type="button"
@@ -8076,10 +8180,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
 
                     {/* Cuerpo Blanco del Frente */}
-                    <div className="flex-1 px-4 pt-2 pb-1.5 flex flex-col justify-between bg-[#fbfbfa]">
-                      {/* Logo Dorado Centro Nacional del Disco */}
-                      <div className="w-full flex justify-center">
-                        <GoldenCendisGlyphSVG showTopTitle={true} compact={true} />
+                    <div className="flex-1 px-4 pt-1.5 pb-1.5 flex flex-col justify-between bg-[#fbfbfa]">
+                      {/* Logo Dorado Centro Nacional del Disco (Grande, Llamativo, Centrado y Completo) */}
+                      <div className="w-full flex justify-center py-0.5">
+                        <GoldenCendisGlyphSVG sizeClass="w-[232px]" />
                       </div>
 
                       {/* Sección central dividida en 2 columnas: Datos a la izquierda, Foto Carnet con marco dorado a la derecha */}
@@ -8178,11 +8282,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     <div className="h-7 bg-[#0b294d] border-b-[2.5px] border-[#c5a059]" />
 
                     {/* Contenido Central del Reverso */}
-                    <div className="flex-1 px-4 py-3 flex flex-col justify-between bg-[#fbfbfa] text-slate-950">
-                      {/* Glifo Dorado + del Disco + CENDIS - Centro Nacional del Disco */}
+                    <div className="flex-1 px-4 py-2.5 flex flex-col justify-between bg-[#fbfbfa] text-slate-950">
+                      {/* Logo Completo Dorado CENDIS + CENDIS - Centro Nacional del Disco */}
                       <div className="text-center">
-                        <GoldenCendisGlyphSVG showTopTitle={false} compact={true} />
-                        <div className="text-[13px] font-bold text-[#0b2545] tracking-tight mt-1">
+                        <GoldenCendisGlyphSVG sizeClass="w-[198px]" />
+                        <div className="text-[12.5px] font-bold text-[#0b2545] tracking-tight mt-0.5">
                           CENDIS - Centro Nacional del Disco
                         </div>
                       </div>
