@@ -1110,10 +1110,112 @@ function mergeSyncArrays(localArr, remoteArr, deletedSet) {
   return Array.from(map.values());
 }
 
+// Unificador universal a MAYÚSCULAS para todos los módulos (evita variedad entre mayúsculas y minúsculas)
+const UPPERCASE_PRESERVE_KEYS = new Set([
+  "id",
+  "linkedEmployeeId",
+  "updatedAt",
+  "passwordUpdatedAt",
+  "password",
+  "username",
+  "email",
+  "correo",
+  "emailInvitado",
+  "fotoCarnet",
+  "meetLink",
+  "date",
+  "endDate",
+  "fecha",
+  "fechaNacimiento",
+  "fechaIngreso",
+  "fechaEntrega",
+  "fechaAprobacion",
+  "fechaAnulacion",
+  "startTime",
+  "endTime",
+  "hora",
+  "time",
+  "timestamp",
+  "color",
+  "status",
+  "role",
+  "permissions",
+  "coordinacion",
+  "condicionLaboral",
+  "nivelAcademico",
+  "estadoCivil",
+  "genero",
+  "parentesco",
+  "eventType",
+  "recurrence",
+  "visibility",
+  "availability",
+  "reminderUnit",
+  "tipo",
+]);
+
+function normalizeRecordToUpperCase(val) {
+  if (typeof val === "string") return val.toUpperCase();
+  if (Array.isArray(val)) return val.map((item) => normalizeRecordToUpperCase(item));
+  if (val && typeof val === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(val)) {
+      if (UPPERCASE_PRESERVE_KEYS.has(k)) {
+        out[k] = v;
+      } else if (typeof v === "string") {
+        out[k] = v.toUpperCase();
+      } else if (Array.isArray(v) || (v && typeof v === "object")) {
+        out[k] = normalizeRecordToUpperCase(v);
+      } else {
+        out[k] = v;
+      }
+    }
+    return out;
+  }
+  return val;
+}
+
 // ============================================================================
 // COMPONENTE PRINCIPAL APP
 // ============================================================================
 export default function App() {
+  // Captura global para convertir automáticamente cualquier texto ingresado (minúscula o mayúscula) a MAYÚSCULA en todos los módulos
+  const handleGlobalUppercaseInput = (e) => {
+    const el = e.target;
+    if (!el || (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA")) return;
+    if (el.dataset && el.dataset.noUppercase === "true") return;
+    const inputType = (el.type || "text").toLowerCase();
+    if (
+      inputType === "password" ||
+      inputType === "date" ||
+      inputType === "time" ||
+      inputType === "file" ||
+      inputType === "number" ||
+      inputType === "checkbox" ||
+      inputType === "radio" ||
+      inputType === "range" ||
+      inputType === "color" ||
+      inputType === "email"
+    ) {
+      return;
+    }
+    if (typeof el.value === "string") {
+      const upper = el.value.toUpperCase();
+      if (el.value !== upper) {
+        const start = el.selectionStart;
+        const end = el.selectionEnd;
+        el.value = upper;
+        try {
+          if (typeof start === "number" && typeof end === "number") {
+            el.setSelectionRange(start, end);
+          }
+        } catch {
+          // Ignorar si el input no soporta setSelectionRange
+        }
+      }
+    }
+  };
+
   const [deletedIds, setDeletedIdsState] = useState(() => loadStoredDeletedIds());
   const setDeletedIds = (updater) => {
     setDeletedIdsState((prev) => {
@@ -1124,11 +1226,13 @@ export default function App() {
     });
   };
 
-  const [users, setUsersState] = useState(() => loadStoredUsers());
+  const [users, setUsersState] = useState(() =>
+    normalizeRecordToUpperCase(loadStoredUsers())
+  );
   const setUsers = (updater) => {
     setUsersState((prev) => {
       const nextRaw = typeof updater === "function" ? updater(prev) : updater;
-      const next = sanitizeUsersDirectorGeneral(nextRaw);
+      const next = normalizeRecordToUpperCase(sanitizeUsersDirectorGeneral(nextRaw));
       saveStoredUsers(next);
       return next;
     });
@@ -1198,36 +1302,37 @@ export default function App() {
   const [manualCorrelative, setManualCorrelative] = useState(false);
   const [customCorrelative, setCustomCorrelative] = useState("");
 
-  const [para, setPara] = useState("Lcdo. Jesús García");
+  const [para, setPara] = useState("LCDO. JESÚS GARCÍA");
   const [paraDireccion, setParaDireccion] = useState(
-    "General de Administración del Ministerio del Poder Popular para la Cultura"
+    "GENERAL DE ADMINISTRACIÓN DEL MINISTERIO DEL PODER POPULAR PARA LA CULTURA"
   );
-  const [de, setDe] = useState("Lcdo. Morris López");
+  const [de, setDe] = useState("LCDO. MORRIS LÓPEZ");
   const [deCargo, setDeCargo] = useState(
-    "Director General de la Fundación Centro Nacional del Disco (CENDIS)"
+    "DIRECTOR GENERAL DE LA FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)"
   );
   const [fecha, setFecha] = useState("2026-11-13");
-  const [asunto, setAsunto] = useState("Solicitud de transporte");
+  const [asunto, setAsunto] = useState("SOLICITUD DE TRANSPORTE");
   const [concepto, setConcepto] = useState(
-    "Tengo el agrado de dirigirme a usted en la oportunidad de saludarle cordialmente y, a su vez, solicitarle transporte para el personal de audiovisuales conformado por 9 personas y equipo técnico, quienes se trasladan el día de mañana 13/11/2026 al Cristo Rey, parroquia 23 de enero a las 12:30pm – 9:00pm.\n\nAgradeciendo de antemano su receptividad, máxima colaboración y constante apoyo interinstitucional para la realización con éxito de este evento, quedo de usted."
+    "TENGO EL AGRADO DE DIRIGIRME A USTED EN LA OPORTUNIDAD DE SALUDARLE CORDIALMENTE Y, A SU VEZ, SOLICITARLE TRANSPORTE PARA EL PERSONAL DE AUDIOVISUALES CONFORMADO POR 9 PERSONAS Y EQUIPO TÉCNICO, QUIENES SE TRASLADAN EL DÍA DE MAÑANA 13/11/2026 AL CRISTO REY, PARROQUIA 23 DE ENERO A LAS 12:30PM – 9:00PM.\n\nAGRADECIENDO DE ANTEMANO SU RECEPTIVIDAD, MÁXIMA COLABORACIÓN Y CONSTANTE APOYO INTERINSTITUCIONAL PARA LA REALIZACIÓN CON ÉXITO DE ESTE EVENTO, QUEDO DE USTED."
   );
 
-  const [signerNombre, setSignerNombre] = useState("Lcdo. MORRIS LÓPEZ");
-  const [signerCargo, setSignerCargo] = useState("Director General");
-  const [signerEnte, setSignerEnte] = useState("Fundación Centro Nacional del Disco (CENDIS)");
+  const [signerNombre, setSignerNombre] = useState("LCDO. MORRIS LÓPEZ");
+  const [signerCargo, setSignerCargo] = useState("DIRECTOR GENERAL");
+  const [signerEnte, setSignerEnte] = useState("FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)");
   const [signerMinisterio, setSignerMinisterio] = useState(
-    "Ministerio del Poder Popular para la Cultura"
+    "MINISTERIO DEL PODER POPULAR PARA LA CULTURA"
   );
   const [signerResolucion] = useState(
-    "Designado según Gaceta Oficial de la República Bolivariana de Venezuela N° 42.125"
+    "DESIGNADO SEGÚN GACETA OFICIAL DE LA REPÚBLICA BOLIVARIANA DE VENEZUELA N° 42.125"
   );
 
   const [documents, setDocumentsState] = useState(() =>
-    loadStoredJson(STORAGE_DOCS_KEY, INITIAL_DOCUMENTS_LIST)
+    normalizeRecordToUpperCase(loadStoredJson(STORAGE_DOCS_KEY, INITIAL_DOCUMENTS_LIST))
   );
   const setDocuments = (updater) => {
     setDocumentsState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       saveStoredJson(STORAGE_DOCS_KEY, next);
       return next;
     });
@@ -1267,10 +1372,13 @@ export default function App() {
   };
 
   // Estado de Recursos Humanos
-  const [employees, setEmployeesState] = useState(() => loadStoredEmployees());
+  const [employees, setEmployeesState] = useState(() =>
+    normalizeRecordToUpperCase(loadStoredEmployees())
+  );
   const setEmployees = (updater) => {
     setEmployeesState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       saveStoredEmployees(next);
       return next;
     });
@@ -1341,19 +1449,20 @@ export default function App() {
 
   // Estado de Agenda (Google Calendar Completo con Recordatorios App / Correo / WhatsApp y Sincronización en Tiempo Real)
   const [agendaEvents, setAgendaEventsState] = useState(() => {
-    if (typeof window === "undefined") return INITIAL_AGENDA_EVENTS;
+    if (typeof window === "undefined") return normalizeRecordToUpperCase(INITIAL_AGENDA_EVENTS);
     try {
       const raw = window.localStorage.getItem("cendis_agenda_v1");
-      if (!raw) return INITIAL_AGENDA_EVENTS;
+      if (!raw) return normalizeRecordToUpperCase(INITIAL_AGENDA_EVENTS);
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : INITIAL_AGENDA_EVENTS;
+      return normalizeRecordToUpperCase(Array.isArray(parsed) ? parsed : INITIAL_AGENDA_EVENTS);
     } catch {
-      return INITIAL_AGENDA_EVENTS;
+      return normalizeRecordToUpperCase(INITIAL_AGENDA_EVENTS);
     }
   });
   const setAgendaEvents = (updater) => {
     setAgendaEventsState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       try {
         window.localStorage.setItem("cendis_agenda_v1", JSON.stringify(next));
       } catch {
@@ -1366,25 +1475,25 @@ export default function App() {
   const [selectedEventDetail, setSelectedEventDetail] = useState(null);
   const [reportPeriodType, setReportPeriodType] = useState("SEMANAL");
   const [reportColumnsCount] = useState(4);
-  const [reportViceministerio] = useState("Viceministerio Cultura Audiovisual");
-  const [reportEnteTitle] = useState("Ente: Fundación Centro Nacional del Disco (CENDIS)");
-  const [reportSemanaLabel, setReportSemanaLabel] = useState("Semana del 16 al 22 de noviembre");
+  const [reportViceministerio] = useState("VICEMINISTERIO CULTURA AUDIOVISUAL");
+  const [reportEnteTitle] = useState("ENTE: FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)");
+  const [reportSemanaLabel, setReportSemanaLabel] = useState("SEMANA DEL 16 AL 22 DE NOVIEMBRE");
   const [reportWeekStartDate] = useState("2026-11-16");
   const [selectedDayModal, setSelectedDayModal] = useState(null);
   const [newEventForm, setNewEventForm] = useState({
-    ente: "Cendis",
+    ente: "CENDIS",
     title: "",
     eventType: "EVENTO", // EVENTO | TAREA | FUERA_DE_OFICINA | SESION_ESTUDIO
     allDay: false,
     endDate: "",
     startTime: "09:00",
     endTime: "10:30",
-    timeZone: "America/Caracas (GMT-04:00)",
+    timeZone: "AMERICA/CARACAS (GMT-04:00)",
     recurrence: "NO_REPETIR", // NO_REPETIR | DIARIO | SEMANAL | MENSUAL | ANUAL | DIAS_LABORALES
     location: "",
     meetLink: "https://meet.google.com/cen-dis-mppc",
     description: "",
-    responsable: "Morris López",
+    responsable: "MORRIS LÓPEZ",
     emailInvitado: "morris.lopez.cendis@gmail.com",
     invitadosAdicionales: "",
     contacto: "0426.324.32.46",
@@ -1400,11 +1509,12 @@ export default function App() {
 
   // Estado de Asistencia
   const [attendanceRecords, setAttendanceRecordsState] = useState(() =>
-    loadStoredJson(STORAGE_ATTENDANCE_KEY, INITIAL_ATTENDANCE_LIST)
+    normalizeRecordToUpperCase(loadStoredJson(STORAGE_ATTENDANCE_KEY, INITIAL_ATTENDANCE_LIST))
   );
   const setAttendanceRecords = (updater) => {
     setAttendanceRecordsState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       saveStoredJson(STORAGE_ATTENDANCE_KEY, next);
       return next;
     });
@@ -1417,11 +1527,12 @@ export default function App() {
 
   // Estado de Proyectos y Tareas
   const [projects, setProjectsState] = useState(() =>
-    loadStoredJson(STORAGE_PROJECTS_KEY, INITIAL_PROJECTS)
+    normalizeRecordToUpperCase(loadStoredJson(STORAGE_PROJECTS_KEY, INITIAL_PROJECTS))
   );
   const setProjects = (updater) => {
     setProjectsState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       saveStoredJson(STORAGE_PROJECTS_KEY, next);
       return next;
     });
@@ -1431,7 +1542,7 @@ export default function App() {
     nombre: "",
     tarea: "",
     justificacion: "",
-    responsable: "Anaileth Briceño",
+    responsable: "ANAILETH BRICEÑO",
     coordinacion: "Producción Fonográfica",
     fechaEntrega: "2026-11-30",
     porcentaje: 0,
@@ -1439,44 +1550,48 @@ export default function App() {
 
   // Estado de Bienes Nacionales
   const [bienesCatalog, setBienesCatalogState] = useState(() =>
-    loadStoredJson(STORAGE_BIENES_CAT_KEY, [
-      "Consola de Mezcla Digital",
-      "Micrófono de Condensador Estudio",
-      "Computadora Estación de Trabajo",
-      "Monitor de Audio Activo",
-      "Interfaz de Audio Profesional",
-      "Escritorio Ejecutivo",
-      "Silla Ergonómica",
-    ])
+    normalizeRecordToUpperCase(
+      loadStoredJson(STORAGE_BIENES_CAT_KEY, [
+        "CONSOLA DE MEZCLA DIGITAL",
+        "MICRÓFONO DE CONDENSADOR ESTUDIO",
+        "COMPUTADORA ESTACIÓN DE TRABAJO",
+        "MONITOR DE AUDIO ACTIVO",
+        "INTERFAZ DE AUDIO PROFESIONAL",
+        "ESCRITORIO EJECUTIVO",
+        "SILLA ERGONÓMICA",
+      ])
+    )
   );
   const setBienesCatalog = (updater) => {
     setBienesCatalogState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       saveStoredJson(STORAGE_BIENES_CAT_KEY, next);
       return next;
     });
   };
 
   const [bienesList, setBienesListState] = useState(() =>
-    loadStoredJson(STORAGE_BIENES_KEY, INITIAL_BIENES)
+    normalizeRecordToUpperCase(loadStoredJson(STORAGE_BIENES_KEY, INITIAL_BIENES))
   );
   const setBienesList = (updater) => {
     setBienesListState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       saveStoredJson(STORAGE_BIENES_KEY, next);
       return next;
     });
   };
   const [bienesViewMode, setBienesViewMode] = useState("FORM"); // FORM | PDF
   const [newBienForm, setNewBienForm] = useState({
-    articulo: "Consola de Mezcla Digital",
+    articulo: "CONSOLA DE MEZCLA DIGITAL",
     nuevoArticuloTexto: "",
     marca: "",
     modelo: "",
     serial: "",
     codigoBN: "BN-CENDIS-001048",
-    ubicacion: "Estudio de Grabación Principal",
-    custodio: "Anaileth Briceño",
+    ubicacion: "ESTUDIO DE GRABACIÓN PRINCIPAL",
+    custodio: "ANAILETH BRICEÑO",
   });
 
   // Estado de Chat Corporativo Interno (Burbuja Flotante)
@@ -1484,11 +1599,12 @@ export default function App() {
   const [chatRecipient, setChatRecipient] = useState("TODOS");
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessagesState] = useState(() =>
-    loadStoredJson(STORAGE_CHAT_KEY, INITIAL_CHAT_LIST)
+    normalizeRecordToUpperCase(loadStoredJson(STORAGE_CHAT_KEY, INITIAL_CHAT_LIST))
   );
   const setChatMessages = (updater) => {
     setChatMessagesState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
+      const nextRaw = typeof updater === "function" ? updater(prev) : updater;
+      const next = normalizeRecordToUpperCase(nextRaw);
       saveStoredJson(STORAGE_CHAT_KEY, next);
       return next;
     });
@@ -1687,11 +1803,11 @@ export default function App() {
       const next = projects.filter((x) => String(x.id) !== idStr);
       setProjects(next);
       syncWithCloudServer({ deletedIds: nextDeleted, projects: next });
-    } else if (collectionKey === "bienesList") {
+    } else if (collectionKey === "bienesList" || collectionKey === "bienes") {
       const next = bienesList.filter((x) => String(x.id) !== idStr);
       setBienesList(next);
       syncWithCloudServer({ deletedIds: nextDeleted, bienesList: next });
-    } else if (collectionKey === "attendanceRecords") {
+    } else if (collectionKey === "attendanceRecords" || collectionKey === "attendance") {
       const next = attendanceRecords.filter((x) => String(x.id) !== idStr);
       setAttendanceRecords(next);
       syncWithCloudServer({ deletedIds: nextDeleted, attendanceRecords: next });
@@ -1706,7 +1822,7 @@ export default function App() {
         setSelectedConfigUserId(String(next[0].id));
       }
       syncWithCloudServer({ deletedIds: nextDeleted, users: next });
-    } else if (collectionKey === "chatMessages") {
+    } else if (collectionKey === "chatMessages" || collectionKey === "chat") {
       const next = chatMessages.filter((x) => String(x.id) !== idStr);
       setChatMessages(next);
       syncWithCloudServer({ deletedIds: nextDeleted, chatMessages: next });
@@ -1728,8 +1844,8 @@ export default function App() {
           ? {
               ...d,
               status: "ANULADO",
-              motivoAnulacion: d.motivoAnulacion || "Anulado directamente por el usuario.",
-              anuladoPor: currentUser?.fullName || currentUser?.username || "Usuario",
+              motivoAnulacion: d.motivoAnulacion || "ANULADO DIRECTAMENTE POR EL USUARIO.",
+              anuladoPor: currentUser?.fullName || currentUser?.username || "USUARIO",
               fechaAnulacion: stamp,
               updatedAt: nowTs,
             }
@@ -1749,26 +1865,30 @@ export default function App() {
     } else if (collectionKey === "employees") {
       const next = employees.map((emp) =>
         String(emp.id) === idStr
-          ? { ...emp, condicionLaboral: "ANULADO / INACTIVO", updatedAt: nowTs }
+          ? { ...emp, status: "ANULADO", condicionLaboral: "ANULADO / INACTIVO", updatedAt: nowTs }
           : emp
       );
       setEmployees(next);
       syncWithCloudServer({ employees: next });
     } else if (collectionKey === "projects") {
       const next = projects.map((p) =>
-        String(p.id) === idStr ? { ...p, estatus: "ANULADO", porcentaje: 0, updatedAt: nowTs } : p
+        String(p.id) === idStr
+          ? { ...p, status: "ANULADO", estatus: "ANULADO", porcentaje: 0, updatedAt: nowTs }
+          : p
       );
       setProjects(next);
       syncWithCloudServer({ projects: next });
-    } else if (collectionKey === "bienesList") {
+    } else if (collectionKey === "bienesList" || collectionKey === "bienes") {
       const next = bienesList.map((b) =>
-        String(b.id) === idStr ? { ...b, estado: "ANULADO / DESINCORPORADO", updatedAt: nowTs } : b
+        String(b.id) === idStr
+          ? { ...b, status: "ANULADO", estado: "ANULADO", updatedAt: nowTs }
+          : b
       );
       setBienesList(next);
       syncWithCloudServer({ bienesList: next });
-    } else if (collectionKey === "attendanceRecords") {
+    } else if (collectionKey === "attendanceRecords" || collectionKey === "attendance") {
       const next = attendanceRecords.map((a) =>
-        String(a.id) === idStr ? { ...a, estatus: "ANULADO", updatedAt: nowTs } : a
+        String(a.id) === idStr ? { ...a, status: "ANULADO", estatus: "ANULADO", updatedAt: nowTs } : a
       );
       setAttendanceRecords(next);
       syncWithCloudServer({ attendanceRecords: next });
@@ -1778,7 +1898,9 @@ export default function App() {
         return;
       }
       const next = users.map((u) =>
-        String(u.id) === idStr ? { ...u, active: !u.active, updatedAt: nowTs } : u
+        String(u.id) === idStr
+          ? { ...u, active: !u.active, status: u.active ? "ANULADO" : "ACTIVO", updatedAt: nowTs }
+          : u
       );
       setUsers(next);
       syncWithCloudServer({ users: next });
@@ -2465,6 +2587,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 </label>
                 <input
                   type={showPwdFields ? "text" : "password"}
+                  data-no-uppercase="true"
                   required
                   value={pwdCurrent}
                   onChange={(e) => {
@@ -2492,6 +2615,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
               <input
                 type={showPwdFields ? "text" : "password"}
+                data-no-uppercase="true"
                 required
                 value={pwdNew}
                 onChange={(e) => {
@@ -2509,6 +2633,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </label>
               <input
                 type={showPwdFields ? "text" : "password"}
+                data-no-uppercase="true"
                 required
                 value={pwdConfirm}
                 onChange={(e) => {
@@ -3075,10 +3200,26 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   // Filtrado de RRHH para el Reporte General
   const filteredEmployees = useMemo(() => {
     return employees.filter((emp) => {
-      if (hrFilterCoord !== "TODAS" && emp.coordinacion !== hrFilterCoord) return false;
-      if (hrFilterCondicion !== "TODAS" && (emp.condicionLaboral || "Fijo") !== hrFilterCondicion) return false;
-      if (hrFilterCarga !== "TODOS" && emp.tieneCargaFamiliar !== hrFilterCarga) return false;
-      if (hrFilterSangre !== "TODOS" && emp.tipoSangre !== hrFilterSangre) return false;
+      if (
+        hrFilterCoord !== "TODAS" &&
+        (emp.coordinacion || "").toUpperCase() !== hrFilterCoord.toUpperCase()
+      )
+        return false;
+      if (
+        hrFilterCondicion !== "TODAS" &&
+        (emp.condicionLaboral || "Fijo").toUpperCase() !== hrFilterCondicion.toUpperCase()
+      )
+        return false;
+      if (
+        hrFilterCarga !== "TODOS" &&
+        (emp.tieneCargaFamiliar || "").toUpperCase() !== hrFilterCarga.toUpperCase()
+      )
+        return false;
+      if (
+        hrFilterSangre !== "TODOS" &&
+        (emp.tipoSangre || "").toUpperCase() !== hrFilterSangre.toUpperCase()
+      )
+        return false;
       if (hrFilterSearch.trim()) {
         const q = hrFilterSearch.toLowerCase();
         const match =
@@ -3343,6 +3484,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         border: 1.5px solid #92400e !important;
         color: #ffffff !important;
       }
+
+      /* ======================================================================
+         UNIFICACIÓN GLOBAL EN MAYÚSCULAS EN TODOS LOS MÓDULOS (SIN VARIEDAD)
+         ====================================================================== */
+      .cendis-dark-workspace input:not([type="password"]):not([type="email"]):not([data-no-uppercase="true"]),
+      .cendis-dark-workspace textarea,
+      .cendis-dark-workspace select,
+      .cendis-dark-workspace option,
+      .cendis-dark-workspace table td,
+      .cendis-dark-workspace table th,
+      #printable-area,
+      #printable-area *:not(svg):not(path) {
+        text-transform: uppercase !important;
+      }
     `}</style>
   );
 
@@ -3352,6 +3507,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   if (currentScreen === "LOGIN") {
     return (
       <div
+        onInputCapture={handleGlobalUppercaseInput}
+        onChangeCapture={handleGlobalUppercaseInput}
         className={`min-h-screen max-h-screen overflow-y-auto ${
           themeMode === "LIGHT"
             ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
@@ -3429,6 +3586,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
                     <input
                       type={showPassword ? "text" : "password"}
+                      data-no-uppercase="true"
                       required
                       value={loginPassword}
                       onChange={(e) => {
@@ -3731,6 +3889,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
     return (
       <div
+        onInputCapture={handleGlobalUppercaseInput}
+        onChangeCapture={handleGlobalUppercaseInput}
         className={`min-h-screen ${
           themeMode === "LIGHT"
             ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
@@ -3792,7 +3952,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   title="Cambiar clave de seguridad (Vigencia límite: 90 días)"
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Clave ({passwordExpInfo.daysRemaining}d)</span>
+                  <span>Clave</span>
                 </button>
 
                 <button
@@ -3970,6 +4130,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
   // ==========================================================================
   return (
     <div
+      onInputCapture={handleGlobalUppercaseInput}
+      onChangeCapture={handleGlobalUppercaseInput}
       className={`min-h-screen ${
         themeMode === "LIGHT"
           ? "cendis-theme-light bg-[#eef2f6] text-slate-900"
@@ -4214,7 +4376,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 title="Cambiar clave de seguridad (Límite de renovación: 90 días)"
               >
                 <Lock className="w-3.5 h-3.5" />
-                <span>{deviceViewport === "MOBILE" ? `${passwordExpInfo.daysRemaining}d` : `Cambiar Clave (${passwordExpInfo.daysRemaining}d)`}</span>
+                <span>Clave</span>
               </button>
 
               <button
@@ -8233,6 +8395,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         />
                         <input
                           type="text"
+                          data-no-uppercase="true"
                           required
                           placeholder="Clave"
                           value={newUserForm.password}
