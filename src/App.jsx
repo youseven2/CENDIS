@@ -1653,6 +1653,82 @@ export default function App() {
     iniciales: "ML/rrhh.",
   });
 
+  const numeroABolivaresLetras = (rawMonto) => {
+    const cleaned = String(rawMonto || "")
+      .replace(/bs\.?/gi, "")
+      .replace(/\s+/g, "")
+      .trim();
+    if (!cleaned) return "";
+    let normalized = cleaned;
+    if (cleaned.includes(",") && cleaned.includes(".")) {
+      normalized = cleaned.replace(/\./g, "").replace(",", ".");
+    } else if (cleaned.includes(",")) {
+      normalized = cleaned.replace(",", ".");
+    }
+    const num = parseFloat(normalized);
+    if (Number.isNaN(num) || num < 0) return "";
+    const entero = Math.floor(num);
+    const centavos = Math.round((num - entero) * 100);
+    const centStr = String(centavos === 100 ? 0 : centavos).padStart(2, "0");
+
+    const UNIDADES = ["", "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"];
+    const ESPECIALES = [
+      "DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE",
+      "DIECISÉIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE",
+    ];
+    const DECENAS = [
+      "", "", "VEINTE", "TREINTA", "CUARENTA", "CINCUENTA",
+      "SESENTA", "SETENTA", "OCHENTA", "NOVENTA",
+    ];
+    const CENTENAS = [
+      "", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS",
+      "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS",
+    ];
+
+    const convertirGrupo = (n) => {
+      if (n === 0) return "";
+      if (n === 100) return "CIEN";
+      const c = Math.floor(n / 100);
+      const r = n % 100;
+      let res = CENTENAS[c] ? CENTENAS[c] + (r > 0 ? " " : "") : "";
+      if (r >= 10 && r <= 19) {
+        res += ESPECIALES[r - 10];
+      } else if (r >= 21 && r <= 29) {
+        res += "VEINTI" + UNIDADES[r - 20];
+      } else {
+        const d = Math.floor(r / 10);
+        const u = r % 10;
+        if (d > 0) res += DECENAS[d] + (u > 0 ? " Y " : "");
+        if (u > 0) res += UNIDADES[u];
+      }
+      return res.trim();
+    };
+
+    const convertirEntero = (n) => {
+      if (n === 0) return "CERO";
+      const millones = Math.floor(n / 1000000);
+      const restoMillon = n % 1000000;
+      const miles = Math.floor(restoMillon / 1000);
+      const unidades = restoMillon % 1000;
+      const partes = [];
+      if (millones > 0) {
+        partes.push(millones === 1 ? "UN MILLÓN" : `${convertirGrupo(millones)} MILLONES`);
+      }
+      if (miles > 0) {
+        partes.push(miles === 1 ? "MIL" : `${convertirGrupo(miles)} MIL`);
+      }
+      if (unidades > 0) {
+        partes.push(convertirGrupo(unidades));
+      }
+      return partes.join(" ");
+    };
+
+    const textoEntero = convertirEntero(entero);
+    const dePrefix = entero >= 1000000 && entero % 1000000 === 0 ? "DE " : "";
+    const moneda = entero === 1 ? "BOLÍVAR" : "BOLÍVARES";
+    return `${textoEntero} ${dePrefix}${moneda} CON ${centStr}/100`;
+  };
+
   const openConstanciaModal = (emp) => {
     if (!emp) return;
     const isFemale =
@@ -1666,6 +1742,7 @@ export default function App() {
       if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
       return iso;
     };
+    const autoLetras = emp.sueldoMensual ? numeroABolivaresLetras(emp.sueldoMensual) : "";
     setConstanciaForm({
       correlativo: `CRH-${yearNow}-${corrNum}`,
       rif: "G-20008344-9",
@@ -1676,8 +1753,9 @@ export default function App() {
       cargo: (emp.cargo || "PERSONAL CENDIS").toUpperCase(),
       dependencia: (emp.coordinacion || "FUNDACIÓN CENDIS").toUpperCase(),
       remuneracionLetras:
+        autoLetras ||
         (emp.sueldoLetras || "").trim().toUpperCase() ||
-        "DOSCIENTOS SETENTA Y CINCO MIL BOLÍVARES CON 88/100",
+        "DOSCIENTOS SETENTA Y CINCO BOLÍVARES CON 88/100",
       remuneracionMonto: emp.sueldoMensual
         ? String(emp.sueldoMensual).trim().toUpperCase().startsWith("BS")
           ? String(emp.sueldoMensual).trim()
@@ -12418,19 +12496,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       value={newEmpForm.sueldoMensual || ""}
                       onChange={(e) => setNewEmpForm({ ...newEmpForm, sueldoMensual: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-emerald-500/60 text-emerald-300 font-bold"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-bold text-emerald-300 mb-1">
-                      Sueldo Mensual en Letras (Para Constancia de Trabajo)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ej. DOSCIENTOS SETENTA Y CINCO MIL BOLÍVARES CON 88/100"
-                      value={newEmpForm.sueldoLetras || ""}
-                      onChange={(e) => setNewEmpForm({ ...newEmpForm, sueldoLetras: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-emerald-500/60 text-white"
                     />
                   </div>
 
