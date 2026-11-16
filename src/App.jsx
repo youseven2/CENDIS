@@ -1923,12 +1923,11 @@ export default function App() {
   // Estado de Asistencia
   const [attendanceRecords, setAttendanceRecordsState] = useState(() => {
     let loaded = loadStoredJson(STORAGE_ATTENDANCE_KEY, INITIAL_ATTENDANCE_LIST);
-    if (typeof window !== "undefined" && window.localStorage.getItem("cendis_ca_empty_init_v1") !== "1") {
-      const sampleAttIds = new Set(["att-1", "att-2"]);
-      loaded = (Array.isArray(loaded) ? loaded : []).filter((a) => !sampleAttIds.has(String(a.id)));
-      saveStoredJson(STORAGE_ATTENDANCE_KEY, loaded);
+    if (typeof window !== "undefined" && window.localStorage.getItem("cendis_ca_full_reset_v2") !== "1") {
+      loaded = [];
+      saveStoredJson(STORAGE_ATTENDANCE_KEY, []);
       try {
-        window.localStorage.setItem("cendis_ca_empty_init_v1", "1");
+        window.localStorage.setItem("cendis_ca_full_reset_v2", "1");
       } catch {}
     }
     return normalizeRecordToUpperCase(loaded);
@@ -5212,6 +5211,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             min-height: 278mm !important;
             max-height: none !important;
             overflow: visible !important;
+          }
+          #printable-area.org-print-one-page {
+            height: 278mm !important;
+            min-height: 278mm !important;
+            max-height: 278mm !important;
+            overflow: hidden !important;
           }
           .print\\:hidden,
           #printable-area .print\\:hidden,
@@ -10581,40 +10586,58 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   <div className="p-4 rounded-2xl bg-red-50 border border-red-200">
                     <span className="text-[11px] font-bold uppercase text-red-700">Memorándums Emitidos</span>
                     <div className="text-3xl font-black text-red-900 mt-1">
-                      {documents.filter((d) => d.tipo === "MEMORANDUM").length}
+                      {documents.filter((d) => d.tipo === "MEMORANDUM" && d.status !== "ANULADO").length}
                     </div>
                   </div>
                   <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200">
                     <span className="text-[11px] font-bold uppercase text-blue-700">Solicitudes Emitidas</span>
                     <div className="text-3xl font-black text-blue-900 mt-1">
-                      {documents.filter((d) => d.tipo === "SOLICITUD").length}
+                      {
+                        documents.filter(
+                          (d) =>
+                            (d.tipo === "SOLICITUD" ||
+                              d.tipo === "SOLICITUD_ALIMENTOS" ||
+                              d.tipo === "SOLICITUD_SERVICIOS_GENERALES") &&
+                            d.status !== "ANULADO"
+                        ).length
+                      }
                     </div>
                   </div>
                   <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200">
                     <span className="text-[11px] font-bold uppercase text-amber-700">Personal en RRHH</span>
-                    <div className="text-3xl font-black text-amber-900 mt-1">{employees.length}</div>
+                    <div className="text-3xl font-black text-amber-900 mt-1">
+                      {employees.filter((e) => e.status !== "ANULADO").length}
+                    </div>
                   </div>
                   <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
                     <span className="text-[11px] font-bold uppercase text-emerald-700">Actividades en Agenda</span>
-                    <div className="text-3xl font-black text-emerald-900 mt-1">{agendaEvents.length}</div>
+                    <div className="text-3xl font-black text-emerald-900 mt-1">
+                      {agendaEvents.filter((e) => e.status !== "ANULADO").length}
+                    </div>
                   </div>
                   <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200">
                     <span className="text-[11px] font-bold uppercase text-indigo-700">Proyectos (% Global)</span>
                     <div className="text-3xl font-black text-indigo-900 mt-1">
-                      {projects.length} ({globalProjectsProgress}%)
+                      {projects.filter((p) => p.status !== "ANULADO").length} ({globalProjectsProgress}%)
                     </div>
                   </div>
                   <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200">
                     <span className="text-[11px] font-bold uppercase text-teal-700">Bienes Nacionales</span>
-                    <div className="text-3xl font-black text-teal-900 mt-1">{bienesList.length}</div>
+                    <div className="text-3xl font-black text-teal-900 mt-1">
+                      {bienesList.filter((b) => b.status !== "ANULADO").length}
+                    </div>
                   </div>
                   <div className="p-4 rounded-2xl bg-cyan-50 border border-cyan-200">
                     <span className="text-[11px] font-bold uppercase text-cyan-700">Asistencias Registradas</span>
-                    <div className="text-3xl font-black text-cyan-900 mt-1">{attendanceRecords.length}</div>
+                    <div className="text-3xl font-black text-cyan-900 mt-1">
+                      {attendanceRecords.filter((a) => a.status !== "ANULADO" && a.estatus !== "ANULADO").length}
+                    </div>
                   </div>
                   <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200">
                     <span className="text-[11px] font-bold uppercase text-purple-700">Usuarios Creados</span>
-                    <div className="text-3xl font-black text-purple-900 mt-1">{users.length}</div>
+                    <div className="text-3xl font-black text-purple-900 mt-1">
+                      {users.filter((u) => u.active !== false && u.status !== "ANULADO").length}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -10679,17 +10702,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             <div
               id="printable-area"
-              className="org-print-auto-height w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
+              style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+              className={`${
+                orgViewMode === "DIAGRAM" ? "org-print-one-page" : "org-print-auto-height"
+              } w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950`}
             >
               {/* ... */}
-              <div className="p-10 space-y-6">
+              <div className="p-6 sm:p-8 print:px-6 print:py-3 space-y-4 print:space-y-1.5">
                 <OfficialHeaderCintillo showRightLogo={true} />
 
-                <div className="mt-4 text-center">
-                  <h2 className="text-base font-black uppercase text-slate-900">
+                <div className="mt-2 print:mt-1 text-center">
+                  <h2 className="text-sm sm:text-base print:text-xs font-black uppercase text-slate-900">
                     ESTRUCTURA ORGANIZATIVA Y ORGANIGRAMA OFICIAL • FUNDACIÓN CENDIS
                   </h2>
-                  <p className="text-xs text-slate-600 font-semibold">
+                  <p className="text-xs print:text-[10px] text-slate-600 font-semibold">
                     Ministerio del Poder Popular para la Cultura • Distribución por Dependencias
                   </p>
                 </div>
@@ -10701,7 +10727,13 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       ...employees.map((e) => (e.coordinacion || "DEPENDENCIA GENERAL").toUpperCase()),
                     ])
                   );
-                  const renderOfficialOrgNode = (cargoId, fallbackTitle, borderColorClass = "border-blue-700", extraClass = "") => {
+                  const renderOfficialOrgNode = (
+                    cargoId,
+                    fallbackTitle,
+                    borderColorClass = "border-blue-300",
+                    bgGradientClass = "bg-gradient-to-br from-slate-50 to-blue-50",
+                    extraClass = ""
+                  ) => {
                     const node = orgCargos.find((c) => String(c.id) === String(cargoId)) || {
                       id: cargoId,
                       nombreCargo: fallbackTitle,
@@ -10712,12 +10744,13 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     );
                     return (
                       <div
-                        className={`bg-white border-2 ${borderColorClass} rounded-xl px-3 py-2 text-center shadow-xs space-y-1 ${extraClass}`}
+                        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+                        className={`${bgGradientClass} border-2 ${borderColorClass} rounded-xl px-2.5 py-1.5 print:px-2 print:py-1 text-center shadow-xs space-y-0.5 ${extraClass}`}
                       >
-                        <div className="font-black text-[10px] leading-tight uppercase text-slate-900">
+                        <div className="font-black text-[9.5px] print:text-[8px] leading-tight uppercase text-slate-900">
                           {node.nombreCargo || fallbackTitle}
                         </div>
-                        <div className="text-[9.5px] font-bold text-blue-900 leading-tight">
+                        <div className="text-[9px] print:text-[7.5px] font-bold text-slate-700 leading-tight">
                           {linkedEmp
                             ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
                             : "Cargo vacante / Sin asignar"}
@@ -10726,7 +10759,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           <select
                             value={node.assignedEmpId || ""}
                             onChange={(e) => assignEmployeeToOrgCargo(node.id, e.target.value)}
-                            className="w-full px-1.5 py-0.5 rounded border border-slate-300 bg-slate-50 text-[9px] font-semibold text-slate-800 cursor-pointer"
+                            className="w-full px-1.5 py-0.5 rounded border border-slate-300 bg-white/90 text-[9px] font-semibold text-slate-800 cursor-pointer"
                             title="Asignar trabajador desde Recursos Humanos"
                           >
                             <option value="">-- Asignar Personal RRHH --</option>
@@ -10744,137 +10777,167 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   const extraCustomCargos = orgCargos.filter((c) => !officialIds.has(String(c.id)));
 
                   return orgViewMode === "DIAGRAM" ? (
-                    <div className="p-4 sm:p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-2">
+                    <div className="p-3 sm:p-4 print:p-2.5 bg-slate-50/70 rounded-xl border border-slate-200 flex flex-col items-center space-y-1.5 print:space-y-1">
                       {/* Nivel 1: Ministerio */}
-                      <div className="w-full max-w-[280px]">
+                      <div className="w-full max-w-[270px]">
                         {renderOfficialOrgNode(
                           "org-mppc",
                           "MINISTERIO DEL PODER POPULAR PARA LA CULTURA",
-                          "border-[#1e3a8a]"
+                          "border-blue-300",
+                          "bg-gradient-to-br from-slate-50 via-blue-50/70 to-indigo-100/70"
                         )}
                       </div>
-                      <div className="h-3 w-0.5 bg-slate-600" />
+                      <div className="h-2.5 print:h-1.5 w-0.5 bg-slate-400" />
 
                       {/* Nivel 2: Consejo Directivo */}
-                      <div className="w-full max-w-[230px]">
-                        {renderOfficialOrgNode("org-consejo", "CONSEJO DIRECTIVO", "border-blue-600")}
+                      <div className="w-full max-w-[220px]">
+                        {renderOfficialOrgNode(
+                          "org-consejo",
+                          "CONSEJO DIRECTIVO",
+                          "border-sky-300",
+                          "bg-gradient-to-br from-sky-50 via-blue-50/80 to-indigo-100/60"
+                        )}
                       </div>
-                      <div className="h-3 w-0.5 bg-slate-600" />
+                      <div className="h-2.5 print:h-1.5 w-0.5 bg-slate-400" />
 
                       {/* Nivel 3: Oficina de Atención al Ciudadano | Presidencia | Auditoría Interna */}
-                      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 items-center relative">
+                      <div className="w-full grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-2.5 print:gap-2 items-center relative">
                         {renderOfficialOrgNode(
                           "org-oac",
                           "OFICINA DE ATENCIÓN AL CIUDADANO",
-                          "border-sky-500"
+                          "border-cyan-300",
+                          "bg-gradient-to-br from-cyan-50/90 to-sky-100/60"
                         )}
-                        {renderOfficialOrgNode("org-presidencia", "PRESIDENCIA", "border-sky-500")}
-                        {renderOfficialOrgNode("org-auditoria", "AUDITORÍA INTERNA", "border-sky-500")}
+                        {renderOfficialOrgNode(
+                          "org-presidencia",
+                          "PRESIDENCIA",
+                          "border-sky-400",
+                          "bg-gradient-to-br from-sky-50 to-blue-100/80"
+                        )}
+                        {renderOfficialOrgNode(
+                          "org-auditoria",
+                          "AUDITORÍA INTERNA",
+                          "border-cyan-300",
+                          "bg-gradient-to-br from-cyan-50/90 to-sky-100/60"
+                        )}
                       </div>
-                      <div className="h-3 w-0.5 bg-slate-600" />
+                      <div className="h-2.5 print:h-1.5 w-0.5 bg-slate-400" />
 
                       {/* Nivel 4: Dirección Ejecutiva */}
-                      <div className="w-full max-w-[240px]">
+                      <div className="w-full max-w-[230px]">
                         {renderOfficialOrgNode(
                           "org-dir-ejecutiva",
                           "DIRECCIÓN EJECUTIVA",
-                          "border-blue-700"
+                          "border-blue-300",
+                          "bg-gradient-to-br from-blue-50 via-indigo-50/80 to-sky-100/70"
                         )}
                       </div>
-                      <div className="h-4 w-0.5 bg-slate-600" />
+                      <div className="h-3 print:h-2 w-0.5 bg-slate-400" />
 
                       {/* Nivel 5: Asesoría/Apoyo Izquierda + Coordinación General de Gestión Interna Derecha */}
-                      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 items-start border-t-2 border-slate-500 pt-3">
-                        <div className="lg:col-span-5 space-y-3">
+                      <div className="w-full grid grid-cols-1 lg:grid-cols-12 print:grid-cols-12 gap-3 print:gap-2 items-start border-t-2 border-slate-300 pt-2 print:pt-1.5">
+                        <div className="lg:col-span-5 print:col-span-5 space-y-2 print:space-y-1.5">
                           {renderOfficialOrgNode(
                             "org-consultoria",
                             "CONSULTORÍA JURÍDICA",
-                            "border-indigo-400"
+                            "border-indigo-300",
+                            "bg-gradient-to-br from-indigo-50/80 to-slate-100/70"
                           )}
                           {renderOfficialOrgNode(
                             "org-comunicacion",
                             "COORDINACIÓN DE COMUNICACIÓN Y RELACIONES INSTITUCIONALES",
-                            "border-indigo-400"
+                            "border-indigo-300",
+                            "bg-gradient-to-br from-indigo-50/80 to-violet-100/60"
                           )}
                         </div>
 
-                        <div className="lg:col-span-7 space-y-2.5 flex flex-col items-center">
-                          <div className="w-full max-w-[290px]">
+                        <div className="lg:col-span-7 print:col-span-7 space-y-1.5 print:space-y-1 flex flex-col items-center">
+                          <div className="w-full max-w-[280px]">
                             {renderOfficialOrgNode(
                               "org-gestion-interna",
                               "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
-                              "border-indigo-500"
+                              "border-teal-300",
+                              "bg-gradient-to-br from-teal-50/90 to-cyan-100/70"
                             )}
                           </div>
-                          <div className="h-2.5 w-0.5 bg-slate-500" />
-                          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t-2 border-slate-400 pt-2.5">
+                          <div className="h-2 print:h-1.5 w-0.5 bg-teal-300" />
+                          <div className="w-full grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-2 print:gap-1.5 border-t-2 border-teal-200 pt-2 print:pt-1.5">
                             {renderOfficialOrgNode(
                               "org-admin-finanzas",
                               "COORDINACIÓN DE ADMINISTRACIÓN Y FINANZAS",
-                              "border-indigo-400"
+                              "border-teal-200",
+                              "bg-gradient-to-br from-teal-50/70 to-sky-100/50"
                             )}
                             {renderOfficialOrgNode(
                               "org-planif-presup",
                               "COORDINACIÓN DE PLANIFICACIÓN Y PRESUPUESTO",
-                              "border-indigo-400"
+                              "border-teal-200",
+                              "bg-gradient-to-br from-teal-50/70 to-sky-100/50"
                             )}
                             {renderOfficialOrgNode(
                               "org-rrhh",
                               "COORDINACIÓN DE RECURSOS HUMANOS",
-                              "border-indigo-400"
+                              "border-teal-200",
+                              "bg-gradient-to-br from-teal-50/70 to-sky-100/50"
                             )}
                             {renderOfficialOrgNode(
                               "org-tecnologia",
                               "COORDINACIÓN DE TECNOLOGÍA E INFORMÁTICA",
-                              "border-indigo-400"
+                              "border-teal-200",
+                              "bg-gradient-to-br from-teal-50/70 to-sky-100/50"
                             )}
                           </div>
                         </div>
                       </div>
 
-                      <div className="h-4 w-0.5 bg-slate-600" />
+                      <div className="h-3 print:h-1.5 w-0.5 bg-slate-400" />
 
-                      {/* Nivel 6: Coordinación General Estratégica (Verde) y Operaciones (Morado) */}
-                      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 items-start border-t-2 border-slate-600 pt-3">
+                      {/* Nivel 6: Coordinación General Estratégica (Verde difuminado) y Operaciones (Morado difuminado) */}
+                      <div className="w-full grid grid-cols-1 lg:grid-cols-12 print:grid-cols-12 gap-3 print:gap-2 items-start border-t-2 border-slate-300 pt-2 print:pt-1.5">
                         {/* Rama Verde: Estratégica */}
-                        <div className="lg:col-span-5 flex flex-col items-center space-y-2.5">
-                          <div className="w-full max-w-[260px]">
+                        <div className="lg:col-span-5 print:col-span-5 flex flex-col items-center space-y-1.5 print:space-y-1">
+                          <div className="w-full max-w-[250px]">
                             {renderOfficialOrgNode(
                               "org-estrategica",
                               "COORDINACIÓN GENERAL ESTRATÉGICA",
-                              "border-emerald-700"
+                              "border-emerald-300",
+                              "bg-gradient-to-br from-emerald-50/90 to-teal-100/70"
                             )}
                           </div>
-                          <div className="h-3 w-0.5 bg-emerald-700" />
-                          <div className="w-full max-w-[260px]">
+                          <div className="h-2 print:h-1.5 w-0.5 bg-emerald-300" />
+                          <div className="w-full max-w-[250px]">
                             {renderOfficialOrgNode(
                               "org-prod-artistica",
                               "COORDINACIÓN DE PRODUCCIÓN ARTÍSTICA",
-                              "border-emerald-600"
+                              "border-emerald-200",
+                              "bg-gradient-to-br from-emerald-50/70 to-lime-100/50"
                             )}
                           </div>
                         </div>
 
                         {/* Rama Morada: Operaciones */}
-                        <div className="lg:col-span-7 flex flex-col items-center space-y-2.5">
-                          <div className="w-full max-w-[290px]">
+                        <div className="lg:col-span-7 print:col-span-7 flex flex-col items-center space-y-1.5 print:space-y-1">
+                          <div className="w-full max-w-[280px]">
                             {renderOfficialOrgNode(
                               "org-operaciones",
                               "COORDINACIÓN GENERAL DE OPERACIONES",
-                              "border-purple-700"
+                              "border-purple-300",
+                              "bg-gradient-to-br from-purple-50/90 to-fuchsia-100/60"
                             )}
                           </div>
-                          <div className="h-3 w-0.5 bg-purple-700" />
-                          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t-2 border-purple-700 pt-2.5">
+                          <div className="h-2 print:h-1.5 w-0.5 bg-purple-300" />
+                          <div className="w-full grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-2 print:gap-1.5 border-t-2 border-purple-200 pt-2 print:pt-1.5">
                             {renderOfficialOrgNode(
                               "org-prod-industrial",
                               "COORDINACIÓN DE PRODUCCIÓN INDUSTRIAL",
-                              "border-purple-600"
+                              "border-purple-200",
+                              "bg-gradient-to-br from-purple-50/70 to-pink-100/40"
                             )}
                             {renderOfficialOrgNode(
                               "org-comercializacion",
                               "COORDINACIÓN DE COMERCIALIZACIÓN",
-                              "border-purple-600"
+                              "border-purple-200",
+                              "bg-gradient-to-br from-purple-50/70 to-pink-100/40"
                             )}
                           </div>
                         </div>
@@ -10882,17 +10945,18 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                       {/* Cargos Adicionales Personalizados */}
                       {extraCustomCargos.length > 0 && (
-                        <div className="w-full pt-4 border-t border-slate-300 space-y-2">
-                          <div className="text-center text-[10px] font-black uppercase text-slate-600">
+                        <div className="w-full pt-2 border-t border-slate-200 space-y-1">
+                          <div className="text-center text-[9px] font-black uppercase text-slate-500">
                             Cargos Adicionales Registrados ({extraCustomCargos.length})
                           </div>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                          <div className="grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-2">
                             {extraCustomCargos.map((cargoItem) => (
                               <div key={cargoItem.id}>
                                 {renderOfficialOrgNode(
                                   cargoItem.id,
                                   cargoItem.nombreCargo,
-                                  "border-amber-500"
+                                  "border-amber-300",
+                                  "bg-gradient-to-br from-amber-50/80 to-orange-100/50"
                                 )}
                               </div>
                             ))}
