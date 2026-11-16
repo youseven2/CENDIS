@@ -1675,8 +1675,14 @@ export default function App() {
       fechaIngreso: formatIngreso(emp.fechaIngreso),
       cargo: (emp.cargo || "PERSONAL CENDIS").toUpperCase(),
       dependencia: (emp.coordinacion || "FUNDACIÓN CENDIS").toUpperCase(),
-      remuneracionLetras: "DOSCIENTOS SETENTA Y CINCO MIL BOLÍVARES CON 88/100",
-      remuneracionMonto: "Bs 275,88",
+      remuneracionLetras:
+        (emp.sueldoLetras || "").trim().toUpperCase() ||
+        "DOSCIENTOS SETENTA Y CINCO MIL BOLÍVARES CON 88/100",
+      remuneracionMonto: emp.sueldoMensual
+        ? String(emp.sueldoMensual).trim().toUpperCase().startsWith("BS")
+          ? String(emp.sueldoMensual).trim()
+          : `Bs ${String(emp.sueldoMensual).trim()}`
+        : "Bs 275,88",
       fechaExpedicion: new Date().toISOString().slice(0, 10),
       firmanteNombre: "MORRIS LÓPEZ",
       firmanteCargo: "DIRECTOR GENERAL",
@@ -1727,6 +1733,8 @@ export default function App() {
     municipioVotacion: "",
     parroquiaVotacion: "",
     yaVoto: "NO",
+    sueldoMensual: "",
+    sueldoLetras: "",
   });
 
   // Trabajador de RRHH vinculado al correo del usuario actual
@@ -3546,6 +3554,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       municipioVotacion: prefill.municipioVotacion || "",
       parroquiaVotacion: prefill.parroquiaVotacion || "",
       yaVoto: prefill.yaVoto || "NO",
+      sueldoMensual: prefill.sueldoMensual || "",
+      sueldoLetras: prefill.sueldoLetras || "",
     });
     setHrModalOpen(true);
   };
@@ -3591,6 +3601,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       municipioVotacion: emp.municipioVotacion || "",
       parroquiaVotacion: emp.parroquiaVotacion || "",
       yaVoto: emp.yaVoto || "NO",
+      sueldoMensual: emp.sueldoMensual || "",
+      sueldoLetras: emp.sueldoLetras || "",
     });
     setHrModalOpen(true);
   };
@@ -12376,6 +12388,33 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       value={newEmpForm.tallas || ""}
                       onChange={(e) => setNewEmpForm({ ...newEmpForm, tallas: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-emerald-300 mb-1">
+                      Sueldo Mensual (Bs) • Para Constancia
+                    </label>
+                    <input
+                      type="text"
+                      data-no-uppercase="true"
+                      placeholder="Ej. 275,88"
+                      value={newEmpForm.sueldoMensual || ""}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, sueldoMensual: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-emerald-500/60 text-emerald-300 font-bold"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-emerald-300 mb-1">
+                      Sueldo Mensual en Letras (Para Constancia de Trabajo)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej. DOSCIENTOS SETENTA Y CINCO MIL BOLÍVARES CON 88/100"
+                      value={newEmpForm.sueldoLetras || ""}
+                      onChange={(e) => setNewEmpForm({ ...newEmpForm, sueldoLetras: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-emerald-500/60 text-white"
                     />
                   </div>
 
