@@ -182,6 +182,7 @@ const DEFAULT_USERS = [
     active: true,
     linkedEmployeeId: null,
     permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN },
+    updatedAt: 1794900000000,
   },
 ];
 
@@ -861,20 +862,6 @@ function sanitizeUsersDirectorGeneral(list) {
             anular: true,
             eliminar: true,
           };
-    if (
-      u.id === 2 ||
-      u.username === "presidencia" ||
-      (u.fullName && u.fullName.toLowerCase().includes("ali alejandro"))
-    ) {
-      return {
-        ...u,
-        email: "morris.lopez.cendis@gmail.com",
-        fullName: "Lcdo. Morris López",
-        cargo: "Director General de la Fundación CENDIS",
-        linkedEmployeeId: "emp-1",
-        permissions: basePerms,
-      };
-    }
     return { ...u, permissions: basePerms };
   });
 }
@@ -922,10 +909,11 @@ function saveStoredDeletedIds(list) {
 function loadStoredUsers() {
   if (typeof window === "undefined") return DEFAULT_USERS;
   try {
-    if (window.localStorage.getItem("cendis_users_reset_admin_v1") !== "1") {
-      window.localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(DEFAULT_USERS));
-      window.localStorage.setItem("cendis_users_reset_admin_v1", "1");
-      return DEFAULT_USERS;
+    if (window.localStorage.getItem("cendis_users_reset_admin_v2") !== "1") {
+      const freshAdminList = [{ ...DEFAULT_USERS[0], updatedAt: Date.now() }];
+      window.localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(freshAdminList));
+      window.localStorage.setItem("cendis_users_reset_admin_v2", "1");
+      return freshAdminList;
     }
     const raw = window.localStorage.getItem(STORAGE_USERS_KEY);
     if (!raw) return DEFAULT_USERS;
@@ -2869,9 +2857,9 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
     const found = users.find(
       (u) =>
-        (u.username.toLowerCase() === rawInput ||
-          (u.email && u.email.toLowerCase() === rawInput)) &&
-        u.password === loginPassword
+        (String(u.username || "").trim().toLowerCase() === rawInput ||
+          (u.email && String(u.email).trim().toLowerCase() === rawInput)) &&
+        (u.password === loginPassword || u.password === loginPassword.trim())
     );
 
     if (!found) {
