@@ -10822,25 +10822,38 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </div>
                       <div className="h-2.5 print:h-1.5 w-0.5 bg-slate-400" />
 
-                      {/* Nivel 3: Oficina de Atención al Ciudadano | Presidencia | Auditoría Interna */}
-                      <div className="w-full grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-2.5 print:gap-2 items-center relative">
-                        {renderOfficialOrgNode(
-                          "org-oac",
-                          "OFICINA DE ATENCIÓN AL CIUDADANO",
-                          "border-cyan-300",
-                          "bg-gradient-to-br from-cyan-50/90 to-sky-100/60"
-                        )}
+                      {/* Nivel 3: Entre Consejo Directivo y Presidencia (OAC y Auditoría Interna en la misma línea) */}
+                      <div className="w-full max-w-[760px] grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-2 items-center">
+                        <div className="md:col-span-5 print:col-span-5">
+                          {renderOfficialOrgNode(
+                            "org-oac",
+                            "OFICINA DE ATENCIÓN AL CIUDADANO",
+                            "border-cyan-300",
+                            "bg-gradient-to-br from-cyan-50/90 to-sky-100/60"
+                          )}
+                        </div>
+                        <div className="hidden md:flex print:flex md:col-span-2 print:col-span-2 items-center justify-center relative h-10 print:h-7">
+                          <div className="w-full h-0.5 bg-slate-400" />
+                          <div className="absolute inset-y-0 w-0.5 bg-slate-400" />
+                        </div>
+                        <div className="md:col-span-5 print:col-span-5">
+                          {renderOfficialOrgNode(
+                            "org-auditoria",
+                            "AUDITORÍA INTERNA",
+                            "border-cyan-300",
+                            "bg-gradient-to-br from-cyan-50/90 to-sky-100/60"
+                          )}
+                        </div>
+                      </div>
+                      <div className="h-2.5 print:h-1.5 w-0.5 bg-slate-400" />
+
+                      {/* Nivel 3B: Presidencia */}
+                      <div className="w-full max-w-[230px]">
                         {renderOfficialOrgNode(
                           "org-presidencia",
                           "PRESIDENCIA",
                           "border-sky-400",
                           "bg-gradient-to-br from-sky-50 to-blue-100/80"
-                        )}
-                        {renderOfficialOrgNode(
-                          "org-auditoria",
-                          "AUDITORÍA INTERNA",
-                          "border-cyan-300",
-                          "bg-gradient-to-br from-cyan-50/90 to-sky-100/60"
                         )}
                       </div>
                       <div className="h-2.5 print:h-1.5 w-0.5 bg-slate-400" />
@@ -10964,27 +10977,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           </div>
                         </div>
                       </div>
-
-                      {/* Cargos Adicionales Personalizados */}
-                      {extraCustomCargos.length > 0 && (
-                        <div className="w-full pt-2 border-t border-slate-200 space-y-1">
-                          <div className="text-center text-[9px] font-black uppercase text-slate-500">
-                            Cargos Adicionales Registrados ({extraCustomCargos.length})
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-3 print:grid-cols-3 gap-2">
-                            {extraCustomCargos.map((cargoItem) => (
-                              <div key={cargoItem.id}>
-                                {renderOfficialOrgNode(
-                                  cargoItem.id,
-                                  cargoItem.nombreCargo,
-                                  "border-amber-300",
-                                  "bg-gradient-to-br from-amber-50/80 to-orange-100/50"
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   ) : (
                     <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-4 text-xs text-slate-900">
