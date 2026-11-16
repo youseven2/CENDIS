@@ -224,129 +224,7 @@ const DEFAULT_USERS = [
   },
 ];
 
-const INITIAL_EMPLOYEES = [
-  {
-    id: "emp-1",
-    nombres: "Morris",
-    apellidos: "López",
-    cedula: "V-19.324.324",
-    cargo: "Director General",
-    coordinacion: "Dirección General",
-    condicionLaboral: "Libre Nombramiento",
-    nivelAcademico: "Universitario",
-    profesion: "Licenciado en Artes Audiovisuales",
-    estadoCivil: "Casado(a)",
-    genero: "Masculino",
-    tallas: "Camisa L / Pantalón 32 / Calzado 41",
-    telefono: "0426-3243246",
-    telefonoAlterno: "0412-3243246",
-    correo: "morris.lopez.cendis@gmail.com",
-    direccion: "Los Valles del Tuy, Ocumare, Estado Miranda",
-    fechaNacimiento: "1988-07-22",
-    fechaIngreso: "2022-01-15",
-    tipoSangre: "O+",
-    emergencia1: "Elena López: 0426-1112233",
-    emergencia2: "Pedro López: 0414-8889900",
-    familiares: "Esposa y 1 Hija",
-    familiaresLista: [
-      { id: "fam-1", parentesco: "Esposo(a)", nombreCompleto: "Elena de López", cedula: "V-20.555.444", fechaNacimiento: "1990-02-18", edad: "36" },
-      { id: "fam-2", parentesco: "Hijo(a)", nombreCompleto: "Valeria López", cedula: "Menor sin cédula", fechaNacimiento: "2018-09-12", edad: "8" },
-    ],
-    tieneCargaFamiliar: "SI",
-    fotoCarnet: "",
-    observacionesLaborales: "Director General de la Fundación Centro Nacional del Disco (CENDIS) - MPPC.",
-    codigoBarra: "2024-CENDIS-000123",
-  },
-  {
-    id: "emp-2",
-    nombres: "Julimar",
-    apellidos: "Flores",
-    cedula: "V-18.999.888",
-    cargo: "Directora Ejecutiva",
-    coordinacion: "Dirección Ejecutiva",
-    condicionLaboral: "Fijo",
-    nivelAcademico: "Postgrado / Maestría",
-    profesion: "Licenciada en Administración Cultural",
-    estadoCivil: "Soltero(a)",
-    genero: "Femenino",
-    tallas: "Camisa M / Pantalón 30 / Calzado 38",
-    telefono: "0424-9988776",
-    telefonoAlterno: "0212-4443322",
-    correo: "",
-    direccion: "Caracas, Av. Páez, El Paraíso",
-    fechaNacimiento: "1985-09-20",
-    fechaIngreso: "2023-03-10",
-    tipoSangre: "A+",
-    emergencia1: "Carlos Flores: 0414-1112233",
-    emergencia2: "Carmen Flores: 0412-4445566",
-    familiares: "1 Hijo",
-    familiaresLista: [
-      { id: "fam-4", parentesco: "Hijo(a)", nombreCompleto: "Santiago Flores", cedula: "Menor sin cédula", fechaNacimiento: "2015-06-10", edad: "11" },
-    ],
-    tieneCargaFamiliar: "SI",
-    fotoCarnet: "",
-    observacionesLaborales: "Coordinación administrativa e institucional de la Dirección Ejecutiva.",
-    codigoBarra: "2024-CENDIS-000124",
-  },
-  {
-    id: "emp-3",
-    nombres: "Anaileth",
-    apellidos: "Briceño",
-    cedula: "V-20.164.307",
-    cargo: "Coordinadora de Producción",
-    coordinacion: "Producción Fonográfica",
-    condicionLaboral: "Fijo",
-    nivelAcademico: "Universitario",
-    profesion: "Ingeniera de Sonido y Producción Musical",
-    estadoCivil: "Soltero(a)",
-    genero: "Femenino",
-    tallas: "Camisa S / Pantalón 28 / Calzado 37",
-    telefono: "0424-1643007",
-    telefonoAlterno: "",
-    correo: "produccion.cendis@gmail.com",
-    direccion: "Caracas, Parroquia Catedral, Centro",
-    fechaNacimiento: "1990-11-04",
-    fechaIngreso: "2024-02-01",
-    tipoSangre: "B+",
-    emergencia1: "Luis Briceño: 0412-3334455",
-    emergencia2: "Rosa Briceño: 0416-7778899",
-    familiares: "Sin carga familiar",
-    familiaresLista: [],
-    tieneCargaFamiliar: "NO",
-    fotoCarnet: "",
-    observacionesLaborales: "Responsable de estudios de grabación, mezcla y masterización fonográfica.",
-    codigoBarra: "2024-CENDIS-000125",
-  },
-  {
-    id: "emp-4",
-    nombres: "Carlos",
-    apellidos: "Mendoza",
-    cedula: "V-21.450.812",
-    cargo: "Especialista Audiovisual",
-    coordinacion: "Cultura Audiovisual",
-    condicionLaboral: "Contratado",
-    nivelAcademico: "Universitario",
-    profesion: "Licenciado en Artes Audiovisuales",
-    estadoCivil: "Soltero(a)",
-    genero: "Masculino",
-    tallas: "Camisa M / Pantalón 32 / Calzado 41",
-    telefono: "0414-8823411",
-    telefonoAlterno: "0212-6621190",
-    correo: "",
-    direccion: "Caracas, Parroquia San Agustín",
-    fechaNacimiento: "1992-04-14",
-    fechaIngreso: "2024-05-10",
-    tipoSangre: "O+",
-    emergencia1: "Luisa Mendoza: 0414-3321100",
-    emergencia2: "Jorge Mendoza: 0412-9901122",
-    familiares: "Sin carga familiar",
-    familiaresLista: [],
-    tieneCargaFamiliar: "NO",
-    fotoCarnet: "",
-    observacionesLaborales: "Productor y realizador audiovisual comunitario del CENDIS.",
-    codigoBarra: "2024-CENDIS-000126",
-  },
-];
+const INITIAL_EMPLOYEES = [];
 
 const INITIAL_AGENDA_EVENTS = [
   {
@@ -599,8 +477,8 @@ const INITIAL_ORG_CARGOS = [
     nivelJerarquico: "ALTA DIRECCIÓN",
     reportaA: "CONSEJO DIRECTIVO",
     funciones: "Dirección estratégica, representación legal y conducción superior de la Fundación CENDIS.",
-    assignedEmpId: "emp-1",
-    assignedEmpName: "MORRIS LÓPEZ",
+    assignedEmpId: "",
+    assignedEmpName: "",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -611,8 +489,8 @@ const INITIAL_ORG_CARGOS = [
     nivelJerarquico: "ALTA DIRECCIÓN",
     reportaA: "PRESIDENCIA",
     funciones: "Coordinación ejecutiva, administrativa y operativa de las unidades de la Fundación CENDIS.",
-    assignedEmpId: "emp-2",
-    assignedEmpName: "JULIMAR FLORES",
+    assignedEmpId: "",
+    assignedEmpName: "",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -719,8 +597,8 @@ const INITIAL_ORG_CARGOS = [
     nivelJerarquico: "COORDINACIÓN",
     reportaA: "COORDINACIÓN GENERAL ESTRATÉGICA",
     funciones: "Grabación, mezcla, masterización y producción artística de cultores y músicos.",
-    assignedEmpId: "emp-3",
-    assignedEmpName: "ANAILETH BRICEÑO",
+    assignedEmpId: "",
+    assignedEmpName: "",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -1041,53 +919,23 @@ function sanitizeUsersDirectorGeneral(list) {
 }
 
 function sanitizeEmployeesDirectorGeneral(list) {
-  if (!Array.isArray(list) || list.length === 0) return INITIAL_EMPLOYEES;
-  let updated = list.map((emp) => {
-    const fullLower = `${emp.nombres || ""} ${emp.apellidos || ""}`.toLowerCase();
-    if (fullLower.includes("ali alejandro") || fullLower.includes("primera")) {
-      return {
-        ...emp,
-        ...INITIAL_EMPLOYEES[0],
-        fotoCarnet: emp.fotoCarnet || "",
-        yaVoto: emp.yaVoto || "NO",
-        centroVotacion: emp.centroVotacion || "",
-        estadoVotacion: emp.estadoVotacion || "",
-        municipioVotacion: emp.municipioVotacion || "",
-        parroquiaVotacion: emp.parroquiaVotacion || "",
-        sueldoMensual: emp.sueldoMensual || "",
-        updatedAt: emp.updatedAt || Date.now(),
-      };
-    }
-    return emp;
-  });
-  // Si emp-4 también era Morris López duplicado de versión anterior, convertirlo en Carlos Mendoza
-  const morrisCount = updated.filter(
-    (e) => `${e.nombres || ""} ${e.apellidos || ""}`.toLowerCase().includes("morris")
-  ).length;
-  if (morrisCount > 1) {
-    let seenFirstMorris = false;
-    updated = updated.map((e) => {
-      const isMorris = `${e.nombres || ""} ${e.apellidos || ""}`.toLowerCase().includes("morris");
-      if (isMorris) {
-        if (!seenFirstMorris) {
-          seenFirstMorris = true;
-          return e;
-        }
-        return INITIAL_EMPLOYEES[3];
-      }
-      return e;
-    });
-  }
-  return updated;
+  if (!Array.isArray(list)) return [];
+  return list;
 }
 
 function loadStoredDeletedIds() {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(STORAGE_DELETED_IDS_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.map(String) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    const base = Array.isArray(parsed) ? parsed.map(String) : [];
+    if (window.localStorage.getItem("cendis_rrhh_purged_deleted_v1") !== "1") {
+      const merged = Array.from(new Set([...base, "emp-1", "emp-2", "emp-3", "emp-4"]));
+      window.localStorage.setItem(STORAGE_DELETED_IDS_KEY, JSON.stringify(merged));
+      window.localStorage.setItem("cendis_rrhh_purged_deleted_v1", "1");
+      return merged;
+    }
+    return base;
   } catch {
     return [];
   }
@@ -1125,15 +973,25 @@ function saveStoredUsers(list) {
 }
 
 function loadStoredEmployees() {
-  if (typeof window === "undefined") return INITIAL_EMPLOYEES;
+  if (typeof window === "undefined") return [];
   try {
+    const sampleIds = new Set(["emp-1", "emp-2", "emp-3", "emp-4"]);
+    const alreadyCleared = window.localStorage.getItem("cendis_rrhh_empty_init_v1") === "1";
     const raw = window.localStorage.getItem(STORAGE_EMPLOYEES_KEY);
-    if (!raw) return INITIAL_EMPLOYEES;
+    if (!raw) {
+      window.localStorage.setItem("cendis_rrhh_empty_init_v1", "1");
+      return [];
+    }
     const parsed = JSON.parse(raw);
-    const list = Array.isArray(parsed) && parsed.length > 0 ? parsed : INITIAL_EMPLOYEES;
-    return sanitizeEmployeesDirectorGeneral(list);
+    let list = Array.isArray(parsed) ? parsed : [];
+    if (!alreadyCleared) {
+      list = list.filter((e) => !sampleIds.has(String(e.id)));
+      window.localStorage.setItem(STORAGE_EMPLOYEES_KEY, JSON.stringify(list));
+      window.localStorage.setItem("cendis_rrhh_empty_init_v1", "1");
+    }
+    return list;
   } catch {
-    return INITIAL_EMPLOYEES;
+    return [];
   }
 }
 
