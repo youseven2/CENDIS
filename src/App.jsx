@@ -864,10 +864,18 @@ function sanitizeEmployeesDirectorGeneral(list) {
   if (!Array.isArray(list) || list.length === 0) return INITIAL_EMPLOYEES;
   let updated = list.map((emp) => {
     const fullLower = `${emp.nombres || ""} ${emp.apellidos || ""}`.toLowerCase();
-    if (emp.id === "emp-1" || fullLower.includes("ali alejandro") || fullLower.includes("primera")) {
+    if (fullLower.includes("ali alejandro") || fullLower.includes("primera")) {
       return {
+        ...emp,
         ...INITIAL_EMPLOYEES[0],
         fotoCarnet: emp.fotoCarnet || "",
+        yaVoto: emp.yaVoto || "NO",
+        centroVotacion: emp.centroVotacion || "",
+        estadoVotacion: emp.estadoVotacion || "",
+        municipioVotacion: emp.municipioVotacion || "",
+        parroquiaVotacion: emp.parroquiaVotacion || "",
+        sueldoMensual: emp.sueldoMensual || "",
+        updatedAt: emp.updatedAt || Date.now(),
       };
     }
     return emp;
@@ -883,7 +891,7 @@ function sanitizeEmployeesDirectorGeneral(list) {
       if (isMorris) {
         if (!seenFirstMorris) {
           seenFirstMorris = true;
-          return { ...INITIAL_EMPLOYEES[0], fotoCarnet: e.fotoCarnet || "" };
+          return e;
         }
         return INITIAL_EMPLOYEES[3];
       }
