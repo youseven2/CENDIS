@@ -545,38 +545,218 @@ const INITIAL_BIENES = [
 
 const INITIAL_ORG_CARGOS = [
   {
-    id: "cargo-1",
-    nombreCargo: "DIRECTOR GENERAL",
-    coordinacion: "DIRECCIÓN GENERAL",
-    nivelJerarquico: "DIRECCIÓN",
+    id: "org-mppc",
+    nombreCargo: "MINISTERIO DEL PODER POPULAR PARA LA CULTURA",
+    coordinacion: "MINISTERIO DEL PODER POPULAR PARA LA CULTURA",
+    nivelJerarquico: "ENTE RECTOR",
+    reportaA: "EJECUTIVO NACIONAL",
+    funciones: "Ente rector de las políticas culturales del Estado Venezolano.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-consejo",
+    nombreCargo: "CONSEJO DIRECTIVO",
+    coordinacion: "CONSEJO DIRECTIVO",
+    nivelJerarquico: "ÓRGANO SUPERIOR",
     reportaA: "MINISTERIO DEL PODER POPULAR PARA LA CULTURA",
-    funciones: "Dirección estratégica, representación legal y conducción general de la Fundación CENDIS.",
+    funciones: "Máxima instancia colegiada de dirección y aprobación estratégica de la Fundación CENDIS.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-oac",
+    nombreCargo: "OFICINA DE ATENCIÓN AL CIUDADANO",
+    coordinacion: "OFICINA DE ATENCIÓN AL CIUDADANO",
+    nivelJerarquico: "OFICINA DE APOYO",
+    reportaA: "CONSEJO DIRECTIVO",
+    funciones: "Recepción, orientación y tramitación de peticiones, quejas y solicitudes ciudadanas.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-auditoria",
+    nombreCargo: "AUDITORÍA INTERNA",
+    coordinacion: "AUDITORÍA INTERNA",
+    nivelJerarquico: "CONTROL INTERNO",
+    reportaA: "CONSEJO DIRECTIVO",
+    funciones: "Evaluación del control interno, auditoría administrativa y fiscalización institucional.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-presidencia",
+    nombreCargo: "PRESIDENCIA",
+    coordinacion: "PRESIDENCIA",
+    nivelJerarquico: "ALTA DIRECCIÓN",
+    reportaA: "CONSEJO DIRECTIVO",
+    funciones: "Dirección estratégica, representación legal y conducción superior de la Fundación CENDIS.",
     assignedEmpId: "emp-1",
     assignedEmpName: "MORRIS LÓPEZ",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
   {
-    id: "cargo-2",
-    nombreCargo: "DIRECTORA EJECUTIVA",
+    id: "org-dir-ejecutiva",
+    nombreCargo: "DIRECCIÓN EJECUTIVA",
     coordinacion: "DIRECCIÓN EJECUTIVA",
-    nivelJerarquico: "DIRECCIÓN",
-    reportaA: "DIRECTOR GENERAL",
-    funciones: "Coordinación administrativa, operativa e institucional de las unidades del CENDIS.",
+    nivelJerarquico: "ALTA DIRECCIÓN",
+    reportaA: "PRESIDENCIA",
+    funciones: "Coordinación ejecutiva, administrativa y operativa de las unidades de la Fundación CENDIS.",
     assignedEmpId: "emp-2",
     assignedEmpName: "JULIMAR FLORES",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
   {
-    id: "cargo-3",
-    nombreCargo: "COORDINADORA DE PRODUCCIÓN",
-    coordinacion: "PRODUCCIÓN FONOGRÁFICA",
+    id: "org-consultoria",
+    nombreCargo: "CONSULTORÍA JURÍDICA",
+    coordinacion: "CONSULTORÍA JURÍDICA",
+    nivelJerarquico: "ASESORÍA",
+    reportaA: "DIRECCIÓN EJECUTIVA",
+    funciones: "Asesoría legal, redacción de contratos, convenios y dictámenes jurídicos.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-comunicacion",
+    nombreCargo: "COORDINACIÓN DE COMUNICACIÓN Y RELACIONES INSTITUCIONALES",
+    coordinacion: "COMUNICACIÓN Y RELACIONES INSTITUCIONALES",
     nivelJerarquico: "COORDINACIÓN",
-    reportaA: "DIRECTORA EJECUTIVA",
-    funciones: "Planificación y control técnico de grabaciones, estudios y archivo sonoro.",
+    reportaA: "DIRECCIÓN EJECUTIVA",
+    funciones: "Difusión cultural, prensa, redes sociales, protocolo y relaciones interinstitucionales.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-gestion-interna",
+    nombreCargo: "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
+    coordinacion: "GESTIÓN INTERNA",
+    nivelJerarquico: "COORDINACIÓN GENERAL",
+    reportaA: "DIRECCIÓN EJECUTIVA",
+    funciones: "Supervisión integral de administración, planificación, talento humano y tecnología.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-admin-finanzas",
+    nombreCargo: "COORDINACIÓN DE ADMINISTRACIÓN Y FINANZAS",
+    coordinacion: "ADMINISTRACIÓN Y FINANZAS",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
+    funciones: "Gestión contable, tesorería, compras, servicios generales y bienes nacionales.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-planif-presup",
+    nombreCargo: "COORDINACIÓN DE PLANIFICACIÓN Y PRESUPUESTO",
+    coordinacion: "PLANIFICACIÓN Y PRESUPUESTO",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
+    funciones: "Formulación presupuestaria, POA, seguimiento de metas e indicadores institucionales.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-rrhh",
+    nombreCargo: "COORDINACIÓN DE RECURSOS HUMANOS",
+    coordinacion: "RECURSOS HUMANOS",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
+    funciones: "Administración de talento humano, nómina, expedientes, asistencia y bienestar laboral.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-tecnologia",
+    nombreCargo: "COORDINACIÓN DE TECNOLOGÍA E INFORMÁTICA",
+    coordinacion: "TECNOLOGÍA E INFORMÁTICA",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
+    funciones: "Infraestructura tecnológica, sistemas de información, redes y soporte técnico.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-estrategica",
+    nombreCargo: "COORDINACIÓN GENERAL ESTRATÉGICA",
+    coordinacion: "ESTRATÉGICA",
+    nivelJerarquico: "COORDINACIÓN GENERAL",
+    reportaA: "DIRECCIÓN EJECUTIVA",
+    funciones: "Conducción de proyectos estratégicos y desarrollo artístico fonográfico nacional.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-prod-artistica",
+    nombreCargo: "COORDINACIÓN DE PRODUCCIÓN ARTÍSTICA",
+    coordinacion: "PRODUCCIÓN ARTÍSTICA",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "COORDINACIÓN GENERAL ESTRATÉGICA",
+    funciones: "Grabación, mezcla, masterización y producción artística de cultores y músicos.",
     assignedEmpId: "emp-3",
     assignedEmpName: "ANAILETH BRICEÑO",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-operaciones",
+    nombreCargo: "COORDINACIÓN GENERAL DE OPERACIONES",
+    coordinacion: "OPERACIONES",
+    nivelJerarquico: "COORDINACIÓN GENERAL",
+    reportaA: "DIRECCIÓN EJECUTIVA",
+    funciones: "Dirección operativa de producción industrial fonográfica y comercialización.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-prod-industrial",
+    nombreCargo: "COORDINACIÓN DE PRODUCCIÓN INDUSTRIAL",
+    coordinacion: "PRODUCCIÓN INDUSTRIAL",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "COORDINACIÓN GENERAL DE OPERACIONES",
+    funciones: "Replicación, empaque, control de calidad e inventario industrial de discos y formatos.",
+    assignedEmpId: "",
+    assignedEmpName: "",
+    status: "ACTIVO",
+    updatedAt: 1794600000000,
+  },
+  {
+    id: "org-comercializacion",
+    nombreCargo: "COORDINACIÓN DE COMERCIALIZACIÓN",
+    coordinacion: "COMERCIALIZACIÓN",
+    nivelJerarquico: "COORDINACIÓN",
+    reportaA: "COORDINACIÓN GENERAL DE OPERACIONES",
+    funciones: "Distribución, ventas, ferias culturales y alianzas de comercialización.",
+    assignedEmpId: "",
+    assignedEmpName: "",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -1966,6 +2146,41 @@ export default function App() {
       saveStoredJson("cendis_org_cargos_v1", next);
       return next;
     });
+  };
+
+  // Asegurar que la estructura oficial completa del Organigrama CENDIS esté presente
+  useEffect(() => {
+    setOrgCargos((prev) => {
+      const existingIds = new Set((prev || []).map((c) => String(c.id)));
+      const missing = INITIAL_ORG_CARGOS.filter((c) => !existingIds.has(String(c.id)));
+      if (missing.length === 0) return prev;
+      return [...missing, ...(prev || [])];
+    });
+  }, []);
+
+  const assignEmployeeToOrgCargo = (cargoId, empId) => {
+    const emp = employees.find((e) => String(e.id) === String(empId));
+    const empName = emp ? `${emp.nombres} ${emp.apellidos}`.trim().toUpperCase() : "";
+    const nextCargos = orgCargos.map((c) =>
+      String(c.id) === String(cargoId)
+        ? { ...c, assignedEmpId: empId || "", assignedEmpName: empName, updatedAt: Date.now() }
+        : c
+    );
+    setOrgCargos(nextCargos);
+    syncWithCloudServer({ orgCargos: nextCargos });
+    const targetCargo = orgCargos.find((c) => String(c.id) === String(cargoId));
+    addLog(
+      emp
+        ? `Asignado ${empName} al cargo ${targetCargo?.nombreCargo || cargoId} en Organigrama`
+        : `Liberado cargo ${targetCargo?.nombreCargo || cargoId} en Organigrama`,
+      currentUser,
+      "org"
+    );
+    showToast(
+      emp
+        ? `${empName} asignado(a) a ${targetCargo?.nombreCargo || "cargo"} desde RRHH.`
+        : `Cargo ${targetCargo?.nombreCargo || ""} marcado como vacante.`
+    );
   };
   const [orgCargoModalOpen, setOrgCargoModalOpen] = useState(false);
   const [editingOrgCargoId, setEditingOrgCargoId] = useState(null);
@@ -10683,167 +10898,204 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       ...employees.map((e) => (e.coordinacion || "DEPENDENCIA GENERAL").toUpperCase()),
                     ])
                   );
-                  return orgViewMode === "DIAGRAM" ? (
-                    <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-4">
-                      <div className="px-6 py-3 bg-[#8b1538] text-white rounded-xl text-center shadow font-bold text-xs uppercase">
-                        Dirección General de la Fundación CENDIS
-                        <div className="text-[10px] text-amber-200 font-normal">
-                          Lcdo. Morris López • C.I. V-19.324.324
+                  const renderOfficialOrgNode = (cargoId, fallbackTitle, borderColorClass = "border-blue-700", extraClass = "") => {
+                    const node = orgCargos.find((c) => String(c.id) === String(cargoId)) || {
+                      id: cargoId,
+                      nombreCargo: fallbackTitle,
+                      assignedEmpId: "",
+                    };
+                    const linkedEmp = employees.find(
+                      (e) => String(e.id) === String(node.assignedEmpId)
+                    );
+                    return (
+                      <div
+                        className={`bg-white border-2 ${borderColorClass} rounded-xl px-3 py-2 text-center shadow-xs space-y-1 ${extraClass}`}
+                      >
+                        <div className="font-black text-[10px] leading-tight uppercase text-slate-900">
+                          {node.nombreCargo || fallbackTitle}
+                        </div>
+                        <div className="text-[9.5px] font-bold text-blue-900 leading-tight">
+                          {linkedEmp
+                            ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
+                            : "Cargo vacante / Sin asignar"}
+                        </div>
+                        <div data-print-hidden="true" className="pt-0.5 print:hidden">
+                          <select
+                            value={node.assignedEmpId || ""}
+                            onChange={(e) => assignEmployeeToOrgCargo(node.id, e.target.value)}
+                            className="w-full px-1.5 py-0.5 rounded border border-slate-300 bg-slate-50 text-[9px] font-semibold text-slate-800 cursor-pointer"
+                            title="Asignar trabajador desde Recursos Humanos"
+                          >
+                            <option value="">-- Asignar Personal RRHH --</option>
+                            {employees.map((emp) => (
+                              <option key={emp.id} value={String(emp.id)}>
+                                {emp.nombres} {emp.apellidos} ({emp.cargo})
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
-                      <div className="h-5 w-0.5 bg-slate-400" />
-                      <div className="px-6 py-3 bg-blue-900 text-white rounded-xl text-center shadow font-bold text-xs uppercase">
-                        Dirección Ejecutiva
-                        <div className="text-[10px] text-blue-200 font-normal">Lic. Julimar Flores</div>
-                      </div>
-                      <div className="h-5 w-0.5 bg-slate-400" />
+                    );
+                  };
+                  const officialIds = new Set(INITIAL_ORG_CARGOS.map((c) => String(c.id)));
+                  const extraCustomCargos = orgCargos.filter((c) => !officialIds.has(String(c.id)));
 
-                      <div className="w-full space-y-4">
-                        {dependencies.map((depName) => {
-                          const depCargos = orgCargos.filter(
-                            (c) => (c.coordinacion || "DEPENDENCIA GENERAL").toUpperCase() === depName
-                          );
-                          const depEmps = employees.filter(
-                            (e) => (e.coordinacion || "DEPENDENCIA GENERAL").toUpperCase() === depName
-                          );
-                          return (
-                            <div
-                              key={depName}
-                              className="p-3.5 bg-white border-2 border-slate-300 rounded-xl space-y-3"
-                            >
-                              <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
-                                <span className="text-xs font-black uppercase text-[#8b1538]">
-                                  🏛 DEPENDENCIA: {depName}
-                                </span>
-                                <span className="text-[10px] font-bold text-slate-600">
-                                  {depCargos.length} cargos • {depEmps.length} trabajadores
-                                </span>
+                  return orgViewMode === "DIAGRAM" ? (
+                    <div className="p-4 sm:p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-2">
+                      {/* Nivel 1: Ministerio */}
+                      <div className="w-full max-w-[280px]">
+                        {renderOfficialOrgNode(
+                          "org-mppc",
+                          "MINISTERIO DEL PODER POPULAR PARA LA CULTURA",
+                          "border-[#1e3a8a]"
+                        )}
+                      </div>
+                      <div className="h-3 w-0.5 bg-slate-600" />
+
+                      {/* Nivel 2: Consejo Directivo */}
+                      <div className="w-full max-w-[230px]">
+                        {renderOfficialOrgNode("org-consejo", "CONSEJO DIRECTIVO", "border-blue-600")}
+                      </div>
+                      <div className="h-3 w-0.5 bg-slate-600" />
+
+                      {/* Nivel 3: Oficina de Atención al Ciudadano | Presidencia | Auditoría Interna */}
+                      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 items-center relative">
+                        {renderOfficialOrgNode(
+                          "org-oac",
+                          "OFICINA DE ATENCIÓN AL CIUDADANO",
+                          "border-sky-500"
+                        )}
+                        {renderOfficialOrgNode("org-presidencia", "PRESIDENCIA", "border-sky-500")}
+                        {renderOfficialOrgNode("org-auditoria", "AUDITORÍA INTERNA", "border-sky-500")}
+                      </div>
+                      <div className="h-3 w-0.5 bg-slate-600" />
+
+                      {/* Nivel 4: Dirección Ejecutiva */}
+                      <div className="w-full max-w-[240px]">
+                        {renderOfficialOrgNode(
+                          "org-dir-ejecutiva",
+                          "DIRECCIÓN EJECUTIVA",
+                          "border-blue-700"
+                        )}
+                      </div>
+                      <div className="h-4 w-0.5 bg-slate-600" />
+
+                      {/* Nivel 5: Asesoría/Apoyo Izquierda + Coordinación General de Gestión Interna Derecha */}
+                      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 items-start border-t-2 border-slate-500 pt-3">
+                        <div className="lg:col-span-5 space-y-3">
+                          {renderOfficialOrgNode(
+                            "org-consultoria",
+                            "CONSULTORÍA JURÍDICA",
+                            "border-indigo-400"
+                          )}
+                          {renderOfficialOrgNode(
+                            "org-comunicacion",
+                            "COORDINACIÓN DE COMUNICACIÓN Y RELACIONES INSTITUCIONALES",
+                            "border-indigo-400"
+                          )}
+                        </div>
+
+                        <div className="lg:col-span-7 space-y-2.5 flex flex-col items-center">
+                          <div className="w-full max-w-[290px]">
+                            {renderOfficialOrgNode(
+                              "org-gestion-interna",
+                              "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
+                              "border-indigo-500"
+                            )}
+                          </div>
+                          <div className="h-2.5 w-0.5 bg-slate-500" />
+                          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t-2 border-slate-400 pt-2.5">
+                            {renderOfficialOrgNode(
+                              "org-admin-finanzas",
+                              "COORDINACIÓN DE ADMINISTRACIÓN Y FINANZAS",
+                              "border-indigo-400"
+                            )}
+                            {renderOfficialOrgNode(
+                              "org-planif-presup",
+                              "COORDINACIÓN DE PLANIFICACIÓN Y PRESUPUESTO",
+                              "border-indigo-400"
+                            )}
+                            {renderOfficialOrgNode(
+                              "org-rrhh",
+                              "COORDINACIÓN DE RECURSOS HUMANOS",
+                              "border-indigo-400"
+                            )}
+                            {renderOfficialOrgNode(
+                              "org-tecnologia",
+                              "COORDINACIÓN DE TECNOLOGÍA E INFORMÁTICA",
+                              "border-indigo-400"
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="h-4 w-0.5 bg-slate-600" />
+
+                      {/* Nivel 6: Coordinación General Estratégica (Verde) y Operaciones (Morado) */}
+                      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 items-start border-t-2 border-slate-600 pt-3">
+                        {/* Rama Verde: Estratégica */}
+                        <div className="lg:col-span-5 flex flex-col items-center space-y-2.5">
+                          <div className="w-full max-w-[260px]">
+                            {renderOfficialOrgNode(
+                              "org-estrategica",
+                              "COORDINACIÓN GENERAL ESTRATÉGICA",
+                              "border-emerald-700"
+                            )}
+                          </div>
+                          <div className="h-3 w-0.5 bg-emerald-700" />
+                          <div className="w-full max-w-[260px]">
+                            {renderOfficialOrgNode(
+                              "org-prod-artistica",
+                              "COORDINACIÓN DE PRODUCCIÓN ARTÍSTICA",
+                              "border-emerald-600"
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Rama Morada: Operaciones */}
+                        <div className="lg:col-span-7 flex flex-col items-center space-y-2.5">
+                          <div className="w-full max-w-[290px]">
+                            {renderOfficialOrgNode(
+                              "org-operaciones",
+                              "COORDINACIÓN GENERAL DE OPERACIONES",
+                              "border-purple-700"
+                            )}
+                          </div>
+                          <div className="h-3 w-0.5 bg-purple-700" />
+                          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t-2 border-purple-700 pt-2.5">
+                            {renderOfficialOrgNode(
+                              "org-prod-industrial",
+                              "COORDINACIÓN DE PRODUCCIÓN INDUSTRIAL",
+                              "border-purple-600"
+                            )}
+                            {renderOfficialOrgNode(
+                              "org-comercializacion",
+                              "COORDINACIÓN DE COMERCIALIZACIÓN",
+                              "border-purple-600"
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Cargos Adicionales Personalizados */}
+                      {extraCustomCargos.length > 0 && (
+                        <div className="w-full pt-4 border-t border-slate-300 space-y-2">
+                          <div className="text-center text-[10px] font-black uppercase text-slate-600">
+                            Cargos Adicionales Registrados ({extraCustomCargos.length})
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                            {extraCustomCargos.map((cargoItem) => (
+                              <div key={cargoItem.id}>
+                                {renderOfficialOrgNode(
+                                  cargoItem.id,
+                                  cargoItem.nombreCargo,
+                                  "border-amber-500"
+                                )}
                               </div>
-
-                              {depCargos.length > 0 && (
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-                                  {depCargos.map((cargoItem) => {
-                                    const linkedEmp = employees.find(
-                                      (e) => String(e.id) === String(cargoItem.assignedEmpId)
-                                    );
-                                    return (
-                                      <div
-                                        key={cargoItem.id}
-                                        className={`p-2.5 bg-slate-50 border rounded-xl text-center space-y-1 ${
-                                          cargoItem.status === "ANULADO"
-                                            ? "border-red-300 opacity-60"
-                                            : "border-amber-500/60"
-                                        }`}
-                                      >
-                                        <span className="inline-block px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[9px] font-black uppercase">
-                                          {cargoItem.nivelJerarquico}
-                                        </span>
-                                        <div className="font-black text-xs text-slate-900">
-                                          {cargoItem.nombreCargo}
-                                        </div>
-                                        <div className="text-[11px] font-bold text-blue-900">
-                                          {linkedEmp
-                                            ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
-                                            : "VACANTE / SIN ASIGNAR"}
-                                        </div>
-                                        {cargoItem.funciones && (
-                                          <p className="text-[10px] text-slate-500 line-clamp-2">
-                                            {cargoItem.funciones}
-                                          </p>
-                                        )}
-                                        <div
-                                          data-print-hidden="true"
-                                          className="flex flex-wrap items-center justify-center gap-1 pt-1 print:hidden"
-                                        >
-                                          <button
-                                            type="button"
-                                            onClick={() => {
-                                              setEditingOrgCargoId(cargoItem.id);
-                                              setOrgCargoForm({
-                                                nombreCargo: cargoItem.nombreCargo || "",
-                                                coordinacion: cargoItem.coordinacion || "PRODUCCIÓN FONOGRÁFICA",
-                                                nivelJerarquico: cargoItem.nivelJerarquico || "COORDINACIÓN",
-                                                reportaA: cargoItem.reportaA || "DIRECCIÓN GENERAL",
-                                                funciones: cargoItem.funciones || "",
-                                                assignedEmpId: cargoItem.assignedEmpId || "",
-                                              });
-                                              setOrgCargoModalOpen(true);
-                                            }}
-                                            className="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                          >
-                                            ✏️ Asignar RRHH
-                                          </button>
-                                          {cargoItem.status !== "ANULADO" && (
-                                            <button
-                                              type="button"
-                                              onClick={() =>
-                                                handleUniversalAnnul("orgCargos", cargoItem.id, cargoItem.nombreCargo)
-                                              }
-                                              className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                            >
-                                              🚫 Anular
-                                            </button>
-                                          )}
-                                          <button
-                                            type="button"
-                                            onClick={() =>
-                                              handleUniversalDelete("orgCargos", cargoItem.id, cargoItem.nombreCargo)
-                                            }
-                                            className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                          >
-                                            🗑️ Eliminar
-                                          </button>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              )}
-
-                              {depEmps.length > 0 && (
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-                                  {depEmps.map((emp) => (
-                                    <div
-                                      key={emp.id}
-                                      className="p-2.5 bg-white border border-slate-300 rounded-xl text-center space-y-1"
-                                    >
-                                      <div className="font-black text-[11px] text-slate-900">
-                                        {emp.nombres} {emp.apellidos}
-                                      </div>
-                                      <div className="text-[10.5px] text-slate-600">{emp.cargo}</div>
-                                      <div
-                                        data-print-hidden="true"
-                                        className="flex items-center justify-center gap-1 pt-1 print:hidden"
-                                      >
-                                        {emp.status !== "ANULADO" && (
-                                          <button
-                                            type="button"
-                                            onClick={() =>
-                                              handleUniversalAnnul("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
-                                            }
-                                            className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                          >
-                                            🚫 Anular
-                                          </button>
-                                        )}
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            handleUniversalDelete("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
-                                          }
-                                          className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                        >
-                                          🗑️ Eliminar
-                                        </button>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-4 text-xs text-slate-900">
