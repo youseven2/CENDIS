@@ -392,7 +392,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "EJECUTIVO NACIONAL",
     funciones: "Ente rector de las políticas culturales del Estado Venezolano.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "ALEJANDRO LÓPEZ",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -440,7 +440,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "CONSEJO DIRECTIVO",
     funciones: "Dirección estratégica, representación legal y conducción superior de la Fundación CENDIS.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "MIQUEAS FIGUEROA",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -452,7 +452,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "PRESIDENCIA",
     funciones: "Coordinación ejecutiva, administrativa y operativa de las unidades de la Fundación CENDIS.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "MORRIS LÓPEZ",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -476,7 +476,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "DIRECCIÓN EJECUTIVA",
     funciones: "Difusión cultural, prensa, redes sociales, protocolo y relaciones interinstitucionales.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "GRISEL MIJARES",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -488,7 +488,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "DIRECCIÓN EJECUTIVA",
     funciones: "Supervisión integral de administración, planificación, talento humano y tecnología.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "KATIE MUJICA",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -512,7 +512,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
     funciones: "Formulación presupuestaria, POA, seguimiento de metas e indicadores institucionales.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "KAREN COELO",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -536,7 +536,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
     funciones: "Infraestructura tecnológica, sistemas de información, redes y soporte técnico.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "ROMEL SUCHMOLIN",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -548,7 +548,7 @@ const INITIAL_ORG_CARGOS = [
     reportaA: "DIRECCIÓN EJECUTIVA",
     funciones: "Conducción de proyectos estratégicos y desarrollo artístico fonográfico nacional.",
     assignedEmpId: "",
-    assignedEmpName: "",
+    assignedEmpName: "DANIEL TORREALBA",
     status: "ACTIVO",
     updatedAt: 1794600000000,
   },
@@ -1960,10 +1960,20 @@ export default function App() {
   // Asegurar que la estructura oficial completa del Organigrama CENDIS esté presente
   useEffect(() => {
     setOrgCargos((prev) => {
+      const defaultsById = new Map(INITIAL_ORG_CARGOS.map((c) => [String(c.id), c]));
       const existingIds = new Set((prev || []).map((c) => String(c.id)));
       const missing = INITIAL_ORG_CARGOS.filter((c) => !existingIds.has(String(c.id)));
-      if (missing.length === 0) return prev;
-      return [...missing, ...(prev || [])];
+      let changed = missing.length > 0;
+      const updated = (prev || []).map((c) => {
+        const def = defaultsById.get(String(c.id));
+        if (def && !c.assignedEmpId && !c.assignedEmpName && def.assignedEmpName) {
+          changed = true;
+          return { ...c, assignedEmpName: def.assignedEmpName };
+        }
+        return c;
+      });
+      if (!changed) return prev;
+      return [...missing, ...updated];
     });
   }, []);
 
@@ -10775,6 +10785,8 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         <div className="text-[9px] print:text-[7.5px] font-bold text-slate-700 leading-tight">
                           {linkedEmp
                             ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
+                            : node.assignedEmpName
+                            ? `👤 ${node.assignedEmpName}`
                             : "Cargo vacante / Sin asignar"}
                         </div>
                         <div data-print-hidden="true" className="pt-0.5 print:hidden">
