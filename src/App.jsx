@@ -172,55 +172,16 @@ const DEFAULT_PERMISSIONS_BY_ROLE = {
 const DEFAULT_USERS = [
   {
     id: 1,
-    username: "admin",
+    username: "ADMIN",
     email: "admin.cendis@gmail.com",
     password: "Qwerty123.",
-    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
-    fullName: "Administrador General CENDIS",
-    cargo: "Coordinación de Tecnología y Sistemas",
+    passwordUpdatedAt: "2026-11-16T12:00:00.000Z",
+    fullName: "SUPER USUARIO ADMINISTRADOR",
+    cargo: "Administrador del Sistema SIACENDIS",
     role: "ADMIN",
     active: true,
     linkedEmployeeId: null,
     permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN },
-  },
-  {
-    id: 2,
-    username: "presidencia",
-    email: "morris.lopez.cendis@gmail.com",
-    password: "Cendis2026*",
-    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
-    fullName: "Lcdo. Morris López",
-    cargo: "Director General de la Fundación CENDIS",
-    role: "ADMIN",
-    active: true,
-    linkedEmployeeId: "emp-1",
-    permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ADMIN },
-  },
-  {
-    id: 3,
-    username: "produccion",
-    email: "produccion.cendis@gmail.com",
-    password: "Cendis2026*",
-    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
-    fullName: "Coordinación de Producción",
-    cargo: "Coordinador(a) de Producción Fonográfica",
-    role: "ESTANDAR",
-    active: true,
-    linkedEmployeeId: "emp-3",
-    permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR },
-  },
-  {
-    id: 4,
-    username: "recepcion",
-    email: "recepcion.cendis@gmail.com",
-    password: "Cendis2026*",
-    passwordUpdatedAt: "2026-11-13T12:00:00.000Z",
-    fullName: "Recepción y Despacho",
-    cargo: "Asistente Administrativo",
-    role: "ESTANDAR",
-    active: true,
-    linkedEmployeeId: null,
-    permissions: { ...DEFAULT_PERMISSIONS_BY_ROLE.ESTANDAR },
   },
 ];
 
@@ -929,13 +890,18 @@ function loadStoredDeletedIds() {
     const raw = window.localStorage.getItem(STORAGE_DELETED_IDS_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     const base = Array.isArray(parsed) ? parsed.map(String) : [];
-    if (window.localStorage.getItem("cendis_rrhh_purged_deleted_v1") !== "1" || window.localStorage.getItem("cendis_ca_purged_deleted_v1") !== "1") {
+    if (
+      window.localStorage.getItem("cendis_rrhh_purged_deleted_v1") !== "1" ||
+      window.localStorage.getItem("cendis_ca_purged_deleted_v1") !== "1" ||
+      window.localStorage.getItem("cendis_users_purged_deleted_v1") !== "1"
+    ) {
       const merged = Array.from(
-        new Set([...base, "emp-1", "emp-2", "emp-3", "emp-4", "att-1", "att-2"])
+        new Set([...base, "emp-1", "emp-2", "emp-3", "emp-4", "att-1", "att-2", "2", "3", "4"])
       );
       window.localStorage.setItem(STORAGE_DELETED_IDS_KEY, JSON.stringify(merged));
       window.localStorage.setItem("cendis_rrhh_purged_deleted_v1", "1");
       window.localStorage.setItem("cendis_ca_purged_deleted_v1", "1");
+      window.localStorage.setItem("cendis_users_purged_deleted_v1", "1");
       return merged;
     }
     return base;
@@ -956,6 +922,11 @@ function saveStoredDeletedIds(list) {
 function loadStoredUsers() {
   if (typeof window === "undefined") return DEFAULT_USERS;
   try {
+    if (window.localStorage.getItem("cendis_users_reset_admin_v1") !== "1") {
+      window.localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(DEFAULT_USERS));
+      window.localStorage.setItem("cendis_users_reset_admin_v1", "1");
+      return DEFAULT_USERS;
+    }
     const raw = window.localStorage.getItem(STORAGE_USERS_KEY);
     if (!raw) return DEFAULT_USERS;
     const parsed = JSON.parse(raw);
