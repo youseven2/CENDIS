@@ -7692,24 +7692,24 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             {/* MODAL DE DETALLE DE EVENTO ESTILO GOOGLE CALENDAR */}
             {selectedEventDetail && (
-              <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200">
-                  <div className="bg-blue-900 text-white px-5 py-4 flex items-center justify-between">
-                    <div>
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-2 sm:p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
+                  <div className="bg-blue-900 text-white px-4 py-3 flex items-center justify-between shrink-0">
+                    <div className="min-w-0 pr-2">
                       <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
                         {selectedEventDetail.eventType || "EVENTO"} • {selectedEventDetail.visibility || "PÚBLICO"} •{" "}
                         {selectedEventDetail.availability || "OCUPADO"}
                       </span>
-                      <h3 className="text-base font-black">{selectedEventDetail.title}</h3>
+                      <h3 className="text-sm font-black truncate">{selectedEventDetail.title}</h3>
                     </div>
                     <button
                       onClick={() => setSelectedEventDetail(null)}
-                      className="text-white/80 hover:text-white text-xs font-bold px-2.5 py-1 rounded bg-blue-800 cursor-pointer"
+                      className="text-white/80 hover:text-white text-xs font-bold px-2.5 py-1 rounded bg-blue-800 cursor-pointer shrink-0"
                     >
                       Cerrar ✕
                     </button>
                   </div>
-                  <div className="p-5 space-y-3 text-xs">
+                  <div className="p-4 space-y-2.5 text-xs overflow-y-auto flex-1">
                     <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                       <div>
                         <span className="text-[10px] font-bold text-slate-400 uppercase block">Fecha:</span>
@@ -7930,9 +7930,9 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             {/* VENTANA FLOTANTE DEL DÍA CON TODOS LOS PARÁMETROS DE GOOGLE CALENDAR */}
             {selectedDayModal && (
-              <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200">
-                  <div className="bg-blue-900 text-white px-5 py-3.5 flex items-center justify-between">
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-2 sm:p-4">
+                <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
+                  <div className="bg-blue-900 text-white px-4 py-3 flex items-center justify-between shrink-0">
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
                         Google Calendar SIACENDIS • Parámetros Completos y Recordatorios Anticipados
@@ -7941,13 +7941,13 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
                     <button
                       onClick={() => setSelectedDayModal(null)}
-                      className="text-white/80 hover:text-white text-xs font-bold px-2.5 py-1 rounded bg-blue-800 cursor-pointer"
+                      className="text-white/80 hover:text-white text-xs font-bold px-2.5 py-1 rounded bg-blue-800 cursor-pointer shrink-0"
                     >
                       Cerrar ✕
                     </button>
                   </div>
 
-                  <div className="p-5 space-y-4 max-h-[84vh] overflow-y-auto">
+                  <div className="p-4 space-y-3 overflow-y-auto flex-1">
                     {/* Lista de actividades existentes en la fecha */}
                     <div className="space-y-2">
                       <h4 className="text-xs font-black uppercase text-slate-700">
