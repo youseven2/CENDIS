@@ -1739,9 +1739,10 @@ export default function App() {
 
   const openConstanciaModal = (emp) => {
     if (!emp) return;
+    const freshEmp = employees.find((x) => String(x.id) === String(emp.id)) || emp;
     const isFemale =
-      String(emp.genero || "").toUpperCase().startsWith("F") ||
-      String(emp.nombres || "").trim().toUpperCase().endsWith("A");
+      String(freshEmp.genero || "").toUpperCase().startsWith("F") ||
+      String(freshEmp.nombres || "").trim().toUpperCase().endsWith("A");
     const corrNum = String(constanciaCounter || 1).padStart(3, "0");
     const yearNow = new Date().getFullYear();
     const formatIngreso = (iso) => {
@@ -1750,32 +1751,66 @@ export default function App() {
       if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
       return iso;
     };
-    const autoLetras = emp.sueldoMensual ? numeroABolivaresLetras(emp.sueldoMensual) : "";
+    const rawSueldo = String(freshEmp.sueldoMensual || "").trim();
+    const autoLetras = rawSueldo ? numeroABolivaresLetras(rawSueldo) : "";
     setConstanciaForm({
       correlativo: `CRH-${yearNow}-${corrNum}`,
       rif: "G-20008344-9",
       tratamiento: isFemale ? "la ciudadana" : "el ciudadano",
-      nombreCompleto: `${emp.apellidos || ""} ${emp.nombres || ""}`.trim().toUpperCase(),
-      cedula: String(emp.cedula || "").replace(/^V-?/i, ""),
-      fechaIngreso: formatIngreso(emp.fechaIngreso),
-      cargo: (emp.cargo || "PERSONAL CENDIS").toUpperCase(),
-      dependencia: (emp.coordinacion || "FUNDACIÓN CENDIS").toUpperCase(),
+      nombreCompleto: `${freshEmp.apellidos || ""} ${freshEmp.nombres || ""}`.trim().toUpperCase(),
+      cedula: String(freshEmp.cedula || "").replace(/^V-?/i, ""),
+      fechaIngreso: formatIngreso(freshEmp.fechaIngreso),
+      cargo: (freshEmp.cargo || "PERSONAL CENDIS").toUpperCase(),
+      dependencia: (freshEmp.coordinacion || "FUNDACIÓN CENDIS").toUpperCase(),
       remuneracionLetras:
         autoLetras ||
-        (emp.sueldoLetras || "").trim().toUpperCase() ||
+        (freshEmp.sueldoLetras || "").trim().toUpperCase() ||
         "DOSCIENTOS SETENTA Y CINCO BOLÍVARES CON 88/100",
-      remuneracionMonto: emp.sueldoMensual
-        ? String(emp.sueldoMensual).trim().toUpperCase().startsWith("BS")
-          ? String(emp.sueldoMensual).trim()
-          : `Bs ${String(emp.sueldoMensual).trim()}`
+      remuneracionMonto: rawSueldo
+        ? rawSueldo.toUpperCase().startsWith("BS")
+          ? rawSueldo
+          : `Bs ${rawSueldo}`
         : "Bs 275,88",
       fechaExpedicion: new Date().toISOString().slice(0, 10),
       firmanteNombre: "MORRIS LÓPEZ",
       firmanteCargo: "DIRECTOR GENERAL",
       iniciales: "ML/rrhh.",
     });
-    setSelectedEmpForConstancia(emp);
+    setSelectedEmpForConstancia(freshEmp);
   };
+
+  // Mantener sincronizada la Constancia de Trabajo si se actualiza el sueldo u otros datos del trabajador en RRHH
+  useEffect(() => {
+    if (!selectedEmpForConstancia) return;
+    const freshEmp = employees.find(
+      (x) => String(x.id) === String(selectedEmpForConstancia.id)
+    );
+    if (!freshEmp) return;
+    const rawSueldo = String(freshEmp.sueldoMensual || "").trim();
+    if (!rawSueldo) return;
+    const formattedMonto = rawSueldo.toUpperCase().startsWith("BS")
+      ? rawSueldo
+      : `Bs ${rawSueldo}`;
+    const autoLetras = numeroABolivaresLetras(rawSueldo);
+    setConstanciaForm((prev) => {
+      if (
+        prev.remuneracionMonto === formattedMonto &&
+        prev.cargo === (freshEmp.cargo || "PERSONAL CENDIS").toUpperCase() &&
+        prev.dependencia === (freshEmp.coordinacion || "FUNDACIÓN CENDIS").toUpperCase()
+      ) {
+        return prev;
+      }
+      return {
+        ...prev,
+        nombreCompleto: `${freshEmp.apellidos || ""} ${freshEmp.nombres || ""}`.trim().toUpperCase(),
+        cedula: String(freshEmp.cedula || "").replace(/^V-?/i, ""),
+        cargo: (freshEmp.cargo || "PERSONAL CENDIS").toUpperCase(),
+        dependencia: (freshEmp.coordinacion || "FUNDACIÓN CENDIS").toUpperCase(),
+        remuneracionMonto: formattedMonto,
+        remuneracionLetras: autoLetras || prev.remuneracionLetras,
+      };
+    });
+  }, [employees, selectedEmpForConstancia]);
   const [selectedEmpIdToLink, setSelectedEmpIdToLink] = useState("");
   const [showLinkChangeSelector, setShowLinkChangeSelector] = useState(false);
   const [hrModalOpen, setHrModalOpen] = useState(false);
@@ -13638,7 +13673,25 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     type="text"
                     data-no-uppercase="true"
                     value={constanciaForm.remuneracionMonto}
-                    onChange={(e) => setConstanciaForm({ ...constanciaForm, remuneracionMonto: e.target.value })}
+                    onChange={(e) => {
+                      const nextVal = e.target.value;
+                      const autoLetras = numeroABolivaresLetras(nextVal);
+                      setConstanciaForm((prev) => ({
+                        ...prev,
+                        remuneracionMonto: nextVal,
+                        remuneracionLetras: autoLetras || prev.remuneracionLetras,
+                      }));
+                      const cleanSueldo = nextVal.replace(/^bs\.?\s*/i, "").trim();
+                      if (selectedEmpForConstancia) {
+                        const nextEmps = employees.map((x) =>
+                          String(x.id) === String(selectedEmpForConstancia.id)
+                            ? { ...x, sueldoMensual: cleanSueldo, updatedAt: Date.now() }
+                            : x
+                        );
+                        setEmployees(nextEmps);
+                        syncWithCloudServer({ employees: nextEmps });
+                      }
+                    }}
                     className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
                   />
                 </div>
