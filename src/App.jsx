@@ -5165,6 +5165,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             size: letter portrait;
             margin: 0mm;
           }
+          @page orgLandscape {
+            size: letter landscape;
+            margin: 0mm;
+          }
           html, body, #root {
             margin: 0 !important;
             padding: 0 !important;
@@ -5173,6 +5177,13 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             max-height: 279.4mm !important;
             overflow: hidden !important;
             background: #ffffff !important;
+          }
+          html:has(#printable-area.org-print-landscape),
+          body:has(#printable-area.org-print-landscape),
+          #root:has(#printable-area.org-print-landscape) {
+            width: 279.4mm !important;
+            height: 215.9mm !important;
+            max-height: 215.9mm !important;
           }
           /* Colapsar por completo todos los elementos fuera de #printable-area para que no empujen la hoja ni corten el cintillo inferior */
           body *:not(:has(#printable-area)):not(#printable-area):not(#printable-area *) {
@@ -5216,6 +5227,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             height: 278mm !important;
             min-height: 278mm !important;
             max-height: 278mm !important;
+            overflow: hidden !important;
+          }
+          #printable-area.org-print-landscape {
+            page: orgLandscape;
+            width: 279.4mm !important;
+            max-width: 279.4mm !important;
+            height: 215mm !important;
+            min-height: 215mm !important;
+            max-height: 215mm !important;
             overflow: hidden !important;
           }
           .print\\:hidden,
@@ -10650,7 +10670,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             MÓDULO 8: ORGANIGRAMA (DIAGRAMA Y TEXTUAL)
            ==================================================================== */}
         {activeTab === "org" && (
-          <div className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-6">
+          <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
               <h2 className="text-base font-black uppercase text-slate-900">
                 Organigrama Oficial • Fundación CENDIS
@@ -10704,18 +10724,20 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               id="printable-area"
               style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
               className={`${
-                orgViewMode === "DIAGRAM" ? "org-print-one-page" : "org-print-auto-height"
-              } w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950`}
+                orgViewMode === "DIAGRAM"
+                  ? "org-print-landscape max-w-[1100px] min-h-[780px]"
+                  : "org-print-auto-height max-w-[820px] min-h-[1020px]"
+              } w-full mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950`}
             >
               {/* ... */}
-              <div className="p-6 sm:p-8 print:px-6 print:py-3 space-y-4 print:space-y-1.5">
+              <div className="p-5 sm:p-6 print:px-6 print:py-2 space-y-3 print:space-y-1">
                 <OfficialHeaderCintillo showRightLogo={true} />
 
-                <div className="mt-2 print:mt-1 text-center">
-                  <h2 className="text-sm sm:text-base print:text-xs font-black uppercase text-slate-900">
+                <div className="mt-1 print:mt-0.5 text-center">
+                  <h2 className="text-sm sm:text-base print:text-[11px] font-black uppercase text-slate-900">
                     ESTRUCTURA ORGANIZATIVA Y ORGANIGRAMA OFICIAL • FUNDACIÓN CENDIS
                   </h2>
-                  <p className="text-xs print:text-[10px] text-slate-600 font-semibold">
+                  <p className="text-[11px] print:text-[9px] text-slate-600 font-semibold">
                     Ministerio del Poder Popular para la Cultura • Distribución por Dependencias
                   </p>
                 </div>
