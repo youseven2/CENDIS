@@ -10766,43 +10766,23 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     bgGradientClass = "bg-gradient-to-br from-slate-50 to-blue-50",
                     extraClass = ""
                   ) => {
+                    const defNode = INITIAL_ORG_CARGOS.find((c) => String(c.id) === String(cargoId));
                     const node = orgCargos.find((c) => String(c.id) === String(cargoId)) || {
                       id: cargoId,
                       nombreCargo: fallbackTitle,
-                      assignedEmpId: "",
+                      assignedEmpName: defNode?.assignedEmpName || "",
                     };
-                    const linkedEmp = employees.find(
-                      (e) => String(e.id) === String(node.assignedEmpId)
-                    );
+                    const displayName = (node.assignedEmpName || defNode?.assignedEmpName || "").trim();
                     return (
                       <div
                         style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
-                        className={`${bgGradientClass} border-2 ${borderColorClass} rounded-xl px-2.5 py-1.5 print:px-2 print:py-1 text-center shadow-xs space-y-0.5 ${extraClass}`}
+                        className={`${bgGradientClass} border-2 ${borderColorClass} rounded-xl px-2.5 py-2 print:px-2 print:py-1.5 text-center shadow-xs space-y-0.5 ${extraClass}`}
                       >
                         <div className="font-black text-[9.5px] print:text-[8px] leading-tight uppercase text-slate-900">
                           {node.nombreCargo || fallbackTitle}
                         </div>
                         <div className="text-[9px] print:text-[7.5px] font-bold text-slate-700 leading-tight">
-                          {linkedEmp
-                            ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
-                            : node.assignedEmpName
-                            ? `👤 ${node.assignedEmpName}`
-                            : "Cargo vacante / Sin asignar"}
-                        </div>
-                        <div data-print-hidden="true" className="pt-0.5 print:hidden">
-                          <select
-                            value={node.assignedEmpId || ""}
-                            onChange={(e) => assignEmployeeToOrgCargo(node.id, e.target.value)}
-                            className="w-full px-1.5 py-0.5 rounded border border-slate-300 bg-white/90 text-[9px] font-semibold text-slate-800 cursor-pointer"
-                            title="Asignar trabajador desde Recursos Humanos"
-                          >
-                            <option value="">-- Asignar Personal RRHH --</option>
-                            {employees.map((emp) => (
-                              <option key={emp.id} value={String(emp.id)}>
-                                {emp.nombres} {emp.apellidos} ({emp.cargo})
-                              </option>
-                            ))}
-                          </select>
+                          {displayName ? `👤 ${displayName}` : "Cargo vacante / Sin asignar"}
                         </div>
                       </div>
                     );
