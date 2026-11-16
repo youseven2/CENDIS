@@ -1631,6 +1631,59 @@ export default function App() {
   const [hrSubTab, setHrSubTab] = useState("LISTA"); // LISTA | REPORTE_FILTROS
   const [selectedEmpForCard, setSelectedEmpForCard] = useState(null);
   const [selectedEmpForCV, setSelectedEmpForCV] = useState(null);
+  const [selectedEmpForConstancia, setSelectedEmpForConstancia] = useState(null);
+  const [constanciaCounter, setConstanciaCounter] = useState(() => {
+    const saved = loadStoredJson("cendis_constancia_counter_v1", 1);
+    return Number(saved) || 1;
+  });
+  const [constanciaForm, setConstanciaForm] = useState({
+    correlativo: "CRH-2026-001",
+    rif: "G-20008344-9",
+    tratamiento: "el ciudadano",
+    nombreCompleto: "",
+    cedula: "",
+    fechaIngreso: "",
+    cargo: "",
+    dependencia: "",
+    remuneracionLetras: "DOSCIENTOS SETENTA Y CINCO MIL BOLÍVARES CON 88/100",
+    remuneracionMonto: "Bs 275,88",
+    fechaExpedicion: new Date().toISOString().slice(0, 10),
+    firmanteNombre: "MORRIS LÓPEZ",
+    firmanteCargo: "DIRECTOR GENERAL",
+    iniciales: "ML/rrhh.",
+  });
+
+  const openConstanciaModal = (emp) => {
+    if (!emp) return;
+    const isFemale =
+      String(emp.genero || "").toUpperCase().startsWith("F") ||
+      String(emp.nombres || "").trim().toUpperCase().endsWith("A");
+    const corrNum = String(constanciaCounter || 1).padStart(3, "0");
+    const yearNow = new Date().getFullYear();
+    const formatIngreso = (iso) => {
+      if (!iso) return "15/01/2024";
+      const parts = String(iso).split("-");
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return iso;
+    };
+    setConstanciaForm({
+      correlativo: `CRH-${yearNow}-${corrNum}`,
+      rif: "G-20008344-9",
+      tratamiento: isFemale ? "la ciudadana" : "el ciudadano",
+      nombreCompleto: `${emp.apellidos || ""} ${emp.nombres || ""}`.trim().toUpperCase(),
+      cedula: String(emp.cedula || "").replace(/^V-?/i, ""),
+      fechaIngreso: formatIngreso(emp.fechaIngreso),
+      cargo: (emp.cargo || "PERSONAL CENDIS").toUpperCase(),
+      dependencia: (emp.coordinacion || "FUNDACIÓN CENDIS").toUpperCase(),
+      remuneracionLetras: "DOSCIENTOS SETENTA Y CINCO MIL BOLÍVARES CON 88/100",
+      remuneracionMonto: "Bs 275,88",
+      fechaExpedicion: new Date().toISOString().slice(0, 10),
+      firmanteNombre: "MORRIS LÓPEZ",
+      firmanteCargo: "DIRECTOR GENERAL",
+      iniciales: "ML/rrhh.",
+    });
+    setSelectedEmpForConstancia(emp);
+  };
   const [selectedEmpIdToLink, setSelectedEmpIdToLink] = useState("");
   const [showLinkChangeSelector, setShowLinkChangeSelector] = useState(false);
   const [hrModalOpen, setHrModalOpen] = useState(false);
@@ -8358,6 +8411,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   <Filter className="w-3.5 h-3.5 text-[#ffb366]" />
                   <span>Reporte Completo del Personal (Filtros)</span>
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => openConstanciaModal(employees[0])}
+                  className="px-3.5 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer transition-all bg-emerald-700 hover:bg-emerald-600 text-white border border-emerald-400/60 shadow"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Constancia de Trabajo</span>
+                </button>
               </div>
             </div>
 
@@ -8570,6 +8632,16 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                   >
                                     <FileText className="w-3.5 h-3.5 text-[#ffb366]" />
                                     <span>Hoja de Vida PDF</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => openConstanciaModal(emp)}
+                                    className="px-2.5 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                                    title="Generar Constancia de Trabajo con correlativo independiente"
+                                  >
+                                    <FileText className="w-3.5 h-3.5" />
+                                    <span>Constancia</span>
                                   </button>
 
                                   <button
@@ -9037,7 +9109,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                 {/* HOJA IMPRIMIBLE EN PDF DEL REPORTE COMPLETO DEL PERSONAL */}
                 <div
-                  id={selectedEmpForCard || selectedEmpForCV ? "printable-area-bg" : "printable-area"}
+                  id={
+                    selectedEmpForCard || selectedEmpForCV || selectedEmpForConstancia
+                      ? "printable-area-bg"
+                      : "printable-area"
+                  }
                   className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
                 >
                   <div className="px-9 pt-6 pb-2">
@@ -12709,9 +12785,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         </div>
       )}
 
-      {/* ====================================================================
-          MODAL DE HOJA DE VIDA / PERFIL EN PDF (REPORTE TIPO CURRÍCULUM CON CINTILLO OFICIAL)
-         ==================================================================== */}
       {selectedEmpForCV && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-[#0e1526] text-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[95vh] overflow-y-auto border-2 border-[#ff6b00]/70">
@@ -13025,6 +13098,282 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
           </div>
         </div>
       )}
+
+      {/* ====================================================================
+          MODAL DE CONSTANCIA DE TRABAJO (FORMATO OFICIAL CON CORRELATIVO CRH)
+         ==================================================================== */}
+      {selectedEmpForConstancia && (() => {
+        const expParts = String(constanciaForm.fechaExpedicion || "").split("-");
+        const expMonths = [
+          "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+          "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE",
+        ];
+        const expYear = expParts[0] || "2026";
+        const expMonthName = expMonths[Math.max(0, Math.min(11, (parseInt(expParts[1], 10) || 1) - 1))];
+        const expDay = parseInt(expParts[2], 10) || "1";
+
+        return (
+          <div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-[#0b1221] rounded-2xl shadow-2xl max-w-5xl w-full p-5 space-y-4 max-h-[96vh] overflow-y-auto border-2 border-emerald-500/70">
+              {/* Barra superior de acciones */}
+              <div className="flex flex-wrap items-center justify-between gap-2 print:hidden">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-black uppercase text-emerald-300">
+                    Constancia de Trabajo • Correlativo Independiente ({constanciaForm.correlativo})
+                  </span>
+                  <select
+                    value={String(selectedEmpForConstancia.id)}
+                    onChange={(e) => {
+                      const nextEmp = employees.find((x) => String(x.id) === e.target.value);
+                      if (nextEmp) openConstanciaModal(nextEmp);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-[#070b14] border border-emerald-500/50 text-white text-xs font-bold"
+                  >
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={String(emp.id)}>
+                        {emp.nombres} {emp.apellidos} ({emp.cedula})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextCount = (constanciaCounter || 1) + 1;
+                      setConstanciaCounter(nextCount);
+                      saveStoredJson("cendis_constancia_counter_v1", nextCount);
+                      addLog(
+                        `Emitida Constancia de Trabajo ${constanciaForm.correlativo} para ${constanciaForm.nombreCompleto}`,
+                        currentUser,
+                        "hr"
+                      );
+                      showToast(`Constancia ${constanciaForm.correlativo} lista para imprimir/PDF.`);
+                      setTimeout(() => window.print(), 80);
+                    }}
+                    className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center gap-1.5 cursor-pointer shadow"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Imprimir / PDF Constancia</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedEmpForConstancia(null)}
+                    className="px-3 py-1.5 rounded-xl bg-red-600/30 hover:bg-red-600/50 border border-red-500 text-white text-xs font-bold cursor-pointer"
+                  >
+                    Cerrar ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Panel de edición rápida de datos de la Constancia */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#070b14] p-3.5 rounded-xl border border-slate-800 text-xs print:hidden">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Correlativo (Propio)</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.correlativo}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, correlativo: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-amber-300 font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">RIF Institucional</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.rif}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, rif: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Tratamiento</label>
+                  <select
+                    value={constanciaForm.tratamiento}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, tratamiento: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  >
+                    <option value="el ciudadano">el ciudadano</option>
+                    <option value="la ciudadana">la ciudadana</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Fecha Expedición</label>
+                  <input
+                    type="date"
+                    value={constanciaForm.fechaExpedicion}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, fechaExpedicion: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Apellidos y Nombres</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.nombreCompleto}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, nombreCompleto: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Cédula (C.I.)</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.cedula}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, cedula: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Fecha de Ingreso</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.fechaIngreso}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, fechaIngreso: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Cargo</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.cargo}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, cargo: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Dependencia / Coordinación</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.dependencia}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, dependencia: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Remuneración en Letras</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.remuneracionLetras}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, remuneracionLetras: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Monto Numérico (Bs)</label>
+                  <input
+                    type="text"
+                    data-no-uppercase="true"
+                    value={constanciaForm.remuneracionMonto}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, remuneracionMonto: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Iniciales Pie</label>
+                  <input
+                    type="text"
+                    data-no-uppercase="true"
+                    value={constanciaForm.iniciales}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, iniciales: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Firmante (Por defecto Morris López)</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.firmanteNombre}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, firmanteNombre: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-amber-300 font-bold"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-bold text-slate-400 mb-0.5">Cargo del Firmante</label>
+                  <input
+                    type="text"
+                    value={constanciaForm.firmanteCargo}
+                    onChange={(e) => setConstanciaForm({ ...constanciaForm, firmanteCargo: e.target.value })}
+                    className="w-full px-2 py-1 rounded border border-slate-700 bg-[#0b1221] text-white font-bold"
+                  />
+                </div>
+              </div>
+
+              {/* HOJA OFICIAL IMPRIMIBLE (CINTILLO IGUAL A TODOS LOS REPORTES) */}
+              <div
+                id="printable-area"
+                className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white border border-slate-200 flex flex-col justify-between text-slate-950"
+              >
+                <div className="px-14 pt-8 pb-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <OfficialHeaderCintillo showRightLogo={true} />
+
+                    {/* Bloque Correlativo Independiente y RIF */}
+                    <div className="mt-6 text-[11pt] font-bold text-slate-900 leading-snug">
+                      <div>{constanciaForm.correlativo}</div>
+                      <div>Rif.: {constanciaForm.rif}</div>
+                    </div>
+
+                    {/* Título Centrado */}
+                    <div className="mt-8 mb-8 text-center">
+                      <h2 className="text-[14pt] font-black uppercase tracking-wider underline text-slate-950">
+                        CONSTANCIA
+                      </h2>
+                    </div>
+
+                    {/* Cuerpo de la Constancia */}
+                    <div
+                      style={{ fontSize: "12pt", lineHeight: "1.75" }}
+                      className="text-justify text-slate-950 preserve-case-content"
+                    >
+                      Quien suscribe, el <strong>{constanciaForm.firmanteCargo}</strong> de la{" "}
+                      <strong>Fundación Centro Nacional del Disco (CENDIS)</strong>, hace constar por medio de
+                      la presente que {constanciaForm.tratamiento},{" "}
+                      <strong className="uppercase">{constanciaForm.nombreCompleto}</strong> portador(a) de la{" "}
+                      <strong>C.I. {constanciaForm.cedula}</strong>, presta sus servicios en esta Fundación
+                      desde el {constanciaForm.fechaIngreso}, desempeñando el cargo de{" "}
+                      <strong className="uppercase">{constanciaForm.cargo}</strong>, en la{" "}
+                      <strong className="uppercase">{constanciaForm.dependencia}</strong> devengando una
+                      remuneración mensual de{" "}
+                      <strong className="uppercase">{constanciaForm.remuneracionLetras}</strong> (
+                      <strong>{constanciaForm.remuneracionMonto}</strong>).
+                    </div>
+
+                    {/* Fecha de expedición */}
+                    <div
+                      style={{ fontSize: "11.5pt" }}
+                      className="mt-10 text-slate-950 preserve-case-content"
+                    >
+                      Constancia que se expide en Caracas a los {expDay} días del mes de{" "}
+                      <strong className="uppercase">{expMonthName}</strong> de {expYear}
+                    </div>
+
+                    {/* Bloque de Firma Centrado */}
+                    <div className="mt-10 text-center text-slate-950" style={{ fontSize: "11.5pt" }}>
+                      <p className="mb-16">Atentamente,</p>
+                      <div className="inline-block min-w-[260px] pt-1 border-t border-slate-900">
+                        <p className="font-black uppercase">{constanciaForm.firmanteNombre}</p>
+                        <p className="font-bold uppercase">{constanciaForm.firmanteCargo}</p>
+                        <p className="text-[10pt] font-semibold">
+                          Fundación Centro Nacional del Disco (CENDIS)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Iniciales al pie izquierdo */}
+                  <div className="mt-8 text-[10pt] font-bold text-slate-800 preserve-case-content">
+                    {constanciaForm.iniciales}
+                  </div>
+                </div>
+
+                <OfficialFooterWave />
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ====================================================================
           BURBUJA LATERAL FLOTANTE DE CHAT CORPORATIVO INTERNO CENDIS
