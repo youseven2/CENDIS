@@ -4361,9 +4361,9 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <span className="text-[10px] font-black uppercase text-amber-300">Novedades CENDIS</span>
                 <Sparkles className="w-4 h-4 text-amber-400" />
               </div>
-              <p className="text-2xl font-black text-white mt-1">{novedadesList.length + systemNewNotices.length}</p>
+              <p className="text-2xl font-black text-white mt-1">{novedadesList.length}</p>
               <p className="text-[10px] text-amber-300 font-bold mt-0.5">
-                {novedadesList.length} comunicados • {unseenNewCount} NEW
+                Comunicados publicados
               </p>
             </div>
           </div>
@@ -4482,76 +4482,69 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               </div>
             </section>
 
-            {/* Columna 3: Novedades y Actualizaciones NEW del Sistema */}
+            {/* Columna 3: Novedades del Módulo Novedades */}
             <section className="lg:col-span-3 rounded-2xl bg-[#0c1322] border border-slate-800 p-5 shadow-xl flex flex-col">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
                 <div>
                   <h2 className="text-sm font-black uppercase text-white flex items-center gap-2">
                     <Newspaper className="w-4 h-4 text-amber-400" />
                     <span>Novedades</span>
-                    <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black">
-                      NEW
-                    </span>
+                    {novedadesList.length > 0 && (
+                      <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black">
+                        NEW
+                      </span>
+                    )}
                   </h2>
                   <p className="text-[11px] text-slate-400">
-                    Módulos, acciones y mejoras recientes
+                    Comunicados publicados desde el módulo Novedades
                   </p>
                 </div>
               </div>
 
               <div className="space-y-3 max-h-[430px] overflow-y-auto pr-1">
-                {novedadesList.map((nov) => (
-                  <div
-                    key={nov.id}
-                    className="rounded-xl bg-[#070b14] border border-amber-400/60 p-3 space-y-2 shadow-md"
-                  >
-                    <div className="flex items-center justify-between gap-1.5">
-                      <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black uppercase">
-                        NEW • {nov.categoria || "COMUNICADO"}
-                      </span>
-                      <span className="text-[9.5px] text-slate-400 font-mono">{nov.fecha}</span>
-                    </div>
-                    <p className="text-xs font-black text-white leading-snug uppercase">{nov.titulo}</p>
-                    {nov.mensaje && (
-                      <p className="text-[11px] text-slate-300 leading-snug whitespace-pre-line">{nov.mensaje}</p>
-                    )}
-                    {nov.mediaDataUrl && (
-                      <div className="pt-1">
-                        {nov.mediaType === "PDF" || nov.mediaDataUrl.startsWith("data:application/pdf") ? (
-                          <iframe
-                            src={nov.mediaDataUrl}
-                            title={nov.mediaName || nov.titulo}
-                            className="w-full h-48 rounded-lg border border-slate-700 bg-white"
-                          />
-                        ) : (
-                          <img
-                            src={nov.mediaDataUrl}
-                            alt={nov.mediaName || nov.titulo}
-                            className="w-full max-h-56 object-contain rounded-lg border border-slate-700 bg-black/40"
-                          />
-                        )}
+                {novedadesList.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic py-6 text-center">
+                    No hay novedades publicadas en este momento.
+                  </p>
+                ) : (
+                  novedadesList.map((nov) => (
+                    <div
+                      key={nov.id}
+                      className="rounded-xl bg-[#070b14] border border-amber-400/60 p-3 space-y-2 shadow-md"
+                    >
+                      <div className="flex items-center justify-between gap-1.5">
+                        <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black uppercase">
+                          NEW • {nov.categoria || "COMUNICADO"}
+                        </span>
+                        <span className="text-[9.5px] text-slate-400 font-mono">{nov.fecha}</span>
                       </div>
-                    )}
-                    {nov.autor && (
-                      <p className="text-[9.5px] text-slate-400">Publicado por: {nov.autor}</p>
-                    )}
-                  </div>
-                ))}
-                {systemNewNotices.slice(0, 10).map((notice) => (
-                  <div
-                    key={notice.id}
-                    className="rounded-xl bg-[#070b14] border border-amber-500/30 p-3"
-                  >
-                    <div className="flex items-center justify-between gap-1.5 mb-1">
-                      <span className="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 text-[9px] font-black uppercase">
-                        NEW
-                      </span>
-                      <span className="text-[9.5px] text-slate-400 font-mono">{notice.date}</span>
+                      <p className="text-xs font-black text-white leading-snug uppercase">{nov.titulo}</p>
+                      {nov.mensaje && (
+                        <p className="text-[11px] text-slate-300 leading-snug whitespace-pre-line">{nov.mensaje}</p>
+                      )}
+                      {nov.mediaDataUrl && (
+                        <div className="pt-1">
+                          {nov.mediaType === "PDF" || nov.mediaDataUrl.startsWith("data:application/pdf") ? (
+                            <iframe
+                              src={nov.mediaDataUrl}
+                              title={nov.mediaName || nov.titulo}
+                              className="w-full h-48 rounded-lg border border-slate-700 bg-white"
+                            />
+                          ) : (
+                            <img
+                              src={nov.mediaDataUrl}
+                              alt={nov.mediaName || nov.titulo}
+                              className="w-full max-h-56 object-contain rounded-lg border border-slate-700 bg-black/40"
+                            />
+                          )}
+                        </div>
+                      )}
+                      {nov.autor && (
+                        <p className="text-[9.5px] text-slate-400">Publicado por: {nov.autor}</p>
+                      )}
                     </div>
-                    <p className="text-[11px] font-black text-white leading-snug">{notice.title}</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">{notice.detail}</p>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </section>
           </div>
