@@ -1722,6 +1722,11 @@ export default function App() {
     fotoCarnet: "",
     observacionesLaborales: "",
     codigoBarra: "2024-CENDIS-000127",
+    centroVotacion: "",
+    estadoVotacion: "",
+    municipioVotacion: "",
+    parroquiaVotacion: "",
+    yaVoto: "NO",
   });
 
   // Trabajador de RRHH vinculado al correo del usuario actual
@@ -3536,6 +3541,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       fotoCarnet: prefill.fotoCarnet || "",
       observacionesLaborales: prefill.observacionesLaborales || "",
       codigoBarra: prefill.codigoBarra || generateNextBarcode(),
+      centroVotacion: prefill.centroVotacion || "",
+      estadoVotacion: prefill.estadoVotacion || "",
+      municipioVotacion: prefill.municipioVotacion || "",
+      parroquiaVotacion: prefill.parroquiaVotacion || "",
+      yaVoto: prefill.yaVoto || "NO",
     });
     setHrModalOpen(true);
   };
@@ -3576,6 +3586,11 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       fotoCarnet: emp.fotoCarnet || "",
       observacionesLaborales: emp.observacionesLaborales || "",
       codigoBarra: emp.codigoBarra || generateNextBarcode(),
+      centroVotacion: emp.centroVotacion || "",
+      estadoVotacion: emp.estadoVotacion || "",
+      municipioVotacion: emp.municipioVotacion || "",
+      parroquiaVotacion: emp.parroquiaVotacion || "",
+      yaVoto: emp.yaVoto || "NO",
     });
     setHrModalOpen(true);
   };
@@ -8414,6 +8429,17 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
                 <button
                   type="button"
+                  onClick={() => setHrSubTab("REPORTE_VOTACION")}
+                  className={`px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
+                    hrSubTab === "REPORTE_VOTACION" ? "neon-orange-nav-active font-black" : "neon-orange-nav"
+                  }`}
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#ffb366]" />
+                  <span>Reporte Centro de Votación</span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => openConstanciaModal(employees[0])}
                   className="px-3.5 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer transition-all bg-emerald-700 hover:bg-emerald-600 text-white border border-emerald-400/60 shadow"
                 >
@@ -8961,6 +8987,136 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
                   </div>
                 )}
+              </div>
+            ) : hrSubTab === "REPORTE_VOTACION" ? (
+              /* REPORTE INDEPENDIENTE DE CENTRO DE VOTACIÓN Y PARTICIPACIÓN ELECTORAL */
+              <div className="space-y-4">
+                <div className="bg-white rounded-2xl shadow-sm border border-amber-500/40 p-5 space-y-4 print:hidden">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#ff8c42] block">
+                        Reporte Independiente • Registro Electoral del Personal
+                      </span>
+                      <h3 className="text-sm font-black uppercase text-slate-900">
+                        Centro de Votación, Ubicación Geográfica y Control de Voto ({employees.length} Trabajadores)
+                      </h3>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Ya votaron:{" "}
+                        <strong className="text-emerald-600">
+                          {employees.filter((e) => e.yaVoto === "SI").length}
+                        </strong>{" "}
+                        • Pendientes:{" "}
+                        <strong className="text-amber-600">
+                          {employees.filter((e) => e.yaVoto !== "SI").length}
+                        </strong>
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-black flex items-center gap-1.5 cursor-pointer shadow"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>Imprimir Reporte PDF</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  id={
+                    selectedEmpForCard || selectedEmpForCV || selectedEmpForConstancia
+                      ? "printable-area-bg"
+                      : "printable-area"
+                  }
+                  className="org-print-auto-height w-full max-w-[920px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
+                >
+                  <div className="p-8 space-y-4">
+                    <OfficialHeaderCintillo showRightLogo={true} />
+
+                    <div className="text-center border-b-2 border-slate-900 pb-2">
+                      <h2 className="text-sm font-black uppercase text-slate-950">
+                        REPORTE DE CENTRO DE VOTACIÓN Y CONTROL ELECTORAL DEL PERSONAL • CENDIS
+                      </h2>
+                      <p className="text-[11px] font-semibold text-slate-700">
+                        Total Trabajadores: {employees.length} • Ya Votaron:{" "}
+                        {employees.filter((e) => e.yaVoto === "SI").length} • Pendientes:{" "}
+                        {employees.filter((e) => e.yaVoto !== "SI").length}
+                      </p>
+                    </div>
+
+                    <table className="w-full border-collapse border border-slate-900 text-[9.5px]">
+                      <thead>
+                        <tr className="bg-slate-200 font-black uppercase text-slate-900">
+                          <th className="border border-slate-900 p-1.5 text-center">#</th>
+                          <th className="border border-slate-900 p-1.5 text-left">Trabajador</th>
+                          <th className="border border-slate-900 p-1.5 text-left">Cédula</th>
+                          <th className="border border-slate-900 p-1.5 text-left">Centro de Votación</th>
+                          <th className="border border-slate-900 p-1.5 text-left">Estado</th>
+                          <th className="border border-slate-900 p-1.5 text-left">Municipio</th>
+                          <th className="border border-slate-900 p-1.5 text-left">Parroquia</th>
+                          <th className="border border-slate-900 p-1.5 text-center">¿Ya Votó?</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {employees.map((emp, idx) => {
+                          const voted = emp.yaVoto === "SI";
+                          return (
+                            <tr key={emp.id} className={voted ? "bg-emerald-50" : ""}>
+                              <td className="border border-slate-900 p-1.5 text-center font-bold">
+                                {idx + 1}
+                              </td>
+                              <td className="border border-slate-900 p-1.5 font-bold uppercase">
+                                {emp.apellidos} {emp.nombres}
+                              </td>
+                              <td className="border border-slate-900 p-1.5 font-semibold">
+                                {emp.cedula}
+                              </td>
+                              <td className="border border-slate-900 p-1.5 uppercase">
+                                {emp.centroVotacion || "POR REGISTRAR"}
+                              </td>
+                              <td className="border border-slate-900 p-1.5 uppercase">
+                                {emp.estadoVotacion || "-"}
+                              </td>
+                              <td className="border border-slate-900 p-1.5 uppercase">
+                                {emp.municipioVotacion || "-"}
+                              </td>
+                              <td className="border border-slate-900 p-1.5 uppercase">
+                                {emp.parroquiaVotacion || "-"}
+                              </td>
+                              <td className="border border-slate-900 p-1.5 text-center">
+                                <label className="inline-flex items-center gap-1 cursor-pointer font-black">
+                                  <input
+                                    type="checkbox"
+                                    checked={voted}
+                                    onChange={(e) => {
+                                      const nextVal = e.target.checked ? "SI" : "NO";
+                                      setEmployees((prev) =>
+                                        prev.map((x) =>
+                                          x.id === emp.id
+                                            ? { ...x, yaVoto: nextVal, updatedAt: Date.now() }
+                                            : x
+                                        )
+                                      );
+                                      setTimeout(() => syncWithCloudServer(), 60);
+                                      showToast(
+                                        `${emp.nombres} ${emp.apellidos}: marcado como ${
+                                          nextVal === "SI" ? "YA VOTÓ" : "PENDIENTE"
+                                        }.`
+                                      );
+                                    }}
+                                    className="w-3.5 h-3.5 accent-emerald-600 cursor-pointer"
+                                  />
+                                  <span>{voted ? "SÍ" : "NO"}</span>
+                                </label>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <OfficialFooterWave />
+                </div>
               </div>
             ) : (
               /* REPORTE COMPLETO DEL PERSONAL CON DIFERENTES FILTROS */
@@ -12263,6 +12419,86 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       }
                       className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
                     />
+                  </div>
+                </div>
+
+                {/* SUB-SECCIÓN: DATOS ELECTORALES (CENTRO DE VOTACIÓN) */}
+                <div className="pt-3 border-t border-slate-800 space-y-2.5">
+                  <span className="text-[11px] font-black uppercase text-emerald-400 block">
+                    Datos de Centro de Votación del Trabajador
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        Centro de Votación
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Nombre del centro de votación"
+                        value={newEmpForm.centroVotacion || ""}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, centroVotacion: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        Estado
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ej. Distrito Capital / Miranda"
+                        value={newEmpForm.estadoVotacion || ""}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, estadoVotacion: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        Municipio
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ej. Libertador / Baruta"
+                        value={newEmpForm.municipioVotacion || ""}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, municipioVotacion: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        Parroquia
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ej. El Valle / Nuestra Señora del Rosario"
+                        value={newEmpForm.parroquiaVotacion || ""}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, parroquiaVotacion: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-300 mb-1">
+                        ¿Ya Votó?
+                      </label>
+                      <select
+                        value={newEmpForm.yaVoto || "NO"}
+                        onChange={(e) =>
+                          setNewEmpForm({ ...newEmpForm, yaVoto: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-lg bg-[#0d1322] border border-slate-700 text-white font-bold"
+                      >
+                        <option value="NO">NO</option>
+                        <option value="SI">SÍ</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
