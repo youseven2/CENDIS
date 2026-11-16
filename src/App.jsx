@@ -9174,45 +9174,53 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                                 {emp.parroquiaVotacion || "-"}
                               </td>
                               <td className="border border-slate-900 p-1.5 text-center whitespace-nowrap">
-                                <div className="inline-flex items-center justify-center gap-2.5">
-                                  <label className="inline-flex items-center gap-1 cursor-pointer font-black">
-                                    <input
-                                      type="checkbox"
-                                      checked={voted}
-                                      onChange={() => {
-                                        setEmployees((prev) =>
-                                          prev.map((x) =>
-                                            x.id === emp.id
-                                              ? { ...x, yaVoto: "SI", updatedAt: Date.now() }
-                                              : x
-                                          )
-                                        );
-                                        setTimeout(() => syncWithCloudServer(), 60);
-                                        showToast(`${emp.nombres} ${emp.apellidos}: marcado como SÍ votó.`);
-                                      }}
-                                      className="w-3.5 h-3.5 accent-emerald-600 cursor-pointer"
-                                    />
+                                <div className="inline-flex items-center justify-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const nextEmployees = employees.map((x, i) =>
+                                        (emp.id !== undefined && String(x.id) === String(emp.id)) || i === idx
+                                          ? { ...x, yaVoto: "SI", updatedAt: Date.now() }
+                                          : x
+                                      );
+                                      setEmployees(nextEmployees);
+                                      syncWithCloudServer({ employees: nextEmployees });
+                                      showToast(`${emp.nombres} ${emp.apellidos}: marcado como SÍ votó.`);
+                                    }}
+                                    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-black cursor-pointer transition ${
+                                      voted
+                                        ? "bg-emerald-600 text-white border-emerald-700"
+                                        : "bg-white text-slate-900 border-slate-900 hover:bg-emerald-50"
+                                    }`}
+                                  >
+                                    <span className="inline-block w-3 h-3 border border-current rounded-xs leading-[10px] text-center text-[9px]">
+                                      {voted ? "✓" : ""}
+                                    </span>
                                     <span>Si</span>
-                                  </label>
-                                  <label className="inline-flex items-center gap-1 cursor-pointer font-black">
-                                    <input
-                                      type="checkbox"
-                                      checked={!voted}
-                                      onChange={() => {
-                                        setEmployees((prev) =>
-                                          prev.map((x) =>
-                                            x.id === emp.id
-                                              ? { ...x, yaVoto: "NO", updatedAt: Date.now() }
-                                              : x
-                                          )
-                                        );
-                                        setTimeout(() => syncWithCloudServer(), 60);
-                                        showToast(`${emp.nombres} ${emp.apellidos}: marcado como NO ha votado.`);
-                                      }}
-                                      className="w-3.5 h-3.5 accent-rose-600 cursor-pointer"
-                                    />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const nextEmployees = employees.map((x, i) =>
+                                        (emp.id !== undefined && String(x.id) === String(emp.id)) || i === idx
+                                          ? { ...x, yaVoto: "NO", updatedAt: Date.now() }
+                                          : x
+                                      );
+                                      setEmployees(nextEmployees);
+                                      syncWithCloudServer({ employees: nextEmployees });
+                                      showToast(`${emp.nombres} ${emp.apellidos}: marcado como NO ha votado.`);
+                                    }}
+                                    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-black cursor-pointer transition ${
+                                      !voted
+                                        ? "bg-rose-600 text-white border-rose-700"
+                                        : "bg-white text-slate-900 border-slate-900 hover:bg-rose-50"
+                                    }`}
+                                  >
+                                    <span className="inline-block w-3 h-3 border border-current rounded-xs leading-[10px] text-center text-[9px]">
+                                      {!voted ? "✓" : ""}
+                                    </span>
                                     <span>NO</span>
-                                  </label>
+                                  </button>
                                 </div>
                               </td>
                             </tr>
