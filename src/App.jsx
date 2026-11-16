@@ -1459,12 +1459,51 @@ export default function App() {
     [systemNewNotices]
   );
 
-  // Estado Universal de Memorandos, Solicitudes, Oficios y Órdenes de Salida (Formato Oficial FC-DG-MEM-2026-007)
-  const [docType, setDocType] = useState("MEMORANDUM"); // MEMORANDUM | SOLICITUD | OFICIO | ORDEN_SALIDA
+  // Estado Universal de Memorandos, Solicitudes, Oficios, Órdenes de Salida, Alimentos y Servicios Generales
+  const [docType, setDocType] = useState("MEMORANDUM"); // MEMORANDUM | SOLICITUD | OFICIO | ORDEN_SALIDA | SOLICITUD_ALIMENTOS | SOLICITUD_SERVICIOS_GENERALES
   const [docUnitPrefix, setDocUnitPrefix] = useState("FC-DG");
-  const [counters, setCounters] = useState({ MEMORANDUM: 7, SOLICITUD: 1, OFICIO: 1, ORDEN_SALIDA: 1 });
+  const [counters, setCounters] = useState({
+    MEMORANDUM: 7,
+    SOLICITUD: 1,
+    OFICIO: 1,
+    ORDEN_SALIDA: 1,
+    SOLICITUD_ALIMENTOS: 1,
+    SOLICITUD_SERVICIOS_GENERALES: 1,
+  });
   const [manualCorrelative, setManualCorrelative] = useState(false);
   const [customCorrelative, setCustomCorrelative] = useState("");
+
+  // Variables para Solicitud de Alimentos (contabilidad y reporte con filtro)
+  const [alimentosData, setAlimentosData] = useState({
+    coordinacionSolicitante: "PRODUCCIÓN FONOGRÁFICA",
+    tipoAlimento: "ALMUERZO",
+    actividad: "",
+    fechaActividad: new Date().toISOString().slice(0, 10),
+    observaciones: "",
+    items: [
+      { id: 1, rubro: "ALMUERZOS", unidad: "RACIONES", cantidad: 10, detalle: "Menú institucional" },
+    ],
+  });
+  const [alimentosFilter, setAlimentosFilter] = useState({
+    desde: "",
+    hasta: "",
+    coordinacion: "TODAS",
+    tipoAlimento: "TODOS",
+    query: "",
+  });
+  const [showAlimentosReportModal, setShowAlimentosReportModal] = useState(false);
+
+  // Variables para Solicitud de Servicios Generales (materiales para funcionamiento del CENDIS)
+  const [serviciosGeneralesData, setServiciosGeneralesData] = useState({
+    areaSolicitante: "DIRECCIÓN GENERAL",
+    tipoServicio: "SUMINISTRO DE MATERIALES Y MANTENIMIENTO",
+    prioridad: "NORMAL",
+    fechaRequerida: new Date().toISOString().slice(0, 10),
+    justificacionUso: "",
+    materiales: [
+      { id: 1, material: "", unidad: "UNIDADES", cantidad: 1, uso: "Funcionamiento operativo CENDIS" },
+    ],
+  });
 
   // Variables específicas para Orden de Salida de Equipos (integrada con RRHH y Bienes Nacionales)
   const [ordenSalidaData, setOrdenSalidaData] = useState({
@@ -2337,6 +2376,10 @@ export default function App() {
         ? "SOL"
         : docType === "ORDEN_SALIDA"
         ? "OS"
+        : docType === "SOLICITUD_ALIMENTOS"
+        ? "SAL"
+        : docType === "SOLICITUD_SERVICIOS_GENERALES"
+        ? "SSG"
         : "OFI";
     const cleanUnit = (docUnitPrefix || "FC-DG").trim().toUpperCase();
     const num = String(counters[docType] || 1).padStart(3, "0");
@@ -2391,6 +2434,9 @@ export default function App() {
       signerEnte,
       signerMinisterio,
       ordenSalida: docType === "ORDEN_SALIDA" ? ordenSalidaData : undefined,
+      alimentos: docType === "SOLICITUD_ALIMENTOS" ? alimentosData : undefined,
+      serviciosGenerales:
+        docType === "SOLICITUD_SERVICIOS_GENERALES" ? serviciosGeneralesData : undefined,
       status: "BORRADOR",
       creadoPor: currentUser?.username || "usuario",
       motivoAnulacion: "",
@@ -2977,6 +3023,31 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     );
   };
 
+  const handleUpdateAgendaEventStatus = (eventId, newStatus) => {
+    const colorMap = {
+      REALIZADO: "EMERALD",
+      REPROGRAMADO: "AMBER",
+      SUSPENDIDO: "ROSE",
+      APROBADO: "BLUE",
+    };
+    const nextColor = colorMap[newStatus] || "BLUE";
+    setAgendaEvents((prev) =>
+      prev.map((ev) =>
+        String(ev.id) === String(eventId)
+          ? { ...ev, status: newStatus, color: nextColor, updatedAt: Date.now() }
+          : ev
+      )
+    );
+    setSelectedEventDetail((prev) =>
+      prev && String(prev.id) === String(eventId)
+        ? { ...prev, status: newStatus, color: nextColor }
+        : prev
+    );
+    setTimeout(() => syncWithCloudServer(), 60);
+    addLog(`Estado de evento en Agenda actualizado a ${newStatus}`, currentUser, "agenda");
+    showToast(`Evento marcado como ${newStatus}.`);
+  };
+
   const handleEmitDocument = () => {
     if (!hasActionPermission("ingresar")) {
       showToast("Su usuario no tiene permiso para agregar nuevos documentos.", "error");
@@ -3000,6 +3071,9 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       signerEnte,
       signerMinisterio,
       ordenSalida: docType === "ORDEN_SALIDA" ? ordenSalidaData : undefined,
+      alimentos: docType === "SOLICITUD_ALIMENTOS" ? alimentosData : undefined,
+      serviciosGenerales:
+        docType === "SOLICITUD_SERVICIOS_GENERALES" ? serviciosGeneralesData : undefined,
       status: "PENDIENTE_APROBACION",
       creadoPor: currentUser?.fullName || currentUser?.username || "usuario",
       creadoEn: stamp,
@@ -4913,6 +4987,18 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             max-height: 278mm !important;
             margin: 0 auto !important;
             padding: 0 !important;
+          }
+          #printable-area.org-print-auto-height {
+            height: auto !important;
+            min-height: 278mm !important;
+            max-height: none !important;
+            overflow: visible !important;
+          }
+          .print\\:hidden,
+          #printable-area .print\\:hidden,
+          [data-print-hidden="true"] {
+            display: none !important;
+          }
             background-color: #ffffff !important;
             color: #0f172a !important;
             box-shadow: none !important;
@@ -5213,12 +5299,14 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               )}
 
               {/* Selector Universal de Tipo de Documento */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {[
                   { id: "MEMORANDUM", label: "Memorando" },
                   { id: "SOLICITUD", label: "Solicitud" },
                   { id: "OFICIO", label: "Oficio / Circular" },
                   { id: "ORDEN_SALIDA", label: "Orden de Salida" },
+                  { id: "SOLICITUD_ALIMENTOS", label: "Solicitud Alimentos" },
+                  { id: "SOLICITUD_SERVICIOS_GENERALES", label: "Servicios Generales" },
                 ].map((t) => (
                   <button
                     key={t.id}
@@ -5226,11 +5314,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     onClick={() => {
                       setSelectedDocId(null);
                       setDocType(t.id);
-                      if (t.id === "ORDEN_SALIDA" && asunto === "SOLICITUD DE TRANSPORTE") {
+                      if (t.id === "ORDEN_SALIDA" && (!asunto || asunto === "SOLICITUD DE TRANSPORTE")) {
                         setAsunto("AUTORIZACIÓN DE SALIDA DE EQUIPOS Y BIENES NACIONALES");
+                      } else if (t.id === "SOLICITUD_ALIMENTOS" && !asunto) {
+                        setAsunto("SOLICITUD DE ALIMENTOS Y REFRIGERIOS INSTITUCIONALES");
+                      } else if (t.id === "SOLICITUD_SERVICIOS_GENERALES" && !asunto) {
+                        setAsunto("SOLICITUD DE MATERIALES Y SERVICIOS GENERALES PARA FUNCIONAMIENTO DEL CENDIS");
                       }
                     }}
-                    className={`py-2 px-1.5 rounded-xl text-[11px] font-black uppercase border cursor-pointer ${
+                    className={`py-2 px-1.5 rounded-xl text-[10.5px] font-black uppercase border cursor-pointer ${
                       docType === t.id
                         ? "bg-[#8b1538] text-white border-[#8b1538]"
                         : "bg-slate-50 text-slate-700 border-slate-200"
@@ -5240,6 +5332,18 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                   </button>
                 ))}
               </div>
+              {docType === "SOLICITUD_ALIMENTOS" && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowAlimentosReportModal(true)}
+                    className="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-[11px] font-black flex items-center gap-1.5 cursor-pointer shadow"
+                  >
+                    <BarChart3 className="w-3.5 h-3.5" />
+                    <span>Reporte Contable de Alimentos (Filtro)</span>
+                  </button>
+                </div>
+              )}
 
               <div className="space-y-3">
                 {/* Prefijo Universal y Correlativo */}
@@ -5791,6 +5895,385 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     </div>
                   </div>
                 )}
+
+                {/* VARIABLES PARA SOLICITUD DE ALIMENTOS (CONTABILIDAD Y REPORTE CON FILTRO) */}
+                {docType === "SOLICITUD_ALIMENTOS" && (
+                  <div className="p-3.5 rounded-xl bg-emerald-950/35 border border-emerald-500/50 space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-500/30 pb-1.5">
+                      <span className="text-[11px] font-black uppercase text-emerald-300">
+                        🍽 Solicitud de Alimentos (Contabilización)
+                      </span>
+                      <span className="text-[10px] font-black text-amber-300">
+                        Total Contabilizado:{" "}
+                        {(alimentosData.items || []).reduce(
+                          (acc, it) => acc + (Number(it.cantidad) || 0),
+                          0
+                        )}{" "}
+                        unidades/raciones
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                          Coordinación Solicitante
+                        </label>
+                        <input
+                          type="text"
+                          value={alimentosData.coordinacionSolicitante}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setAlimentosData({
+                              ...alimentosData,
+                              coordinacionSolicitante: e.target.value,
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                          Tipo de Servicio Alimentario
+                        </label>
+                        <select
+                          value={alimentosData.tipoAlimento}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setAlimentosData({ ...alimentosData, tipoAlimento: e.target.value });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          <option value="DESAYUNO">Desayuno</option>
+                          <option value="ALMUERZO">Almuerzo</option>
+                          <option value="CENA">Cena</option>
+                          <option value="REFRIGERIO / COFFEE BREAK">Refrigerio / Coffee Break</option>
+                          <option value="HIDRATACIÓN / AGUA">Hidratación / Agua</option>
+                          <option value="COMBO COMPLETO">Combo Completo</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                          Fecha de Actividad
+                        </label>
+                        <input
+                          type="date"
+                          value={alimentosData.fechaActividad}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setAlimentosData({ ...alimentosData, fechaActividad: e.target.value });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                        Actividad / Evento Institucional
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ej. Grabación en Estudio / Reunión Directiva / Jornada Cultural"
+                        value={alimentosData.actividad}
+                        onChange={(e) => {
+                          setSelectedDocId(null);
+                          setAlimentosData({ ...alimentosData, actividad: e.target.value });
+                        }}
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-slate-300">
+                          Rubros y Cantidades a Contabilizar
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedDocId(null);
+                            setAlimentosData((prev) => ({
+                              ...prev,
+                              items: [
+                                ...(prev.items || []),
+                                {
+                                  id: Date.now(),
+                                  rubro: "",
+                                  unidad: "RACIONES",
+                                  cantidad: 1,
+                                  detalle: "",
+                                },
+                              ],
+                            }));
+                          }}
+                          className="px-2 py-1 rounded bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-black cursor-pointer"
+                        >
+                          + Agregar Rubro
+                        </button>
+                      </div>
+                      {(alimentosData.items || []).map((it, idx) => (
+                        <div key={it.id || idx} className="grid grid-cols-12 gap-1.5 items-center">
+                          <input
+                            type="text"
+                            placeholder="Rubro (Ej. Almuerzo)"
+                            value={it.rubro}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setAlimentosData((prev) => ({
+                                ...prev,
+                                items: prev.items.map((x) =>
+                                  x.id === it.id ? { ...x, rubro: e.target.value } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-4 px-2 py-1 rounded border border-slate-300 text-[11px]"
+                          />
+                          <input
+                            type="number"
+                            min="1"
+                            placeholder="Cant."
+                            value={it.cantidad}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setAlimentosData((prev) => ({
+                                ...prev,
+                                items: prev.items.map((x) =>
+                                  x.id === it.id ? { ...x, cantidad: Number(e.target.value) || 0 } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-2 px-2 py-1 rounded border border-slate-300 text-[11px] font-bold"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Unidad"
+                            value={it.unidad}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setAlimentosData((prev) => ({
+                                ...prev,
+                                items: prev.items.map((x) =>
+                                  x.id === it.id ? { ...x, unidad: e.target.value } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-2 px-2 py-1 rounded border border-slate-300 text-[11px]"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Detalle"
+                            value={it.detalle}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setAlimentosData((prev) => ({
+                                ...prev,
+                                items: prev.items.map((x) =>
+                                  x.id === it.id ? { ...x, detalle: e.target.value } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-3 px-2 py-1 rounded border border-slate-300 text-[11px]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedDocId(null);
+                              setAlimentosData((prev) => ({
+                                ...prev,
+                                items: prev.items.filter((x) => x.id !== it.id),
+                              }));
+                            }}
+                            className="col-span-1 text-red-400 hover:text-red-300 font-black text-xs cursor-pointer"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* VARIABLES PARA SOLICITUD DE SERVICIOS GENERALES (MATERIALES PARA FUNCIONAMIENTO DEL CENDIS) */}
+                {docType === "SOLICITUD_SERVICIOS_GENERALES" && (
+                  <div className="p-3.5 rounded-xl bg-blue-950/35 border border-blue-500/50 space-y-3">
+                    <div className="flex items-center justify-between border-b border-blue-500/30 pb-1.5">
+                      <span className="text-[11px] font-black uppercase text-blue-300">
+                        🛠 Solicitud de Servicios Generales (Materiales para el CENDIS)
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                          Área / Dependencia
+                        </label>
+                        <input
+                          type="text"
+                          value={serviciosGeneralesData.areaSolicitante}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setServiciosGeneralesData({
+                              ...serviciosGeneralesData,
+                              areaSolicitante: e.target.value,
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                          Tipo de Requerimiento
+                        </label>
+                        <select
+                          value={serviciosGeneralesData.tipoServicio}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setServiciosGeneralesData({
+                              ...serviciosGeneralesData,
+                              tipoServicio: e.target.value,
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          <option value="SUMINISTRO DE MATERIALES Y MANTENIMIENTO">Materiales y Mantenimiento</option>
+                          <option value="INSUMOS DE LIMPIEZA Y ASEO">Insumos de Limpieza y Aseo</option>
+                          <option value="ELECTRICIDAD E ILUMINACIÓN">Electricidad e Iluminación</option>
+                          <option value="PLOMERÍA Y INFRAESTRUCTURA">Plomería e Infraestructura</option>
+                          <option value="PAPELERÍA Y OFICINA">Papelería y Oficina</option>
+                          <option value="REFRIGERACIÓN / AIRES ACONDICIONADOS">Refrigeración / A.A.</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
+                          Prioridad
+                        </label>
+                        <select
+                          value={serviciosGeneralesData.prioridad}
+                          onChange={(e) => {
+                            setSelectedDocId(null);
+                            setServiciosGeneralesData({
+                              ...serviciosGeneralesData,
+                              prioridad: e.target.value,
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          <option value="URGENTE">Urgente</option>
+                          <option value="ALTA">Alta</option>
+                          <option value="NORMAL">Normal</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-slate-300">
+                          Materiales Requeridos para el Funcionamiento del CENDIS
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedDocId(null);
+                            setServiciosGeneralesData((prev) => ({
+                              ...prev,
+                              materiales: [
+                                ...(prev.materiales || []),
+                                {
+                                  id: Date.now(),
+                                  material: "",
+                                  unidad: "UNIDADES",
+                                  cantidad: 1,
+                                  uso: "",
+                                },
+                              ],
+                            }));
+                          }}
+                          className="px-2 py-1 rounded bg-blue-700 hover:bg-blue-600 text-white text-[10px] font-black cursor-pointer"
+                        >
+                          + Agregar Material
+                        </button>
+                      </div>
+                      {(serviciosGeneralesData.materiales || []).map((mat, idx) => (
+                        <div key={mat.id || idx} className="grid grid-cols-12 gap-1.5 items-center">
+                          <input
+                            type="text"
+                            placeholder="Material requerido"
+                            value={mat.material}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setServiciosGeneralesData((prev) => ({
+                                ...prev,
+                                materiales: prev.materiales.map((x) =>
+                                  x.id === mat.id ? { ...x, material: e.target.value } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-4 px-2 py-1 rounded border border-slate-300 text-[11px]"
+                          />
+                          <input
+                            type="number"
+                            min="1"
+                            placeholder="Cant."
+                            value={mat.cantidad}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setServiciosGeneralesData((prev) => ({
+                                ...prev,
+                                materiales: prev.materiales.map((x) =>
+                                  x.id === mat.id ? { ...x, cantidad: Number(e.target.value) || 0 } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-2 px-2 py-1 rounded border border-slate-300 text-[11px] font-bold"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Unidad"
+                            value={mat.unidad}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setServiciosGeneralesData((prev) => ({
+                                ...prev,
+                                materiales: prev.materiales.map((x) =>
+                                  x.id === mat.id ? { ...x, unidad: e.target.value } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-2 px-2 py-1 rounded border border-slate-300 text-[11px]"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Uso / Área"
+                            value={mat.uso}
+                            onChange={(e) => {
+                              setSelectedDocId(null);
+                              setServiciosGeneralesData((prev) => ({
+                                ...prev,
+                                materiales: prev.materiales.map((x) =>
+                                  x.id === mat.id ? { ...x, uso: e.target.value } : x
+                                ),
+                              }));
+                            }}
+                            className="col-span-3 px-2 py-1 rounded border border-slate-300 text-[11px]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedDocId(null);
+                              setServiciosGeneralesData((prev) => ({
+                                ...prev,
+                                materiales: prev.materiales.filter((x) => x.id !== mat.id),
+                              }));
+                            }}
+                            className="col-span-1 text-red-400 hover:text-red-300 font-black text-xs cursor-pointer"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* DATOS DE LA FIRMA CENTRADA */}
@@ -6172,6 +6655,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           ? "SOLICITUD"
                           : activePreviewDoc.tipo === "ORDEN_SALIDA"
                           ? "ORDEN DE SALIDA DE EQUIPOS Y BIENES"
+                          : activePreviewDoc.tipo === "SOLICITUD_ALIMENTOS"
+                          ? "SOLICITUD DE ALIMENTOS Y REFRIGERIOS"
+                          : activePreviewDoc.tipo === "SOLICITUD_SERVICIOS_GENERALES"
+                          ? "SOLICITUD DE SERVICIOS GENERALES Y MATERIALES"
                           : "OFICIO"}
                       </h2>
                     </div>
@@ -6294,6 +6781,102 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       </div>
                     )}
 
+                    {/* BLOQUE ESPECÍFICO DE SOLICITUD DE ALIMENTOS EN EL PDF */}
+                    {activePreviewDoc.tipo === "SOLICITUD_ALIMENTOS" && activePreviewDoc.alimentos && (
+                      <div className="mt-4 space-y-2.5 text-[10pt] text-slate-950">
+                        <div className="grid grid-cols-2 gap-2 border border-slate-900 p-2 bg-slate-50">
+                          <div>
+                            <strong>COORDINACIÓN:</strong> {activePreviewDoc.alimentos.coordinacionSolicitante}
+                          </div>
+                          <div>
+                            <strong>TIPO:</strong> {activePreviewDoc.alimentos.tipoAlimento}
+                          </div>
+                          <div>
+                            <strong>ACTIVIDAD:</strong> {activePreviewDoc.alimentos.actividad || "INSTITUCIONAL"}
+                          </div>
+                          <div>
+                            <strong>FECHA ACTIVIDAD:</strong> {activePreviewDoc.alimentos.fechaActividad}
+                          </div>
+                        </div>
+                        <table className="w-full border-collapse border border-slate-900 text-[9.5pt]">
+                          <thead>
+                            <tr className="bg-slate-200 font-bold uppercase">
+                              <th className="border border-slate-900 p-1.5 text-center">#</th>
+                              <th className="border border-slate-900 p-1.5">Rubro / Alimento</th>
+                              <th className="border border-slate-900 p-1.5 text-center">Cantidad</th>
+                              <th className="border border-slate-900 p-1.5">Unidad</th>
+                              <th className="border border-slate-900 p-1.5">Detalle</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(activePreviewDoc.alimentos.items || []).map((it, i) => (
+                              <tr key={it.id || i}>
+                                <td className="border border-slate-900 p-1.5 text-center font-bold">{i + 1}</td>
+                                <td className="border border-slate-900 p-1.5 font-semibold">{it.rubro}</td>
+                                <td className="border border-slate-900 p-1.5 text-center font-bold">{it.cantidad}</td>
+                                <td className="border border-slate-900 p-1.5">{it.unidad}</td>
+                                <td className="border border-slate-900 p-1.5">{it.detalle || "-"}</td>
+                              </tr>
+                            ))}
+                            <tr className="bg-slate-100 font-black">
+                              <td colSpan={2} className="border border-slate-900 p-1.5 text-right uppercase">
+                                Total Contabilizado:
+                              </td>
+                              <td className="border border-slate-900 p-1.5 text-center">
+                                {(activePreviewDoc.alimentos.items || []).reduce(
+                                  (acc, it) => acc + (Number(it.cantidad) || 0),
+                                  0
+                                )}
+                              </td>
+                              <td colSpan={2} className="border border-slate-900 p-1.5">
+                                Raciones / Unidades
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {/* BLOQUE ESPECÍFICO DE SERVICIOS GENERALES EN EL PDF */}
+                    {activePreviewDoc.tipo === "SOLICITUD_SERVICIOS_GENERALES" &&
+                      activePreviewDoc.serviciosGenerales && (
+                        <div className="mt-4 space-y-2.5 text-[10pt] text-slate-950">
+                          <div className="grid grid-cols-3 gap-2 border border-slate-900 p-2 bg-slate-50">
+                            <div>
+                              <strong>ÁREA:</strong> {activePreviewDoc.serviciosGenerales.areaSolicitante}
+                            </div>
+                            <div>
+                              <strong>SERVICIO:</strong> {activePreviewDoc.serviciosGenerales.tipoServicio}
+                            </div>
+                            <div>
+                              <strong>PRIORIDAD:</strong> {activePreviewDoc.serviciosGenerales.prioridad}
+                            </div>
+                          </div>
+                          <table className="w-full border-collapse border border-slate-900 text-[9.5pt]">
+                            <thead>
+                              <tr className="bg-slate-200 font-bold uppercase">
+                                <th className="border border-slate-900 p-1.5 text-center">#</th>
+                                <th className="border border-slate-900 p-1.5">Material Requerido (CENDIS)</th>
+                                <th className="border border-slate-900 p-1.5 text-center">Cantidad</th>
+                                <th className="border border-slate-900 p-1.5">Unidad</th>
+                                <th className="border border-slate-900 p-1.5">Uso / Destino</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {(activePreviewDoc.serviciosGenerales.materiales || []).map((mat, i) => (
+                                <tr key={mat.id || i}>
+                                  <td className="border border-slate-900 p-1.5 text-center font-bold">{i + 1}</td>
+                                  <td className="border border-slate-900 p-1.5 font-semibold">{mat.material}</td>
+                                  <td className="border border-slate-900 p-1.5 text-center font-bold">{mat.cantidad}</td>
+                                  <td className="border border-slate-900 p-1.5">{mat.unidad}</td>
+                                  <td className="border border-slate-900 p-1.5">{mat.uso || "Funcionamiento CENDIS"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+
                     {/* DESPEDIDA Y BLOQUE DE FIRMA CENTRADO */}
                     <div
                       style={{ fontSize: "12pt", lineHeight: "1.35" }}
@@ -6319,6 +6902,147 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <OfficialFooterWave />
               </div>
             </div>
+
+            {/* MODAL DE REPORTE CONTABLE DE SOLICITUD DE ALIMENTOS CON FILTRO */}
+            {showAlimentosReportModal && (() => {
+              const allFoodDocs = documents.filter(
+                (d) => d.tipo === "SOLICITUD_ALIMENTOS" && d.status !== "ANULADO" && d.alimentos
+              );
+              const filteredFoodDocs = allFoodDocs.filter((d) => {
+                const actDate = d.alimentos?.fechaActividad || d.fecha || "";
+                if (alimentosFilter.desde && actDate < alimentosFilter.desde) return false;
+                if (alimentosFilter.hasta && actDate > alimentosFilter.hasta) return false;
+                if (
+                  alimentosFilter.coordinacion !== "TODAS" &&
+                  (d.alimentos?.coordinacionSolicitante || "").toUpperCase() !==
+                    alimentosFilter.coordinacion.toUpperCase()
+                ) {
+                  return false;
+                }
+                if (
+                  alimentosFilter.tipoAlimento !== "TODOS" &&
+                  (d.alimentos?.tipoAlimento || "").toUpperCase() !==
+                    alimentosFilter.tipoAlimento.toUpperCase()
+                ) {
+                  return false;
+                }
+                if (alimentosFilter.query.trim()) {
+                  const q = alimentosFilter.query.trim().toLowerCase();
+                  const hay = `${d.correlativo} ${d.alimentos?.actividad || ""} ${d.alimentos?.coordinacionSolicitante || ""}`.toLowerCase();
+                  if (!hay.includes(q)) return false;
+                }
+                return true;
+              });
+              const totalRaciones = filteredFoodDocs.reduce(
+                (acc, d) =>
+                  acc +
+                  (d.alimentos?.items || []).reduce((s, it) => s + (Number(it.cantidad) || 0), 0),
+                0
+              );
+              return (
+                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-y-auto print:hidden">
+                  <div className="bg-[#0b1221] text-white rounded-2xl shadow-2xl max-w-4xl w-full border border-emerald-500/50 overflow-hidden">
+                    <div className="px-5 py-4 bg-[#11192e] border-b border-slate-800 flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-black uppercase text-emerald-300">
+                          📊 Reporte Contable de Solicitudes de Alimentos (Con Filtro)
+                        </h3>
+                        <p className="text-[11px] text-slate-400">
+                          Contabilización acumulada: <strong className="text-amber-300">{totalRaciones} raciones/unidades</strong> en {filteredFoodDocs.length} solicitudes
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowAlimentosReportModal(false)}
+                        className="text-slate-400 hover:text-white text-sm font-black cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <div className="p-5 space-y-4 text-xs">
+                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                        <input
+                          type="date"
+                          value={alimentosFilter.desde}
+                          onChange={(e) => setAlimentosFilter({ ...alimentosFilter, desde: e.target.value })}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-[#070b14] text-xs"
+                          title="Desde"
+                        />
+                        <input
+                          type="date"
+                          value={alimentosFilter.hasta}
+                          onChange={(e) => setAlimentosFilter({ ...alimentosFilter, hasta: e.target.value })}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-[#070b14] text-xs"
+                          title="Hasta"
+                        />
+                        <select
+                          value={alimentosFilter.tipoAlimento}
+                          onChange={(e) =>
+                            setAlimentosFilter({ ...alimentosFilter, tipoAlimento: e.target.value })
+                          }
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-[#070b14] text-xs font-bold"
+                        >
+                          <option value="TODOS">Todos los Tipos</option>
+                          <option value="DESAYUNO">Desayuno</option>
+                          <option value="ALMUERZO">Almuerzo</option>
+                          <option value="CENA">Cena</option>
+                          <option value="REFRIGERIO / COFFEE BREAK">Refrigerio</option>
+                          <option value="HIDRATACIÓN / AGUA">Hidratación / Agua</option>
+                        </select>
+                        <input
+                          type="text"
+                          placeholder="Buscar coordinación o actividad..."
+                          value={alimentosFilter.query}
+                          onChange={(e) => setAlimentosFilter({ ...alimentosFilter, query: e.target.value })}
+                          className="sm:col-span-2 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-[#070b14] text-xs"
+                        />
+                      </div>
+
+                      <div className="max-h-72 overflow-y-auto border border-slate-800 rounded-xl">
+                        <table className="w-full text-left text-[11px]">
+                          <thead className="bg-[#11192e] text-amber-300 uppercase">
+                            <tr>
+                              <th className="p-2">Correlativo</th>
+                              <th className="p-2">Fecha</th>
+                              <th className="p-2">Coordinación</th>
+                              <th className="p-2">Tipo</th>
+                              <th className="p-2">Actividad</th>
+                              <th className="p-2 text-center">Total Raciones</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800">
+                            {filteredFoodDocs.length === 0 ? (
+                              <tr>
+                                <td colSpan={6} className="p-4 text-center text-slate-400 italic">
+                                  No hay solicitudes de alimentos que coincidan con el filtro seleccionado.
+                                </td>
+                              </tr>
+                            ) : (
+                              filteredFoodDocs.map((d) => {
+                                const subTotal = (d.alimentos?.items || []).reduce(
+                                  (s, it) => s + (Number(it.cantidad) || 0),
+                                  0
+                                );
+                                return (
+                                  <tr key={d.id} className="hover:bg-slate-900/60">
+                                    <td className="p-2 font-bold text-amber-300">{d.correlativo}</td>
+                                    <td className="p-2">{d.alimentos?.fechaActividad || d.fecha}</td>
+                                    <td className="p-2">{d.alimentos?.coordinacionSolicitante}</td>
+                                    <td className="p-2">{d.alimentos?.tipoAlimento}</td>
+                                    <td className="p-2">{d.alimentos?.actividad || "-"}</td>
+                                    <td className="p-2 text-center font-black text-emerald-400">{subTotal}</td>
+                                  </tr>
+                                );
+                              })
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* MODAL DE REVISIÓN, AUTORIZACIÓN Y ANULACIÓN CON DESCRIPCIÓN */}
             {reviewModalDocId && (() => {
@@ -7036,6 +7760,69 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       >
                         📅 Google Cal
                       </button>
+                    </div>
+                    <div className="pt-2 border-t border-slate-200 space-y-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-[11px] font-black uppercase text-slate-600">
+                          Estado del Evento:
+                        </span>
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                            selectedEventDetail.status === "REALIZADO"
+                              ? "bg-emerald-600 text-white"
+                              : selectedEventDetail.status === "REPROGRAMADO"
+                              ? "bg-amber-500 text-slate-950"
+                              : selectedEventDetail.status === "SUSPENDIDO"
+                              ? "bg-rose-600 text-white"
+                              : selectedEventDetail.status === "ANULADO"
+                              ? "bg-red-800 text-white"
+                              : "bg-blue-600 text-white"
+                          }`}
+                        >
+                          {selectedEventDetail.status || "PROGRAMADO"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUpdateAgendaEventStatus(selectedEventDetail.id, "REALIZADO")
+                          }
+                          className={`py-1.5 px-2 rounded-xl font-black text-[10.5px] cursor-pointer border ${
+                            selectedEventDetail.status === "REALIZADO"
+                              ? "bg-emerald-600 text-white border-emerald-400"
+                              : "bg-emerald-950/60 hover:bg-emerald-800 text-emerald-300 border-emerald-600/40"
+                          }`}
+                        >
+                          ✅ Realizado
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUpdateAgendaEventStatus(selectedEventDetail.id, "REPROGRAMADO")
+                          }
+                          className={`py-1.5 px-2 rounded-xl font-black text-[10.5px] cursor-pointer border ${
+                            selectedEventDetail.status === "REPROGRAMADO"
+                              ? "bg-amber-500 text-slate-950 border-amber-300"
+                              : "bg-amber-950/60 hover:bg-amber-700 text-amber-300 border-amber-600/40"
+                          }`}
+                        >
+                          🔁 Reprogramado
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUpdateAgendaEventStatus(selectedEventDetail.id, "SUSPENDIDO")
+                          }
+                          className={`py-1.5 px-2 rounded-xl font-black text-[10.5px] cursor-pointer border ${
+                            selectedEventDetail.status === "SUSPENDIDO"
+                              ? "bg-rose-600 text-white border-rose-400"
+                              : "bg-rose-950/60 hover:bg-rose-800 text-rose-300 border-rose-600/40"
+                          }`}
+                        >
+                          ⏸ Suspendido
+                        </button>
+                      </div>
                     </div>
                     <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
                       {selectedEventDetail.status !== "ANULADO" && (
@@ -9485,7 +10272,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             <div
               id="printable-area"
-              className="w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
+              className="org-print-auto-height w-full max-w-[820px] min-h-[1020px] mx-auto bg-white shadow-xl border border-slate-200 flex flex-col justify-between text-slate-950"
             >
               {/* ... */}
               <div className="p-10 space-y-6">
@@ -9496,222 +10283,279 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                     ESTRUCTURA ORGANIZATIVA Y ORGANIGRAMA OFICIAL • FUNDACIÓN CENDIS
                   </h2>
                   <p className="text-xs text-slate-600 font-semibold">
-                    Ministerio del Poder Popular para la Cultura
+                    Ministerio del Poder Popular para la Cultura • Distribución por Dependencias
                   </p>
                 </div>
 
-                {orgViewMode === "DIAGRAM" ? (
-                  <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-4">
-                    <div className="px-6 py-3 bg-[#8b1538] text-white rounded-xl text-center shadow font-bold text-xs uppercase">
-                      Dirección General de la Fundación CENDIS
-                      <div className="text-[10px] text-amber-200 font-normal">
-                        Lcdo. Morris López • C.I. V-19.324.324
+                {(() => {
+                  const dependencies = Array.from(
+                    new Set([
+                      ...orgCargos.map((c) => (c.coordinacion || "DEPENDENCIA GENERAL").toUpperCase()),
+                      ...employees.map((e) => (e.coordinacion || "DEPENDENCIA GENERAL").toUpperCase()),
+                    ])
+                  );
+                  return orgViewMode === "DIAGRAM" ? (
+                    <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 flex flex-col items-center space-y-4">
+                      <div className="px-6 py-3 bg-[#8b1538] text-white rounded-xl text-center shadow font-bold text-xs uppercase">
+                        Dirección General de la Fundación CENDIS
+                        <div className="text-[10px] text-amber-200 font-normal">
+                          Lcdo. Morris López • C.I. V-19.324.324
+                        </div>
                       </div>
-                    </div>
-                    <div className="h-5 w-0.5 bg-slate-400" />
-                    <div className="px-6 py-3 bg-blue-900 text-white rounded-xl text-center shadow font-bold text-xs uppercase">
-                      Dirección Ejecutiva
-                      <div className="text-[10px] text-blue-200 font-normal">Lic. Julimar Flores</div>
-                    </div>
-                    <div className="h-5 w-0.5 bg-slate-400" />
-                    <div className="w-full space-y-2">
-                      <div className="text-center text-[11px] font-black uppercase text-slate-700">
-                        Cargos Institucionales Vinculados a Recursos Humanos ({orgCargos.length})
+                      <div className="h-5 w-0.5 bg-slate-400" />
+                      <div className="px-6 py-3 bg-blue-900 text-white rounded-xl text-center shadow font-bold text-xs uppercase">
+                        Dirección Ejecutiva
+                        <div className="text-[10px] text-blue-200 font-normal">Lic. Julimar Flores</div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
-                        {orgCargos.map((cargoItem) => {
-                          const linkedEmp = employees.find(
-                            (e) => String(e.id) === String(cargoItem.assignedEmpId)
+                      <div className="h-5 w-0.5 bg-slate-400" />
+
+                      <div className="w-full space-y-4">
+                        {dependencies.map((depName) => {
+                          const depCargos = orgCargos.filter(
+                            (c) => (c.coordinacion || "DEPENDENCIA GENERAL").toUpperCase() === depName
+                          );
+                          const depEmps = employees.filter(
+                            (e) => (e.coordinacion || "DEPENDENCIA GENERAL").toUpperCase() === depName
                           );
                           return (
                             <div
-                              key={cargoItem.id}
-                              className={`p-3 bg-white border rounded-xl text-center space-y-1.5 ${
-                                cargoItem.status === "ANULADO"
-                                  ? "border-red-300 opacity-60"
-                                  : "border-amber-500/60 shadow-sm"
-                              }`}
+                              key={depName}
+                              className="p-3.5 bg-white border-2 border-slate-300 rounded-xl space-y-3"
                             >
-                              <span className="inline-block px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[9px] font-black uppercase">
-                                {cargoItem.nivelJerarquico} • {cargoItem.coordinacion}
-                              </span>
-                              <div className="font-black text-xs text-slate-900">
-                                {cargoItem.nombreCargo}
+                              <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                                <span className="text-xs font-black uppercase text-[#8b1538]">
+                                  🏛 DEPENDENCIA: {depName}
+                                </span>
+                                <span className="text-[10px] font-bold text-slate-600">
+                                  {depCargos.length} cargos • {depEmps.length} trabajadores
+                                </span>
                               </div>
-                              <div className="text-[11px] font-bold text-blue-900">
-                                {linkedEmp
-                                  ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
-                                  : "VACANTE / SIN ASIGNAR"}
-                              </div>
-                              {cargoItem.funciones && (
-                                <p className="text-[10px] text-slate-500 line-clamp-2">
-                                  {cargoItem.funciones}
-                                </p>
+
+                              {depCargos.length > 0 && (
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                                  {depCargos.map((cargoItem) => {
+                                    const linkedEmp = employees.find(
+                                      (e) => String(e.id) === String(cargoItem.assignedEmpId)
+                                    );
+                                    return (
+                                      <div
+                                        key={cargoItem.id}
+                                        className={`p-2.5 bg-slate-50 border rounded-xl text-center space-y-1 ${
+                                          cargoItem.status === "ANULADO"
+                                            ? "border-red-300 opacity-60"
+                                            : "border-amber-500/60"
+                                        }`}
+                                      >
+                                        <span className="inline-block px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[9px] font-black uppercase">
+                                          {cargoItem.nivelJerarquico}
+                                        </span>
+                                        <div className="font-black text-xs text-slate-900">
+                                          {cargoItem.nombreCargo}
+                                        </div>
+                                        <div className="text-[11px] font-bold text-blue-900">
+                                          {linkedEmp
+                                            ? `👤 ${linkedEmp.nombres} ${linkedEmp.apellidos} (${linkedEmp.cedula})`
+                                            : "VACANTE / SIN ASIGNAR"}
+                                        </div>
+                                        {cargoItem.funciones && (
+                                          <p className="text-[10px] text-slate-500 line-clamp-2">
+                                            {cargoItem.funciones}
+                                          </p>
+                                        )}
+                                        <div
+                                          data-print-hidden="true"
+                                          className="flex flex-wrap items-center justify-center gap-1 pt-1 print:hidden"
+                                        >
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              setEditingOrgCargoId(cargoItem.id);
+                                              setOrgCargoForm({
+                                                nombreCargo: cargoItem.nombreCargo || "",
+                                                coordinacion: cargoItem.coordinacion || "PRODUCCIÓN FONOGRÁFICA",
+                                                nivelJerarquico: cargoItem.nivelJerarquico || "COORDINACIÓN",
+                                                reportaA: cargoItem.reportaA || "DIRECCIÓN GENERAL",
+                                                funciones: cargoItem.funciones || "",
+                                                assignedEmpId: cargoItem.assignedEmpId || "",
+                                              });
+                                              setOrgCargoModalOpen(true);
+                                            }}
+                                            className="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                          >
+                                            ✏️ Asignar RRHH
+                                          </button>
+                                          {cargoItem.status !== "ANULADO" && (
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                handleUniversalAnnul("orgCargos", cargoItem.id, cargoItem.nombreCargo)
+                                              }
+                                              className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                            >
+                                              🚫 Anular
+                                            </button>
+                                          )}
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              handleUniversalDelete("orgCargos", cargoItem.id, cargoItem.nombreCargo)
+                                            }
+                                            className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                          >
+                                            🗑️ Eliminar
+                                          </button>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               )}
-                              <div className="flex flex-wrap items-center justify-center gap-1 pt-1 print:hidden">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setEditingOrgCargoId(cargoItem.id);
-                                    setOrgCargoForm({
-                                      nombreCargo: cargoItem.nombreCargo || "",
-                                      coordinacion: cargoItem.coordinacion || "PRODUCCIÓN FONOGRÁFICA",
-                                      nivelJerarquico: cargoItem.nivelJerarquico || "COORDINACIÓN",
-                                      reportaA: cargoItem.reportaA || "DIRECCIÓN GENERAL",
-                                      funciones: cargoItem.funciones || "",
-                                      assignedEmpId: cargoItem.assignedEmpId || "",
-                                    });
-                                    setOrgCargoModalOpen(true);
-                                  }}
-                                  className="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                >
-                                  ✏️ Asignar RRHH
-                                </button>
-                                {cargoItem.status !== "ANULADO" && (
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleUniversalAnnul("orgCargos", cargoItem.id, cargoItem.nombreCargo)
-                                    }
-                                    className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                  >
-                                    🚫 Anular
-                                  </button>
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleUniversalDelete("orgCargos", cargoItem.id, cargoItem.nombreCargo)
-                                  }
-                                  className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
-                                >
-                                  🗑️ Eliminar
-                                </button>
-                              </div>
+
+                              {depEmps.length > 0 && (
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                                  {depEmps.map((emp) => (
+                                    <div
+                                      key={emp.id}
+                                      className="p-2.5 bg-white border border-slate-300 rounded-xl text-center space-y-1"
+                                    >
+                                      <div className="font-black text-[11px] text-slate-900">
+                                        {emp.nombres} {emp.apellidos}
+                                      </div>
+                                      <div className="text-[10.5px] text-slate-600">{emp.cargo}</div>
+                                      <div
+                                        data-print-hidden="true"
+                                        className="flex items-center justify-center gap-1 pt-1 print:hidden"
+                                      >
+                                        {emp.status !== "ANULADO" && (
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              handleUniversalAnnul("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                                            }
+                                            className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                          >
+                                            🚫 Anular
+                                          </button>
+                                        )}
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            handleUniversalDelete("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                                          }
+                                          className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
+                                        >
+                                          🗑️ Eliminar
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           );
                         })}
                       </div>
                     </div>
-
-                    <div className="h-5 w-0.5 bg-slate-400" />
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                      {employees.map((emp) => (
-                        <div key={emp.id} className="p-3 bg-white border border-slate-300 rounded-xl text-center space-y-1.5">
-                          <div className="font-black text-xs text-slate-900">{emp.coordinacion}</div>
-                          <div className="text-[11px] text-slate-600">
-                            {emp.nombres} {emp.apellidos} ({emp.cargo})
+                  ) : (
+                    <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-4 text-xs text-slate-900">
+                      {dependencies.map((depName) => {
+                        const depCargos = orgCargos.filter(
+                          (c) => (c.coordinacion || "DEPENDENCIA GENERAL").toUpperCase() === depName
+                        );
+                        const depEmps = employees.filter(
+                          (e) => (e.coordinacion || "DEPENDENCIA GENERAL").toUpperCase() === depName
+                        );
+                        return (
+                          <div key={depName} className="space-y-1.5 border border-slate-300 rounded-xl p-3 bg-white">
+                            <div className="font-black text-xs uppercase text-[#8b1538] border-b border-slate-200 pb-1">
+                              🏛 DEPENDENCIA: {depName}
+                            </div>
+                            {depCargos.map((cargoItem, idx) => {
+                              const linkedEmp = employees.find(
+                                (e) => String(e.id) === String(cargoItem.assignedEmpId)
+                              );
+                              return (
+                                <div
+                                  key={cargoItem.id}
+                                  className="py-1.5 border-b border-amber-300/60 flex items-center justify-between gap-2 bg-amber-50/70 px-2 rounded"
+                                >
+                                  <div>
+                                    <strong>Cargo {idx + 1} ({cargoItem.nivelJerarquico}):</strong>{" "}
+                                    {cargoItem.nombreCargo} •{" "}
+                                    <span className="font-bold text-blue-900">
+                                      {linkedEmp
+                                        ? `${linkedEmp.nombres} ${linkedEmp.apellidos}`
+                                        : "VACANTE"}
+                                    </span>
+                                  </div>
+                                  <div data-print-hidden="true" className="flex items-center gap-1 print:hidden">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingOrgCargoId(cargoItem.id);
+                                        setOrgCargoForm({
+                                          nombreCargo: cargoItem.nombreCargo || "",
+                                          coordinacion: cargoItem.coordinacion || "PRODUCCIÓN FONOGRÁFICA",
+                                          nivelJerarquico: cargoItem.nivelJerarquico || "COORDINACIÓN",
+                                          reportaA: cargoItem.reportaA || "DIRECCIÓN GENERAL",
+                                          funciones: cargoItem.funciones || "",
+                                          assignedEmpId: cargoItem.assignedEmpId || "",
+                                        });
+                                        setOrgCargoModalOpen(true);
+                                      }}
+                                      className="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white text-[10px] font-bold cursor-pointer"
+                                    >
+                                      ✏️ Asignar RRHH
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUniversalDelete("orgCargos", cargoItem.id, cargoItem.nombreCargo)
+                                      }
+                                      className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold cursor-pointer"
+                                    >
+                                      🗑️ Eliminar
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                            {depEmps.map((emp, idx) => (
+                              <div key={emp.id} className="py-1.5 border-b border-slate-200 flex items-center justify-between gap-2">
+                                <div>
+                                  <strong>{idx + 1}.</strong> {emp.nombres} {emp.apellidos} —{" "}
+                                  <span className="text-slate-600">{emp.cargo}</span>
+                                </div>
+                                <div data-print-hidden="true" className="flex items-center gap-1 print:hidden">
+                                  {emp.status !== "ANULADO" && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUniversalAnnul("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                                      }
+                                      className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold cursor-pointer"
+                                    >
+                                      🚫 Anular
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleUniversalDelete("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
+                                    }
+                                    className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold cursor-pointer"
+                                  >
+                                    🗑️ Eliminar
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                          <div className="flex items-center justify-center gap-1 pt-1 print:hidden">
-                            {emp.status !== "ANULADO" && (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleUniversalAnnul("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
-                                }
-                                className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[9.5px] font-bold cursor-pointer"
-                              >
-                                🚫 Anular
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleUniversalDelete("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
-                              }
-                              className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[9.5px] font-bold cursor-pointer"
-                            >
-                              🗑️ Eliminar
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
-                  </div>
-                ) : (
-                  <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs text-slate-900">
-                    {orgCargos.map((cargoItem, idx) => {
-                      const linkedEmp = employees.find(
-                        (e) => String(e.id) === String(cargoItem.assignedEmpId)
-                      );
-                      return (
-                        <div
-                          key={cargoItem.id}
-                          className="py-1.5 border-b border-amber-300/60 flex items-center justify-between gap-2 bg-amber-50/70 px-2 rounded"
-                        >
-                          <div>
-                            <strong>Cargo {idx + 1} ({cargoItem.nivelJerarquico}):</strong>{" "}
-                            {cargoItem.nombreCargo} — {cargoItem.coordinacion} •{" "}
-                            <span className="font-bold text-blue-900">
-                              {linkedEmp
-                                ? `${linkedEmp.nombres} ${linkedEmp.apellidos}`
-                                : "VACANTE"}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1 print:hidden">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingOrgCargoId(cargoItem.id);
-                                setOrgCargoForm({
-                                  nombreCargo: cargoItem.nombreCargo || "",
-                                  coordinacion: cargoItem.coordinacion || "PRODUCCIÓN FONOGRÁFICA",
-                                  nivelJerarquico: cargoItem.nivelJerarquico || "COORDINACIÓN",
-                                  reportaA: cargoItem.reportaA || "DIRECCIÓN GENERAL",
-                                  funciones: cargoItem.funciones || "",
-                                  assignedEmpId: cargoItem.assignedEmpId || "",
-                                });
-                                setOrgCargoModalOpen(true);
-                              }}
-                              className="px-2 py-0.5 rounded bg-blue-700 hover:bg-blue-600 text-white text-[10px] font-bold cursor-pointer"
-                            >
-                              ✏️ Asignar RRHH
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleUniversalDelete("orgCargos", cargoItem.id, cargoItem.nombreCargo)
-                              }
-                              className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold cursor-pointer"
-                            >
-                              🗑️ Eliminar
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {employees.map((emp, idx) => (
-                      <div key={emp.id} className="py-1.5 border-b border-slate-200 flex items-center justify-between gap-2">
-                        <div>
-                          <strong>Nivel {idx + 1} - {emp.coordinacion}:</strong> {emp.nombres} {emp.apellidos} —{" "}
-                          <span className="text-slate-600">{emp.cargo}</span>
-                        </div>
-                        <div className="flex items-center gap-1 print:hidden">
-                          {emp.status !== "ANULADO" && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleUniversalAnnul("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
-                              }
-                              className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-white text-[10px] font-bold cursor-pointer"
-                            >
-                              🚫 Anular
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleUniversalDelete("employees", emp.id, `${emp.nombres} ${emp.apellidos}`)
-                            }
-                            className="px-2 py-0.5 rounded bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold cursor-pointer"
-                          >
-                            🗑️ Eliminar
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                  );
+                })()}
               </div>
               <OfficialFooterWave />
             </div>
