@@ -929,10 +929,13 @@ function loadStoredDeletedIds() {
     const raw = window.localStorage.getItem(STORAGE_DELETED_IDS_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     const base = Array.isArray(parsed) ? parsed.map(String) : [];
-    if (window.localStorage.getItem("cendis_rrhh_purged_deleted_v1") !== "1") {
-      const merged = Array.from(new Set([...base, "emp-1", "emp-2", "emp-3", "emp-4"]));
+    if (window.localStorage.getItem("cendis_rrhh_purged_deleted_v1") !== "1" || window.localStorage.getItem("cendis_ca_purged_deleted_v1") !== "1") {
+      const merged = Array.from(
+        new Set([...base, "emp-1", "emp-2", "emp-3", "emp-4", "att-1", "att-2"])
+      );
       window.localStorage.setItem(STORAGE_DELETED_IDS_KEY, JSON.stringify(merged));
       window.localStorage.setItem("cendis_rrhh_purged_deleted_v1", "1");
+      window.localStorage.setItem("cendis_ca_purged_deleted_v1", "1");
       return merged;
     }
     return base;
@@ -1080,26 +1083,7 @@ const INITIAL_DOCUMENTS_LIST = [
   },
 ];
 
-const INITIAL_ATTENDANCE_LIST = [
-  {
-    id: "att-1",
-    cedula: "V-19.324.324",
-    nombre: "Morris López",
-    fecha: "2026-11-13",
-    hora: "08:02 AM",
-    estatus: "A Tiempo",
-    updatedAt: 1794600000000,
-  },
-  {
-    id: "att-2",
-    cedula: "V-18.999.888",
-    nombre: "Julimar Flores",
-    fecha: "2026-11-13",
-    hora: "08:11 AM",
-    estatus: "A Tiempo",
-    updatedAt: 1794600000000,
-  },
-];
+const INITIAL_ATTENDANCE_LIST = [];
 
 const INITIAL_CHAT_LIST = [
   {
@@ -1978,9 +1962,18 @@ export default function App() {
   });
 
   // Estado de Asistencia
-  const [attendanceRecords, setAttendanceRecordsState] = useState(() =>
-    normalizeRecordToUpperCase(loadStoredJson(STORAGE_ATTENDANCE_KEY, INITIAL_ATTENDANCE_LIST))
-  );
+  const [attendanceRecords, setAttendanceRecordsState] = useState(() => {
+    let loaded = loadStoredJson(STORAGE_ATTENDANCE_KEY, INITIAL_ATTENDANCE_LIST);
+    if (typeof window !== "undefined" && window.localStorage.getItem("cendis_ca_empty_init_v1") !== "1") {
+      const sampleAttIds = new Set(["att-1", "att-2"]);
+      loaded = (Array.isArray(loaded) ? loaded : []).filter((a) => !sampleAttIds.has(String(a.id)));
+      saveStoredJson(STORAGE_ATTENDANCE_KEY, loaded);
+      try {
+        window.localStorage.setItem("cendis_ca_empty_init_v1", "1");
+      } catch {}
+    }
+    return normalizeRecordToUpperCase(loaded);
+  });
   const setAttendanceRecords = (updater) => {
     setAttendanceRecordsState((prev) => {
       const nextRaw = typeof updater === "function" ? updater(prev) : updater;
