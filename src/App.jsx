@@ -9095,31 +9095,47 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                               <td className="border border-slate-900 p-1.5 uppercase">
                                 {emp.parroquiaVotacion || "-"}
                               </td>
-                              <td className="border border-slate-900 p-1.5 text-center">
-                                <label className="inline-flex items-center gap-1 cursor-pointer font-black">
-                                  <input
-                                    type="checkbox"
-                                    checked={voted}
-                                    onChange={(e) => {
-                                      const nextVal = e.target.checked ? "SI" : "NO";
-                                      setEmployees((prev) =>
-                                        prev.map((x) =>
-                                          x.id === emp.id
-                                            ? { ...x, yaVoto: nextVal, updatedAt: Date.now() }
-                                            : x
-                                        )
-                                      );
-                                      setTimeout(() => syncWithCloudServer(), 60);
-                                      showToast(
-                                        `${emp.nombres} ${emp.apellidos}: marcado como ${
-                                          nextVal === "SI" ? "YA VOTÓ" : "PENDIENTE"
-                                        }.`
-                                      );
-                                    }}
-                                    className="w-3.5 h-3.5 accent-emerald-600 cursor-pointer"
-                                  />
-                                  <span>{voted ? "SÍ" : "NO"}</span>
-                                </label>
+                              <td className="border border-slate-900 p-1.5 text-center whitespace-nowrap">
+                                <div className="inline-flex items-center justify-center gap-2.5">
+                                  <label className="inline-flex items-center gap-1 cursor-pointer font-black">
+                                    <input
+                                      type="checkbox"
+                                      checked={voted}
+                                      onChange={() => {
+                                        setEmployees((prev) =>
+                                          prev.map((x) =>
+                                            x.id === emp.id
+                                              ? { ...x, yaVoto: "SI", updatedAt: Date.now() }
+                                              : x
+                                          )
+                                        );
+                                        setTimeout(() => syncWithCloudServer(), 60);
+                                        showToast(`${emp.nombres} ${emp.apellidos}: marcado como SÍ votó.`);
+                                      }}
+                                      className="w-3.5 h-3.5 accent-emerald-600 cursor-pointer"
+                                    />
+                                    <span>Si</span>
+                                  </label>
+                                  <label className="inline-flex items-center gap-1 cursor-pointer font-black">
+                                    <input
+                                      type="checkbox"
+                                      checked={!voted}
+                                      onChange={() => {
+                                        setEmployees((prev) =>
+                                          prev.map((x) =>
+                                            x.id === emp.id
+                                              ? { ...x, yaVoto: "NO", updatedAt: Date.now() }
+                                              : x
+                                          )
+                                        );
+                                        setTimeout(() => syncWithCloudServer(), 60);
+                                        showToast(`${emp.nombres} ${emp.apellidos}: marcado como NO ha votado.`);
+                                      }}
+                                      className="w-3.5 h-3.5 accent-rose-600 cursor-pointer"
+                                    />
+                                    <span>NO</span>
+                                  </label>
+                                </div>
                               </td>
                             </tr>
                           );
