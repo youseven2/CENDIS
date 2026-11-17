@@ -188,128 +188,7 @@ const DEFAULT_USERS = [
 
 const INITIAL_EMPLOYEES = [];
 
-const INITIAL_AGENDA_EVENTS = [
-  {
-    id: "ev-1",
-    date: "2026-11-16",
-    endDate: "2026-11-16",
-    ente: "Cendis",
-    title: "Taller de Audiovisual",
-    eventType: "EVENTO",
-    allDay: false,
-    startTime: "09:00",
-    endTime: "11:00",
-    timeZone: "America/Caracas (GMT-04:00)",
-    recurrence: "NO_REPETIR",
-    location: "Los Valles del Tuy",
-    meetLink: "https://meet.google.com/cen-dis-aud",
-    description:
-      "Taller formativo de producción audiovisual comunitaria, captura de sonido directo y edición digital.",
-    responsable: "Morris López",
-    emailInvitado: "morris.lopez.cendis@gmail.com",
-    invitadosAdicionales: "presidencia.cendis@gmail.com",
-    contacto: "0426.324.32.46",
-    visibility: "PUBLICO",
-    availability: "OCUPADO",
-    color: "BLUE",
-    reminderValue: 2,
-    reminderUnit: "HORAS",
-    notifyApp: true,
-    notifyEmail: true,
-    notifyWhatsapp: true,
-    status: "APROBADO",
-  },
-  {
-    id: "ev-2",
-    date: "2026-11-17",
-    endDate: "2026-11-17",
-    ente: "Cendis",
-    title: "Apoyo a IAEM en el marco de la Chinita",
-    eventType: "SESION_ESTUDIO",
-    allDay: false,
-    startTime: "10:00",
-    endTime: "14:00",
-    timeZone: "America/Caracas (GMT-04:00)",
-    recurrence: "DIARIO",
-    location: "Por definir",
-    meetLink: "https://meet.google.com/cen-dis-iaem",
-    description:
-      "Despliegue técnico de grabación móvil y asistencia sonora en articulación con el IAEM para las festividades de la Chinita.",
-    responsable: "Anaileth Briceño",
-    emailInvitado: "produccion.cendis@gmail.com",
-    invitadosAdicionales: "",
-    contacto: "0424.164.30.07",
-    visibility: "PUBLICO",
-    availability: "OCUPADO",
-    color: "AMBER",
-    reminderValue: 1,
-    reminderUnit: "DIAS",
-    notifyApp: true,
-    notifyEmail: true,
-    notifyWhatsapp: true,
-    status: "APROBADO",
-  },
-  {
-    id: "ev-3",
-    date: "2026-11-18",
-    endDate: "2026-11-18",
-    ente: "Cendis",
-    title: "Apoyo a IAEM en el marco de la Chinita (Día 2)",
-    eventType: "SESION_ESTUDIO",
-    allDay: false,
-    startTime: "10:00",
-    endTime: "14:00",
-    timeZone: "America/Caracas (GMT-04:00)",
-    recurrence: "DIARIO",
-    location: "Por definir",
-    meetLink: "https://meet.google.com/cen-dis-iaem",
-    description:
-      "Segunda jornada de cobertura técnica, sonido y registro fonográfico junto al IAEM.",
-    responsable: "Anaileth Briceño",
-    emailInvitado: "produccion.cendis@gmail.com",
-    invitadosAdicionales: "",
-    contacto: "0424.164.30.07",
-    visibility: "PUBLICO",
-    availability: "OCUPADO",
-    color: "EMERALD",
-    reminderValue: 12,
-    reminderUnit: "HORAS",
-    notifyApp: true,
-    notifyEmail: true,
-    notifyWhatsapp: true,
-    status: "APROBADO",
-  },
-  {
-    id: "ev-4",
-    date: "2026-11-19",
-    endDate: "2026-11-19",
-    ente: "Cendis",
-    title: "Cierre Técnico IAEM - Marco de la Chinita",
-    eventType: "EVENTO",
-    allDay: false,
-    startTime: "10:00",
-    endTime: "13:00",
-    timeZone: "America/Caracas (GMT-04:00)",
-    recurrence: "NO_REPETIR",
-    location: "Sede CENDIS, Caracas",
-    meetLink: "https://meet.google.com/cen-dis-cierre",
-    description:
-      "Revisión de material grabado, respaldo en servidor maestro y entrega de acta técnica.",
-    responsable: "Anaileth Briceño",
-    emailInvitado: "produccion.cendis@gmail.com",
-    invitadosAdicionales: "presidencia.cendis@gmail.com",
-    contacto: "0424.164.30.07",
-    visibility: "PUBLICO",
-    availability: "OCUPADO",
-    color: "ROSE",
-    reminderValue: 1,
-    reminderUnit: "DIAS",
-    notifyApp: true,
-    notifyEmail: true,
-    notifyWhatsapp: true,
-    status: "APROBADO",
-  },
-];
+const INITIAL_AGENDA_EVENTS = [];
 
 const INITIAL_PROJECTS = [
   {
@@ -880,15 +759,32 @@ function loadStoredDeletedIds() {
     if (
       window.localStorage.getItem("cendis_rrhh_purged_deleted_v1") !== "1" ||
       window.localStorage.getItem("cendis_ca_purged_deleted_v1") !== "1" ||
-      window.localStorage.getItem("cendis_users_purged_deleted_v1") !== "1"
+      window.localStorage.getItem("cendis_users_purged_deleted_v1") !== "1" ||
+      window.localStorage.getItem("cendis_agenda_purged_deleted_v1") !== "1"
     ) {
       const merged = Array.from(
-        new Set([...base, "emp-1", "emp-2", "emp-3", "emp-4", "att-1", "att-2", "2", "3", "4"])
+        new Set([
+          ...base,
+          "emp-1",
+          "emp-2",
+          "emp-3",
+          "emp-4",
+          "att-1",
+          "att-2",
+          "2",
+          "3",
+          "4",
+          "ev-1",
+          "ev-2",
+          "ev-3",
+          "ev-4",
+        ])
       );
       window.localStorage.setItem(STORAGE_DELETED_IDS_KEY, JSON.stringify(merged));
       window.localStorage.setItem("cendis_rrhh_purged_deleted_v1", "1");
       window.localStorage.setItem("cendis_ca_purged_deleted_v1", "1");
       window.localStorage.setItem("cendis_users_purged_deleted_v1", "1");
+      window.localStorage.setItem("cendis_agenda_purged_deleted_v1", "1");
       return merged;
     }
     return base;
@@ -1862,14 +1758,20 @@ export default function App() {
 
   // Estado de Agenda (Google Calendar Completo con Recordatorios App / Correo / WhatsApp y Sincronización en Tiempo Real)
   const [agendaEvents, setAgendaEventsState] = useState(() => {
-    if (typeof window === "undefined") return normalizeRecordToUpperCase(INITIAL_AGENDA_EVENTS);
+    if (typeof window === "undefined") return [];
     try {
       const raw = window.localStorage.getItem("cendis_agenda_v1");
-      if (!raw) return normalizeRecordToUpperCase(INITIAL_AGENDA_EVENTS);
-      const parsed = JSON.parse(raw);
-      return normalizeRecordToUpperCase(Array.isArray(parsed) ? parsed : INITIAL_AGENDA_EVENTS);
+      let list = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(list)) list = [];
+      if (window.localStorage.getItem("cendis_agenda_empty_init_v1") !== "1") {
+        const sampleEvIds = new Set(["ev-1", "ev-2", "ev-3", "ev-4"]);
+        list = list.filter((ev) => !sampleEvIds.has(String(ev.id)));
+        window.localStorage.setItem("cendis_agenda_v1", JSON.stringify(list));
+        window.localStorage.setItem("cendis_agenda_empty_init_v1", "1");
+      }
+      return normalizeRecordToUpperCase(list);
     } catch {
-      return normalizeRecordToUpperCase(INITIAL_AGENDA_EVENTS);
+      return [];
     }
   });
   const setAgendaEvents = (updater) => {
@@ -1884,14 +1786,25 @@ export default function App() {
       return next;
     });
   };
+  const [agendaYear, setAgendaYear] = useState(() => new Date().getFullYear());
+  const [agendaMonth, setAgendaMonth] = useState(() => new Date().getMonth()); // 0..11
   const [agendaViewMode, setAgendaViewMode] = useState("CALENDAR"); // CALENDAR | REPORT | REMINDERS
   const [selectedEventDetail, setSelectedEventDetail] = useState(null);
   const [reportPeriodType, setReportPeriodType] = useState("SEMANAL");
-  const [reportColumnsCount] = useState(4);
+  const [reportColumnsCount, setReportColumnsCount] = useState(5);
   const [reportViceministerio] = useState("VICEMINISTERIO CULTURA AUDIOVISUAL");
   const [reportEnteTitle] = useState("ENTE: FUNDACIÓN CENTRO NACIONAL DEL DISCO (CENDIS)");
-  const [reportSemanaLabel, setReportSemanaLabel] = useState("SEMANA DEL 16 AL 22 DE NOVIEMBRE");
-  const [reportWeekStartDate] = useState("2026-11-16");
+  const [reportWeekStartDate, setReportWeekStartDate] = useState(() =>
+    new Date().toISOString().slice(0, 10)
+  );
+  const [reportSemanaLabel, setReportSemanaLabel] = useState(() => {
+    const meses = [
+      "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+      "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE",
+    ];
+    const now = new Date();
+    return `MES DE ${meses[now.getMonth()]} ${now.getFullYear()}`;
+  });
   const [selectedDayModal, setSelectedDayModal] = useState(null);
   const [newEventForm, setNewEventForm] = useState({
     ente: "CENDIS",
@@ -3856,15 +3769,26 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     });
   }, [employees, hrFilterCoord, hrFilterCondicion, hrFilterCarga, hrFilterSangre, hrFilterSearch]);
 
-  // Calendario Noviembre 2026
+  const AGENDA_MONTH_NAMES = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+  ];
+
+  // Calendario dinámico por Mes y Año seleccionado
+  const calendarLeadingBlanks = useMemo(() => {
+    return new Date(agendaYear, agendaMonth, 1).getDay();
+  }, [agendaYear, agendaMonth]);
+
   const calendarDays = useMemo(() => {
+    const daysInMonth = new Date(agendaYear, agendaMonth + 1, 0).getDate();
+    const mm = String(agendaMonth + 1).padStart(2, "0");
     const days = [];
-    for (let d = 1; d <= 30; d++) {
-      const dateStr = `2026-11-${String(d).padStart(2, "0")}`;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${agendaYear}-${mm}-${String(d).padStart(2, "0")}`;
       days.push({ dayNumber: d, dateStr });
     }
     return days;
-  }, []);
+  }, [agendaYear, agendaMonth]);
 
   const reportDayColumns = useMemo(() => {
     const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -3878,11 +3802,29 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       const dd = String(d.getDate()).padStart(2, "0");
       const dateIso = `${yyyy}-${mm}-${dd}`;
       const dayLabel = `${dayNames[d.getDay()]}: ${d.getDate()}`;
-      const evs = agendaEvents.filter((ev) => ev.date === dateIso);
+      const evs = agendaEvents.filter(
+        (ev) =>
+          ev.status !== "ANULADO" &&
+          (ev.date === dateIso ||
+            (ev.recurrence === "ANUAL" && ev.date && ev.date.slice(5, 10) === dateIso.slice(5, 10)))
+      );
       cols.push({ dateIso, dayLabel, events: evs });
     }
     return cols;
   }, [reportWeekStartDate, reportColumnsCount, agendaEvents]);
+
+  const reportMonthlyEvents = useMemo(() => {
+    const targetYm = `${agendaYear}-${String(agendaMonth + 1).padStart(2, "0")}`;
+    const targetMm = String(agendaMonth + 1).padStart(2, "0");
+    return agendaEvents
+      .filter(
+        (ev) =>
+          ev.status !== "ANULADO" &&
+          ((ev.date && ev.date.startsWith(targetYm)) ||
+            (ev.recurrence === "ANUAL" && ev.date && ev.date.slice(5, 7) === targetMm))
+      )
+      .sort((a, b) => (a.date || "").localeCompare(b.date || "") || (a.startTime || "").localeCompare(b.startTime || ""));
+  }, [agendaYear, agendaMonth, agendaEvents]);
 
   // Promedio global de avance de proyectos
   const globalProjectsProgress = useMemo(() => {
@@ -7493,8 +7435,13 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 <button
                   type="button"
                   onClick={() => {
-                    setSelectedDayModal("2026-11-16");
-                    setNewEventForm((prev) => ({ ...prev, endDate: "2026-11-16" }));
+                    const today = new Date();
+                    const defaultDay =
+                      today.getFullYear() === agendaYear && today.getMonth() === agendaMonth
+                        ? today.toISOString().slice(0, 10)
+                        : `${agendaYear}-${String(agendaMonth + 1).padStart(2, "0")}-01`;
+                    setSelectedDayModal(defaultDay);
+                    setNewEventForm((prev) => ({ ...prev, endDate: defaultDay }));
                   }}
                   className="px-3.5 py-2 rounded-xl bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950 text-xs font-black flex items-center gap-1.5 cursor-pointer shadow"
                 >
@@ -7581,23 +7528,96 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             {agendaViewMode === "CALENDAR" ? (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="bg-slate-900 text-white px-6 py-3 flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-black uppercase tracking-wider">Noviembre 2026</span>
+                <div className="bg-slate-900 text-white px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (agendaMonth === 0) {
+                          setAgendaMonth(11);
+                          setAgendaYear((y) => y - 1);
+                        } else {
+                          setAgendaMonth((m) => m - 1);
+                        }
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-black cursor-pointer border border-slate-700"
+                      title="Mes anterior"
+                    >
+                      ◀
+                    </button>
+                    <select
+                      value={agendaMonth}
+                      onChange={(e) => setAgendaMonth(Number(e.target.value))}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-white text-xs font-black uppercase cursor-pointer"
+                      title="Seleccionar mes"
+                    >
+                      {AGENDA_MONTH_NAMES.map((mName, idx) => (
+                        <option key={mName} value={idx}>
+                          {mName}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={agendaYear}
+                      onChange={(e) => setAgendaYear(Number(e.target.value))}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-amber-300 text-xs font-black cursor-pointer"
+                      title="Seleccionar año"
+                    >
+                      {Array.from({ length: 16 }, (_, i) => 2020 + i).map((yr) => (
+                        <option key={yr} value={yr}>
+                          {yr}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (agendaMonth === 11) {
+                          setAgendaMonth(0);
+                          setAgendaYear((y) => y + 1);
+                        } else {
+                          setAgendaMonth((m) => m + 1);
+                        }
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-black cursor-pointer border border-slate-700"
+                      title="Mes siguiente"
+                    >
+                      ▶
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const now = new Date();
+                        setAgendaYear(now.getFullYear());
+                        setAgendaMonth(now.getMonth());
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-black cursor-pointer"
+                    >
+                      Hoy
+                    </button>
                     <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-                      Zona horaria: America/Caracas (GMT-04:00)
+                      America/Caracas (GMT-04:00)
                     </span>
                   </div>
                   <span className="text-xs text-amber-400 font-semibold">
-                    Haz clic en cualquier día para agendar o ver todos los parámetros estilo Google Calendar
+                    {AGENDA_MONTH_NAMES[agendaMonth]} {agendaYear} • Haz clic en cualquier día para agendar
                   </span>
                 </div>
                 <div className="grid grid-cols-7 bg-slate-100 border-b border-slate-200 text-center text-[11px] font-black uppercase text-slate-600 py-2">
                   <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
                 </div>
                 <div className="grid grid-cols-7 divide-x divide-y divide-slate-200">
+                  {Array.from({ length: calendarLeadingBlanks }).map((_, idx) => (
+                    <div key={`blank-${idx}`} className="min-h-[120px] bg-slate-50/40" />
+                  ))}
                   {calendarDays.map((d) => {
-                    const dayEvents = agendaEvents.filter((ev) => ev.date === d.dateStr);
+                    const dayEvents = agendaEvents.filter(
+                      (ev) =>
+                        ev.date === d.dateStr ||
+                        (ev.recurrence === "ANUAL" &&
+                          ev.date &&
+                          ev.date.slice(5, 10) === d.dateStr.slice(5, 10))
+                    );
                     const colorClasses = {
                       BLUE: "bg-blue-700 border-l-4 border-blue-300",
                       EMERALD: "bg-emerald-700 border-l-4 border-emerald-300",
@@ -7773,25 +7793,149 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             ) : (
               <div className="space-y-4">
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-wrap items-end justify-between gap-4 print:hidden">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <select
-                      value={reportPeriodType}
-                      onChange={(e) => {
-                        setReportPeriodType(e.target.value);
-                        if (e.target.value === "MENSUAL") setReportSemanaLabel("Mes de Noviembre 2026");
-                        else setReportSemanaLabel("Semana del 16 al 22 de noviembre");
-                      }}
-                      className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
-                    >
-                      <option value="SEMANAL">Reporte Semanal</option>
-                      <option value="MENSUAL">Reporte Mensual</option>
-                    </select>
-                    <input
-                      type="text"
-                      value={reportSemanaLabel}
-                      onChange={(e) => setReportSemanaLabel(e.target.value)}
-                      className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold w-64"
-                    />
+                  <div className="flex flex-wrap items-end gap-3">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        Tipo de Reporte
+                      </label>
+                      <select
+                        value={reportPeriodType}
+                        onChange={(e) => {
+                          const nextType = e.target.value;
+                          setReportPeriodType(nextType);
+                          if (nextType === "MENSUAL") {
+                            setReportSemanaLabel(
+                              `MES DE ${AGENDA_MONTH_NAMES[agendaMonth].toUpperCase()} ${agendaYear}`
+                            );
+                          } else {
+                            const base = new Date(`${reportWeekStartDate}T12:00:00`);
+                            const end = new Date(base);
+                            end.setDate(base.getDate() + reportColumnsCount - 1);
+                            setReportSemanaLabel(
+                              `SEMANA DEL ${base.getDate()} AL ${end.getDate()} DE ${AGENDA_MONTH_NAMES[
+                                end.getMonth()
+                              ].toUpperCase()} DE ${end.getFullYear()}`
+                            );
+                          }
+                        }}
+                        className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                      >
+                        <option value="SEMANAL">Reporte Semanal</option>
+                        <option value="MENSUAL">Reporte Mensual</option>
+                      </select>
+                    </div>
+
+                    {reportPeriodType === "SEMANAL" ? (
+                      <>
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                            Inicio de Semana
+                          </label>
+                          <input
+                            type="date"
+                            value={reportWeekStartDate}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              if (!val) return;
+                              setReportWeekStartDate(val);
+                              const base = new Date(`${val}T12:00:00`);
+                              const end = new Date(base);
+                              end.setDate(base.getDate() + reportColumnsCount - 1);
+                              setReportSemanaLabel(
+                                `SEMANA DEL ${base.getDate()} AL ${end.getDate()} DE ${AGENDA_MONTH_NAMES[
+                                  end.getMonth()
+                                ].toUpperCase()} DE ${end.getFullYear()}`
+                              );
+                            }}
+                            className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                            Días
+                          </label>
+                          <select
+                            value={reportColumnsCount}
+                            onChange={(e) => {
+                              const cnt = Number(e.target.value);
+                              setReportColumnsCount(cnt);
+                              const base = new Date(`${reportWeekStartDate}T12:00:00`);
+                              const end = new Date(base);
+                              end.setDate(base.getDate() + cnt - 1);
+                              setReportSemanaLabel(
+                                `SEMANA DEL ${base.getDate()} AL ${end.getDate()} DE ${AGENDA_MONTH_NAMES[
+                                  end.getMonth()
+                                ].toUpperCase()} DE ${end.getFullYear()}`
+                              );
+                            }}
+                            className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                          >
+                            <option value={4}>4 Días</option>
+                            <option value={5}>5 Días (Lun-Vie)</option>
+                            <option value={7}>7 Días (Completa)</option>
+                          </select>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                            Mes
+                          </label>
+                          <select
+                            value={agendaMonth}
+                            onChange={(e) => {
+                              const m = Number(e.target.value);
+                              setAgendaMonth(m);
+                              setReportSemanaLabel(
+                                `MES DE ${AGENDA_MONTH_NAMES[m].toUpperCase()} ${agendaYear}`
+                              );
+                            }}
+                            className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                          >
+                            {AGENDA_MONTH_NAMES.map((mName, idx) => (
+                              <option key={mName} value={idx}>
+                                {mName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                            Año
+                          </label>
+                          <select
+                            value={agendaYear}
+                            onChange={(e) => {
+                              const yr = Number(e.target.value);
+                              setAgendaYear(yr);
+                              setReportSemanaLabel(
+                                `MES DE ${AGENDA_MONTH_NAMES[agendaMonth].toUpperCase()} ${yr}`
+                              );
+                            }}
+                            className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                          >
+                            {Array.from({ length: 16 }, (_, i) => 2020 + i).map((yr) => (
+                              <option key={yr} value={yr}>
+                                {yr}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </>
+                    )}
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                        Título del Período
+                      </label>
+                      <input
+                        type="text"
+                        value={reportSemanaLabel}
+                        onChange={(e) => setReportSemanaLabel(e.target.value)}
+                        className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold w-64"
+                      />
+                    </div>
                   </div>
                   <button
                     onClick={() => window.print()}
@@ -7823,6 +7967,46 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                       <div>{reportSemanaLabel}</div>
                     </div>
 
+                    {reportPeriodType === "MENSUAL" ? (
+                      <table
+                        className="w-full border-collapse border border-black"
+                        style={{ fontFamily: "Calibri, sans-serif", fontSize: "10.5pt", fontWeight: "bold" }}
+                      >
+                        <thead>
+                          <tr className="bg-[#9fb0c2] text-black">
+                            <th className="border border-black px-2 py-1.5 text-left">Fecha</th>
+                            <th className="border border-black px-2 py-1.5 text-left">Hora</th>
+                            <th className="border border-black px-2 py-1.5 text-left">Actividad / Ente</th>
+                            <th className="border border-black px-2 py-1.5 text-left">Lugar</th>
+                            <th className="border border-black px-2 py-1.5 text-left">Responsable</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {reportMonthlyEvents.length === 0 ? (
+                            <tr>
+                              <td colSpan={5} className="border border-black p-6 text-center text-slate-500">
+                                Sin actividades registradas para {AGENDA_MONTH_NAMES[agendaMonth]} {agendaYear}
+                              </td>
+                            </tr>
+                          ) : (
+                            reportMonthlyEvents.map((ev) => (
+                              <tr key={ev.id}>
+                                <td className="border border-black p-2 whitespace-nowrap">{ev.date}</td>
+                                <td className="border border-black p-2 whitespace-nowrap">
+                                  {ev.allDay ? "Todo el día" : `${ev.startTime}${ev.endTime ? ` - ${ev.endTime}` : ""}`}
+                                </td>
+                                <td className="border border-black p-2">
+                                  <div>{ev.title}</div>
+                                  <div className="text-[9.5pt] font-normal">Ente: {ev.ente}</div>
+                                </td>
+                                <td className="border border-black p-2">{ev.location || "Sede CENDIS"}</td>
+                                <td className="border border-black p-2">{ev.responsable}</td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    ) : (
                     <table
                       className="w-full border-collapse border border-black table-fixed"
                       style={{ fontFamily: "Calibri, sans-serif", fontSize: "11pt", fontWeight: "bold" }}
@@ -7870,6 +8054,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         </tr>
                       </tbody>
                     </table>
+                    )}
                   </div>
                   <OfficialFooterWave />
                 </div>
