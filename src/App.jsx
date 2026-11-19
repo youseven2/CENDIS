@@ -1836,11 +1836,12 @@ export default function App() {
   // Estado de Asistencia
   const [attendanceRecords, setAttendanceRecordsState] = useState(() => {
     let loaded = loadStoredJson(STORAGE_ATTENDANCE_KEY, INITIAL_ATTENDANCE_LIST);
-    if (typeof window !== "undefined" && window.localStorage.getItem("cendis_ca_full_reset_v2") !== "1") {
+    if (typeof window !== "undefined" && window.localStorage.getItem("cendis_ca_full_reset_v3") !== "1") {
       loaded = [];
       saveStoredJson(STORAGE_ATTENDANCE_KEY, []);
       try {
-        window.localStorage.setItem("cendis_ca_full_reset_v2", "1");
+        window.localStorage.setItem("cendis_ca_full_reset_v3", "1");
+        window.localStorage.setItem("cendis_ca_reset_ts_v3", String(Date.now()));
       } catch {}
     }
     return normalizeRecordToUpperCase(loaded);
@@ -2119,9 +2120,16 @@ export default function App() {
       }
     }
     if (Array.isArray(remote.attendanceRecords)) {
+      const resetTs =
+        typeof window !== "undefined"
+          ? Number(window.localStorage.getItem("cendis_ca_reset_ts_v3") || 0)
+          : 0;
+      const filteredRemoteAtt = resetTs
+        ? remote.attendanceRecords.filter((r) => (Number(r.updatedAt) || 0) >= resetTs)
+        : remote.attendanceRecords;
       const mergedAtt = mergeSyncArrays(
         currentSnap.attendanceRecords,
-        remote.attendanceRecords,
+        filteredRemoteAtt,
         deletedSet
       );
       if (JSON.stringify(mergedAtt) !== JSON.stringify(currentSnap.attendanceRecords)) {
@@ -10689,17 +10697,39 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               )}
 
               <div className="pt-4 border-t border-slate-200 space-y-4">
-                <div className="flex items-center justify-between print:hidden">
+                <div className="flex flex-wrap items-center justify-between gap-2 print:hidden">
                   <h3 className="text-xs font-black uppercase text-slate-700">
                     Vista Previa y Reporte Semanal de Asistencia en PDF (con Cintillo Oficial)
                   </h3>
-                  <button
-                    onClick={() => window.print()}
-                    className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
-                  >
-                    <Printer className="w-4 h-4" />
-                    <span>Imprimir Reporte Semanal (PDF)</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {attendanceRecords.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const ids = attendanceRecords.map((a) => String(a.id));
+                          const nextDeleted = Array.from(new Set([...(deletedIds || []), ...ids]));
+                          setDeletedIds(nextDeleted);
+                          try {
+                            window.localStorage.setItem("cendis_ca_reset_ts_v3", String(Date.now()));
+                          } catch {}
+                          setAttendanceRecords([]);
+                          syncWithCloudServer({ deletedIds: nextDeleted, attendanceRecords: [] });
+                          showToast("Registros de asistencia vaciados correctamente.");
+                        }}
+                        className="px-3 py-2 rounded-xl bg-red-700 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Vaciar Registros</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => window.print()}
+                      className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>Imprimir Reporte Semanal (PDF)</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div
@@ -10728,25 +10758,33 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         </tr>
                       </thead>
                       <tbody>
-                        {attendanceRecords.map((att) => (
-                          <tr key={att.id}>
-                            <td className="border border-slate-900 p-2.5 font-bold">{att.cedula}</td>
-                            <td className="border border-slate-900 p-2.5 font-semibold">{att.nombre}</td>
-                            <td className="border border-slate-900 p-2.5">{att.fecha}</td>
-                            <td className="border border-slate-900 p-2.5 font-mono font-bold text-cyan-900">
-                              {att.hora}
-                            </td>
-                            <td
-                              className={`border border-slate-900 p-2.5 font-bold ${
-                                att.status === "ANULADO" || att.estatus === "ANULADO"
-                                  ? "text-red-700 line-through"
-                                  : "text-emerald-800"
-                              }`}
-                            >
-                              {att.estatus}
+                        {attendanceRecords.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="border border-slate-900 p-6 text-center text-slate-500 italic">
+                              Sin registros de asistencia cargados.
                             </td>
                           </tr>
-                        ))}
+                        ) : (
+                          attendanceRecords.map((att) => (
+                            <tr key={att.id}>
+                              <td className="border border-slate-900 p-2.5 font-bold">{att.cedula}</td>
+                              <td className="border border-slate-900 p-2.5 font-semibold">{att.nombre}</td>
+                              <td className="border border-slate-900 p-2.5">{att.fecha}</td>
+                              <td className="border border-slate-900 p-2.5 font-mono font-bold text-cyan-900">
+                                {att.hora}
+                              </td>
+                              <td
+                                className={`border border-slate-900 p-2.5 font-bold ${
+                                  att.status === "ANULADO" || att.estatus === "ANULADO"
+                                    ? "text-red-700 line-through"
+                                    : "text-emerald-800"
+                                }`}
+                              >
+                                {att.estatus}
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
