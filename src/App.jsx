@@ -1192,8 +1192,21 @@ export default function App() {
   // Información de vigencia de la clave (90 días) del usuario actual
   const passwordExpInfo = useMemo(() => getPasswordExpirationInfo(currentUser), [currentUser]);
 
-  // Conmutador de vista (DESKTOP | TABLET | MOBILE)
-  const [deviceViewport, setDeviceViewport] = useState("DESKTOP");
+  // Detección automática de dispositivo (DESKTOP | TABLET | MOBILE) según el ancho de pantalla
+  const detectDeviceViewport = () => {
+    if (typeof window === "undefined") return "DESKTOP";
+    const w = window.innerWidth;
+    if (w < 640) return "MOBILE";
+    if (w < 1024) return "TABLET";
+    return "DESKTOP";
+  };
+  const [deviceViewport, setDeviceViewport] = useState(() => detectDeviceViewport());
+  useEffect(() => {
+    const handleResize = () => setDeviceViewport(detectDeviceViewport());
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Conmutador global de Modo Oscuro / Modo Claro (Blanco) en todo el sistema
   const [themeMode, setThemeMode] = useState(() => {
@@ -3841,12 +3854,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     return Math.round(sum / projects.length);
   }, [projects]);
 
-  // Contenedor adaptable según el selector PC / Tablet / Celular
+  // Contenedor adaptable automático según dispositivo (Celular, Tablet o Computadora)
   const viewportContainerClass =
     deviceViewport === "MOBILE"
-      ? "viewport-mobile w-full max-w-[430px] mx-auto border-x-4 border-b-4 border-slate-800/90 rounded-b-3xl shadow-2xl min-h-screen transition-all duration-300 overflow-x-hidden"
+      ? "viewport-mobile w-full min-h-screen transition-all duration-300 overflow-x-hidden"
       : deviceViewport === "TABLET"
-      ? "viewport-tablet w-full max-w-[860px] mx-auto border-x-4 border-b-4 border-slate-800/90 rounded-b-3xl shadow-2xl min-h-screen transition-all duration-300 overflow-x-hidden"
+      ? "viewport-tablet w-full min-h-screen transition-all duration-300 overflow-x-hidden"
       : "viewport-desktop w-full min-h-screen transition-all duration-300";
 
   const renderThemeModeSwitcher = () => (
@@ -3887,35 +3900,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       />
       <span>Sync Real-Time {lastSyncTime ? `(${lastSyncTime})` : ""}</span>
     </button>
-  );
-
-  const renderDeviceViewportSwitcher = () => (
-    <div className="flex items-center bg-[#070b14] p-1 rounded-xl border border-slate-700/80 shadow-inner">
-      {[
-        { id: "DESKTOP", label: "PC", icon: Laptop, title: "Vista Computadora (Escritorio)" },
-        { id: "TABLET", label: "Tablet", icon: Tablet, title: "Vista Tablet (860px)" },
-        { id: "MOBILE", label: "Celular", icon: Smartphone, title: "Vista Celular (430px)" },
-      ].map((dev) => {
-        const DevIcon = dev.icon;
-        const active = deviceViewport === dev.id;
-        return (
-          <button
-            key={dev.id}
-            type="button"
-            onClick={() => setDeviceViewport(dev.id)}
-            title={dev.title}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition cursor-pointer ${
-              active
-                ? "bg-[#d97706] text-white font-black shadow"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            <DevIcon className="w-3.5 h-3.5" />
-            <span>{dev.label}</span>
-          </button>
-        );
-      })}
-    </div>
   );
 
   const renderGlobalThemeStyles = () => (
@@ -4662,15 +4646,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       {
         id: "proyectos",
         theme: "BLUE",
-        badgeText: "NUEVO MÓDULO",
-        subtitle: "CONTROL DE GESTIÓN SEMANAL",
-        title: "PROYECTOS Y TAREAS (%)",
-        desc: "Asignación de proyectos en ejecución al personal de RRHH, porcentaje de avance (%) e Informe Semanal en PDF para justificar actividades.",
+        badgeText: "ACTIVO",
+        subtitle: "PLANIFICACIÓN Y METAS INSTITUCIONALES",
+        title: "POA PLAN OPERATIVO ANUAL",
+        desc: "Gestión del Plan Operativo Anual (POA) asignable al personal de RRHH, porcentaje de avance (%) e Informe en PDF.",
         pills: [
           { symbol: "📊", text: `${globalProjectsProgress}% Avance Global`, color: "text-blue-400" },
-          { symbol: "📄", text: "Informe Semanal PDF", color: "text-amber-400" },
+          { symbol: "📄", text: "Informe POA PDF", color: "text-amber-400" },
         ],
-        footerCode: `${projects.length} PROYECTOS`,
+        footerCode: `${projects.length} METAS POA`,
         icon: Briefcase,
         cornerBadge: "%",
         cornerBg: "bg-amber-400 text-slate-950",
@@ -4825,7 +4809,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
 
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
               {renderRealtimeSyncBadge()}
-              {renderDeviceViewportSwitcher()}
               {renderThemeModeSwitcher()}
 
               <div className="flex items-center gap-1.5">
@@ -5107,8 +5090,15 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         .viewport-tablet .md\\:col-span-3:not(#printable-area *) {
           grid-column: span 2 / span 2 !important;
         }
+        .viewport-mobile #printable-area {
+          zoom: 0.44;
+          max-width: 100%;
+          overflow-x: auto;
+        }
         .viewport-tablet #printable-area {
-          zoom: 0.9;
+          zoom: 0.78;
+          max-width: 100%;
+          overflow-x: auto;
         }
 
         /* Garantizar hoja de impresión blanca intacta con colores exactos del cintillo */
@@ -5373,7 +5363,6 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 )}
               </button>
               {renderRealtimeSyncBadge()}
-              {renderDeviceViewportSwitcher()}
               {renderThemeModeSwitcher()}
 
               <button
@@ -5407,7 +5396,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               { id: "editor", label: "Memos", icon: FileText },
               { id: "agenda", label: "Agenda", icon: CalendarIcon },
               { id: "hr", label: "RRHH & Carnets", icon: Users },
-              { id: "proyectos", label: "Proyectos (%)", icon: Briefcase },
+              { id: "proyectos", label: "POA PLAN OPERATIVO ANUAL", icon: Briefcase },
               { id: "bienes", label: "Bienes Nacionales", icon: Package },
               { id: "attendance", label: "Asistencia", icon: UserCheck },
               { id: "stats", label: "Estadística", icon: BarChart3 },
@@ -9789,7 +9778,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
               <div>
                 <h2 className="text-base font-black uppercase text-slate-900">
-                  Módulo de Proyectos y Tareas en Ejecución • Avance Global: {globalProjectsProgress}%
+                  POA PLAN OPERATIVO ANUAL • AVANCE GLOBAL: {globalProjectsProgress}%
                 </h2>
                 <p className="text-xs text-slate-500">
                   Asignación directa al personal de Recursos Humanos e Informe Semanal en PDF para justificar actividades completadas y pendientes.
@@ -11526,7 +11515,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               { key: "entrar_memo", label: "Memo y Solicitudes", code: "MEMO" },
               { key: "entrar_agenda", label: "Agenda CENDIS", code: "AGENDA" },
               { key: "entrar_hr", label: "Recursos Humanos y Carnets", code: "RRHH" },
-              { key: "entrar_proyectos", label: "Proyectos y Tareas (%)", code: "PROY" },
+              { key: "entrar_proyectos", label: "POA PLAN OPERATIVO ANUAL", code: "POA" },
               { key: "entrar_bienes", label: "Bienes Nacionales", code: "BIENES" },
               { key: "entrar_attendance", label: "Control de Asistencia", code: "ASIST" },
               { key: "entrar_stats", label: "Estadística General", code: "STATS" },
