@@ -4648,7 +4648,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
         theme: "BLUE",
         badgeText: "ACTIVO",
         subtitle: "PLANIFICACIÓN Y METAS INSTITUCIONALES",
-        title: "POA PLAN OPERATIVO ANUAL",
+        title: "(POA) PLAN OPERATIVO ANUAL",
         desc: "Gestión del Plan Operativo Anual (POA) asignable al personal de RRHH, porcentaje de avance (%) e Informe en PDF.",
         pills: [
           { symbol: "📊", text: `${globalProjectsProgress}% Avance Global`, color: "text-blue-400" },
@@ -5396,7 +5396,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               { id: "editor", label: "Memos", icon: FileText },
               { id: "agenda", label: "Agenda", icon: CalendarIcon },
               { id: "hr", label: "RRHH & Carnets", icon: Users },
-              { id: "proyectos", label: "POA PLAN OPERATIVO ANUAL", icon: Briefcase },
+              { id: "proyectos", label: "(POA) PLAN OPERATIVO ANUAL", icon: Briefcase },
               { id: "bienes", label: "Bienes Nacionales", icon: Package },
               { id: "attendance", label: "Asistencia", icon: UserCheck },
               { id: "stats", label: "Estadística", icon: BarChart3 },
@@ -9778,7 +9778,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
               <div>
                 <h2 className="text-base font-black uppercase text-slate-900">
-                  POA PLAN OPERATIVO ANUAL • AVANCE GLOBAL: {globalProjectsProgress}%
+                  (POA) PLAN OPERATIVO ANUAL • AVANCE GLOBAL: {globalProjectsProgress}%
                 </h2>
                 <p className="text-xs text-slate-500">
                   Asignación directa al personal de Recursos Humanos e Informe Semanal en PDF para justificar actividades completadas y pendientes.
@@ -11515,7 +11515,7 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               { key: "entrar_memo", label: "Memo y Solicitudes", code: "MEMO" },
               { key: "entrar_agenda", label: "Agenda CENDIS", code: "AGENDA" },
               { key: "entrar_hr", label: "Recursos Humanos y Carnets", code: "RRHH" },
-              { key: "entrar_proyectos", label: "POA PLAN OPERATIVO ANUAL", code: "POA" },
+              { key: "entrar_proyectos", label: "(POA) PLAN OPERATIVO ANUAL", code: "POA" },
               { key: "entrar_bienes", label: "Bienes Nacionales", code: "BIENES" },
               { key: "entrar_attendance", label: "Control de Asistencia", code: "ASIST" },
               { key: "entrar_stats", label: "Estadística General", code: "STATS" },
