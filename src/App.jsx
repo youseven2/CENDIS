@@ -1357,17 +1357,48 @@ export default function App() {
     [systemNewNotices]
   );
 
+  // Coordinaciones Oficiales según el Organigrama del CENDIS
+  const ORGANIGRAMA_COORDINACIONES = [
+    "PRESIDENCIA",
+    "DIRECCIÓN EJECUTIVA",
+    "OFICINA DE ATENCIÓN AL CIUDADANO",
+    "AUDITORÍA INTERNA",
+    "CONSULTORÍA JURÍDICA",
+    "COORDINACIÓN DE COMUNICACIÓN Y RELACIONES INSTITUCIONALES",
+    "COORDINACIÓN GENERAL DE GESTIÓN INTERNA",
+    "COORDINACIÓN DE ADMINISTRACIÓN Y FINANZAS",
+    "COORDINACIÓN DE PLANIFICACIÓN Y PRESUPUESTO",
+    "COORDINACIÓN DE RECURSOS HUMANOS",
+    "COORDINACIÓN DE TECNOLOGÍA E INFORMÁTICA",
+    "COORDINACIÓN GENERAL ESTRATÉGICA",
+    "COORDINACIÓN DE PRODUCCIÓN ARTÍSTICA",
+    "COORDINACIÓN GENERAL DE OPERACIONES",
+    "COORDINACIÓN DE PRODUCCIÓN INDUSTRIAL",
+    "COORDINACIÓN DE COMERCIALIZACIÓN",
+  ];
+  const [coordinacionOrigen, setCoordinacionOrigen] = useState("DIRECCIÓN EJECUTIVA");
+  const [docCoordFilter, setDocCoordFilter] = useState("TODAS");
+
   // Estado Universal de Memorandos, Solicitudes, Oficios, Órdenes de Salida, Alimentos y Servicios Generales
   const [docType, setDocType] = useState("MEMORANDUM"); // MEMORANDUM | SOLICITUD | OFICIO | ORDEN_SALIDA | SOLICITUD_ALIMENTOS | SOLICITUD_SERVICIOS_GENERALES
   const [docUnitPrefix, setDocUnitPrefix] = useState("FC-DG");
-  const [counters, setCounters] = useState({
-    MEMORANDUM: 7,
-    SOLICITUD: 1,
-    OFICIO: 1,
-    ORDEN_SALIDA: 1,
-    SOLICITUD_ALIMENTOS: 1,
-    SOLICITUD_SERVICIOS_GENERALES: 1,
-  });
+  const [counters, setCountersState] = useState(() =>
+    loadStoredJson("cendis_doc_counters_v1", {
+      MEMORANDUM: 7,
+      SOLICITUD: 1,
+      OFICIO: 1,
+      ORDEN_SALIDA: 1,
+      SOLICITUD_ALIMENTOS: 1,
+      SOLICITUD_SERVICIOS_GENERALES: 1,
+    })
+  );
+  const setCounters = (updater) => {
+    setCountersState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveStoredJson("cendis_doc_counters_v1", next);
+      return next;
+    });
+  };
   const [manualCorrelative, setManualCorrelative] = useState(false);
   const [customCorrelative, setCustomCorrelative] = useState("");
 
@@ -3208,12 +3239,107 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       showToast("Su usuario no tiene permiso para agregar nuevos documentos.", "error");
       return;
     }
+    if (!para.trim()) {
+      showToast("Debe indicar el destinatario en el campo PARA.", "error");
+      return;
+    }
+    if (!de.trim()) {
+      showToast("Debe indicar el remitente en el campo DE.", "error");
+      return;
+    }
+    if (!fecha) {
+      showToast("Debe seleccionar la FECHA del documento.", "error");
+      return;
+    }
+    if (!asunto.trim()) {
+      showToast("Debe indicar el ASUNTO del documento.", "error");
+      return;
+    }
+    if (
+      (docType === "MEMORANDUM" || docType === "SOLICITUD" || docType === "OFICIO") &&
+      !concepto.trim()
+    ) {
+      showToast("Debe redactar el CONTENIDO / CUERPO DEL DOCUMENTO.", "error");
+      return;
+    }
+    if (docType === "ORDEN_SALIDA") {
+      if (!ordenSalidaData.destino?.trim()) {
+        showToast("En Orden de Salida debe indicar el Destino.", "error");
+        return;
+      }
+      if (!ordenSalidaData.responsableNombre?.trim()) {
+        showToast("En Orden de Salida debe indicar el Responsable que Retira.", "error");
+        return;
+      }
+      if (!Array.isArray(ordenSalidaData.equipos) || ordenSalidaData.equipos.length === 0) {
+        showToast("En Orden de Salida debe agregar al menos un equipo o bien.", "error");
+        return;
+      }
+    }
+    if (docType === "SOLICITUD_ALIMENTOS") {
+      if (!alimentosData.coordinacionSolicitante?.trim()) {
+        showToast("Seleccione la Coordinación Solicitante de alimentos.", "error");
+        return;
+      }
+      if (!alimentosData.actividad?.trim()) {
+        showToast("Indique la Actividad o Evento institucional para la solicitud de alimentos.", "error");
+        return;
+      }
+      const validFoodItems = (alimentosData.items || []).filter(
+        (it) => String(it.rubro || "").trim() && Number(it.cantidad) > 0
+      );
+      if (validFoodItems.length === 0) {
+        showToast("Debe agregar al menos un rubro alimenticio con descripción y cantidad mayor a 0.", "error");
+        return;
+      }
+    }
+    if (docType === "SOLICITUD_SERVICIOS_GENERALES") {
+      if (!serviciosGeneralesData.areaSolicitante?.trim()) {
+        showToast("Seleccione el Área / Coordinación Solicitante de Servicios Generales.", "error");
+        return;
+      }
+      const validMaterials = (serviciosGeneralesData.materiales || []).filter(
+        (m) => String(m.material || "").trim() && Number(m.cantidad) > 0
+      );
+      if (validMaterials.length === 0) {
+        showToast("Debe agregar al menos un material requerido con descripción y cantidad mayor a 0.", "error");
+        return;
+      }
+    }
+
     const now = new Date();
     const stamp = `${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5)}`;
+    const cleanAlimentos =
+      docType === "SOLICITUD_ALIMENTOS"
+        ? {
+            ...alimentosData,
+            coordinacionSolicitante: alimentosData.coordinacionSolicitante || coordinacionOrigen,
+            items: (alimentosData.items || [])
+              .filter((it) => String(it.rubro || "").trim() && Number(it.cantidad) > 0)
+              .map((it) => ({ ...it, cantidad: Number(it.cantidad) || 0 })),
+          }
+        : undefined;
+    const cleanServicios =
+      docType === "SOLICITUD_SERVICIOS_GENERALES"
+        ? {
+            ...serviciosGeneralesData,
+            areaSolicitante: serviciosGeneralesData.areaSolicitante || coordinacionOrigen,
+            materiales: (serviciosGeneralesData.materiales || [])
+              .filter((m) => String(m.material || "").trim() && Number(m.cantidad) > 0)
+              .map((m) => ({ ...m, cantidad: Number(m.cantidad) || 0 })),
+          }
+        : undefined;
+
     const newDoc = {
       id: `doc-${Date.now()}`,
       correlativo: formattedCorrelative,
       tipo: docType,
+      coordinacionOrigen:
+        docType === "SOLICITUD_ALIMENTOS"
+          ? cleanAlimentos?.coordinacionSolicitante || coordinacionOrigen
+          : docType === "SOLICITUD_SERVICIOS_GENERALES"
+          ? cleanServicios?.areaSolicitante || coordinacionOrigen
+          : coordinacionOrigen,
       para,
       paraDireccion,
       de,
@@ -3225,10 +3351,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       signerCargo,
       signerEnte,
       signerMinisterio,
-      ordenSalida: docType === "ORDEN_SALIDA" ? ordenSalidaData : undefined,
-      alimentos: docType === "SOLICITUD_ALIMENTOS" ? alimentosData : undefined,
-      serviciosGenerales:
-        docType === "SOLICITUD_SERVICIOS_GENERALES" ? serviciosGeneralesData : undefined,
+      ordenSalida:
+        docType === "ORDEN_SALIDA"
+          ? { ...ordenSalidaData, equipos: [...(ordenSalidaData.equipos || [])] }
+          : undefined,
+      alimentos: cleanAlimentos,
+      serviciosGenerales: cleanServicios,
       status: "PENDIENTE_APROBACION",
       creadoPor: currentUser?.fullName || currentUser?.username || "usuario",
       creadoEn: stamp,
@@ -3250,10 +3378,10 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
       }));
     }
     addLog(
-      `Creado ${docType} N° ${formattedCorrelative} (En Revisión para Autorización de Administrador)`
+      `Creado ${docType} N° ${formattedCorrelative} (${newDoc.coordinacionOrigen}) — Centralizado en Revisión de Administrador`
     );
     showToast(
-      `Documento ${formattedCorrelative} creado y enviado a Revisión. Un Administrador debe verificarlo y aprobarlo para habilitar su impresión.`
+      `Documento ${formattedCorrelative} (${newDoc.coordinacionOrigen}) enviado al Administrador para su aprobación.`
     );
   };
 
@@ -3261,13 +3389,14 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     if (!docObj) return;
     setSelectedDocId(docObj.id);
     setDocType(docObj.tipo || "MEMORANDUM");
+    if (docObj.coordinacionOrigen) setCoordinacionOrigen(docObj.coordinacionOrigen);
     setManualCorrelative(true);
     setCustomCorrelative(docObj.correlativo || "");
     setPara(docObj.para || "");
     setParaDireccion(docObj.paraDireccion || "");
     setDe(docObj.de || "");
     setDeCargo(docObj.deCargo || "");
-    setFecha(docObj.fecha || "2026-11-13");
+    setFecha(docObj.fecha || getTodayIsoDate());
     setAsunto(docObj.asunto || "");
     setConcepto(docObj.concepto || "");
     setSignerNombre(docObj.signerNombre || "Lcdo. MORRIS LÓPEZ");
@@ -3276,6 +3405,12 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
     setSignerMinisterio(docObj.signerMinisterio || "Ministerio del Poder Popular para la Cultura");
     if (docObj.ordenSalida) {
       setOrdenSalidaData(docObj.ordenSalida);
+    }
+    if (docObj.alimentos) {
+      setAlimentosData(docObj.alimentos);
+    }
+    if (docObj.serviciosGenerales) {
+      setServiciosGeneralesData(docObj.serviciosGenerales);
     }
   };
 
@@ -5539,6 +5674,30 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
               )}
 
               <div className="space-y-3">
+                {/* Sectorización por Coordinación del Organigrama */}
+                <div>
+                  <label className="block text-[11px] font-black uppercase text-amber-400 mb-1">
+                    COORDINACIÓN SOLICITANTE (ORGANIGRAMA CENDIS):
+                  </label>
+                  <select
+                    value={coordinacionOrigen}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedDocId(null);
+                      setCoordinacionOrigen(val);
+                      setAlimentosData((prev) => ({ ...prev, coordinacionSolicitante: val }));
+                      setServiciosGeneralesData((prev) => ({ ...prev, areaSolicitante: val }));
+                    }}
+                    className="w-full px-3 py-2 rounded-lg border border-amber-500/60 text-xs font-bold"
+                  >
+                    {ORGANIGRAMA_COORDINACIONES.map((coord) => (
+                      <option key={coord} value={coord}>
+                        {coord}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Prefijo Universal y Correlativo */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
@@ -6111,18 +6270,25 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
                           Coordinación Solicitante
                         </label>
-                        <input
-                          type="text"
+                        <select
                           value={alimentosData.coordinacionSolicitante}
                           onChange={(e) => {
+                            const val = e.target.value;
                             setSelectedDocId(null);
+                            setCoordinacionOrigen(val);
                             setAlimentosData({
                               ...alimentosData,
-                              coordinacionSolicitante: e.target.value,
+                              coordinacionSolicitante: val,
                             });
                           }}
-                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
-                        />
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          {ORGANIGRAMA_COORDINACIONES.map((coord) => (
+                            <option key={coord} value={coord}>
+                              {coord}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
@@ -6289,29 +6455,44 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 {/* VARIABLES PARA SOLICITUD DE SERVICIOS GENERALES (MATERIALES PARA FUNCIONAMIENTO DEL CENDIS) */}
                 {docType === "SOLICITUD_SERVICIOS_GENERALES" && (
                   <div className="p-3.5 rounded-xl bg-blue-950/35 border border-blue-500/50 space-y-3">
-                    <div className="flex items-center justify-between border-b border-blue-500/30 pb-1.5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-500/30 pb-1.5">
                       <span className="text-[11px] font-black uppercase text-blue-300">
                         🛠 Solicitud de Servicios Generales (Materiales para el CENDIS)
+                      </span>
+                      <span className="text-[10px] font-black text-amber-300">
+                        Total Contabilizado:{" "}
+                        {(serviciosGeneralesData.materiales || []).reduce(
+                          (acc, m) => acc + (Number(m.cantidad) || 0),
+                          0
+                        )}{" "}
+                        unidades ({(serviciosGeneralesData.materiales || []).length} ítems)
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <div>
                         <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
-                          Área / Dependencia
+                          Coordinación / Área (Organigrama)
                         </label>
-                        <input
-                          type="text"
+                        <select
                           value={serviciosGeneralesData.areaSolicitante}
                           onChange={(e) => {
+                            const val = e.target.value;
                             setSelectedDocId(null);
+                            setCoordinacionOrigen(val);
                             setServiciosGeneralesData({
                               ...serviciosGeneralesData,
-                              areaSolicitante: e.target.value,
+                              areaSolicitante: val,
                             });
                           }}
-                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs"
-                        />
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold"
+                        >
+                          {ORGANIGRAMA_COORDINACIONES.map((coord) => (
+                            <option key={coord} value={coord}>
+                              {coord}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">
@@ -6575,28 +6756,55 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                 )}
               </div>
 
-              {/* BANDEJA UNIVERSAL DE REVISIÓN, AUTORIZACIÓN Y ANULACIÓN CON MOTIVO */}
+              {/* BANDEJA CENTRALIZADA DE REVISIÓN, AUTORIZACIÓN Y ANULACIÓN (ADMINISTRADOR) */}
               <div className="pt-4 border-t border-slate-200 space-y-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="text-xs font-black uppercase text-slate-800">
-                    Control de Revisión, Autorización y Anulación ({documents.length})
-                  </h3>
-                  <select
-                    value={docStatusFilter}
-                    onChange={(e) => setDocStatusFilter(e.target.value)}
-                    className="px-2 py-1 rounded-lg border border-slate-300 text-[10px] font-bold"
-                  >
-                    <option value="TODOS">Todos ({documents.length})</option>
-                    <option value="PENDIENTE_APROBACION">En Revisión</option>
-                    <option value="APROBADO">Autorizados (Imprimibles)</option>
-                    <option value="ANULADO">Anulados</option>
-                  </select>
+                  <div>
+                    <h3 className="text-xs font-black uppercase text-slate-800">
+                      Bandeja Centralizada de Aprobación ({documents.length})
+                    </h3>
+                    <span className="text-[10px] font-bold text-amber-400">
+                      ⏳ Pendientes por Administrador:{" "}
+                      {documents.filter((d) => d.status === "PENDIENTE_APROBACION").length}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <select
+                      value={docCoordFilter}
+                      onChange={(e) => setDocCoordFilter(e.target.value)}
+                      className="px-2 py-1 rounded-lg border border-slate-300 text-[10px] font-bold max-w-[170px]"
+                      title="Sectorizar por Coordinación del Organigrama"
+                    >
+                      <option value="TODAS">Todas las Coordinaciones</option>
+                      {ORGANIGRAMA_COORDINACIONES.map((coord) => (
+                        <option key={coord} value={coord}>
+                          {coord}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={docStatusFilter}
+                      onChange={(e) => setDocStatusFilter(e.target.value)}
+                      className="px-2 py-1 rounded-lg border border-slate-300 text-[10px] font-bold"
+                    >
+                      <option value="TODOS">Todos ({documents.length})</option>
+                      <option value="PENDIENTE_APROBACION">En Revisión</option>
+                      <option value="APROBADO">Autorizados (Imprimibles)</option>
+                      <option value="ANULADO">Anulados</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="max-h-72 overflow-y-auto space-y-2 pr-1">
                   {documents
                     .filter((d) =>
                       docStatusFilter === "TODOS" ? true : d.status === docStatusFilter
+                    )
+                    .filter((d) =>
+                      docCoordFilter === "TODAS"
+                        ? true
+                        : (d.coordinacionOrigen || "DIRECCIÓN EJECUTIVA").toUpperCase() ===
+                          docCoordFilter.toUpperCase()
                     )
                     .map((d) => {
                       const isSelected = selectedDocId === d.id;
@@ -6612,11 +6820,16 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                         >
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <div className="font-black text-slate-900 flex items-center gap-1.5">
+                              <div className="font-black text-slate-900 flex flex-wrap items-center gap-1.5">
                                 <span>{d.correlativo}</span>
                                 <span className="text-[10px] font-normal text-slate-400">
                                   ({d.fecha})
                                 </span>
+                                {d.coordinacionOrigen && (
+                                  <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 text-[9px] font-black">
+                                    {d.coordinacionOrigen}
+                                  </span>
+                                )}
                               </div>
                               <div className="text-slate-600 font-semibold">{d.asunto}</div>
                               <div className="text-[10px] text-slate-400">
@@ -7182,12 +7395,26 @@ PASOS PARA SUBIR A GITHUB Y VERCEL:
                           <option value="REFRIGERIO / COFFEE BREAK">Refrigerio</option>
                           <option value="HIDRATACIÓN / AGUA">Hidratación / Agua</option>
                         </select>
+                        <select
+                          value={alimentosFilter.coordinacion}
+                          onChange={(e) =>
+                            setAlimentosFilter({ ...alimentosFilter, coordinacion: e.target.value })
+                          }
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-[#070b14] text-xs font-bold"
+                        >
+                          <option value="TODAS">Todas las Coordinaciones</option>
+                          {ORGANIGRAMA_COORDINACIONES.map((coord) => (
+                            <option key={coord} value={coord}>
+                              {coord}
+                            </option>
+                          ))}
+                        </select>
                         <input
                           type="text"
                           placeholder="Buscar coordinación o actividad..."
                           value={alimentosFilter.query}
                           onChange={(e) => setAlimentosFilter({ ...alimentosFilter, query: e.target.value })}
-                          className="sm:col-span-2 px-2.5 py-1.5 rounded-lg border border-slate-700 bg-[#070b14] text-xs"
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-[#070b14] text-xs"
                         />
                       </div>
 
